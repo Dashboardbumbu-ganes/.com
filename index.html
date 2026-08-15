@@ -258,319 +258,408 @@
     </div>
 
     <script>
-        // ================= KONFIGURASI =================
-        const API_URL = 'https://script.google.com/macros/s/AKfycbzDmMJFAxEbSc-66g16wdn6lIW3BCNJeqZaYsI8R6LpBieAoTdt49S3yYu3HQQvmluBUg/exec';
-        let salesChartInstance = null;
+    // ================= KONFIGURASI =================
+    const API_URL = 'https://script.google.com/macros/s/AKfycbzDmMJFAxEbSc-66g16wdn6lIW3BCNJeqZaYsI8R6LpBieAoTdt49S3yYu3HQQvmluBUg/exec';
+    let salesChartInstance = null;
 
-        // ================= HELPER =================
-        const formatRp = (angka) => 'Rp ' + Number(angka || 0).toLocaleString('id-ID');
-        const getToday = () => new Date().toISOString().split('T')[0];
+    // ================= KREDENSIAL LOGIN (EDIT DI SINI) =================
+    const VALID_USERS = [
+        { username: 'admin', password: 'admin123' },
+        // Tambah user lain di sini kalau perlu:
+        // { username: 'kasir', password: 'kasir123' },
+    ];
 
-        function showLoginError(pesan) {
-            var el = document.getElementById('loginError');
-            el.innerText = pesan; el.classList.remove('hidden');
-        }
-        function hideLoginError() { document.getElementById('loginError').classList.add('hidden'); }
-        
-        function toggleSidebar(open) {
-            var sidebar = document.getElementById('sidebar');
-            var overlay = document.getElementById('sidebarOverlay');
-            if (open) { sidebar.classList.add('open'); overlay.classList.add('open'); }
-            else { sidebar.classList.remove('open'); overlay.classList.remove('open'); }
-        }
+    // ================= HELPER =================
+    const formatRp = (angka) => 'Rp ' + Number(angka || 0).toLocaleString('id-ID');
+    const getToday = () => new Date().toISOString().split('T')[0];
 
-        window.onload = function() {
-            var mTgl = document.getElementById('modalTgl');
-            if(mTgl) mTgl.value = getToday();
-            var jTgl = document.getElementById('jualTgl');
-            if(jTgl) jTgl.value = getToday();
-            
-            var yr = new Date().getFullYear();
-            var yrSelect = document.getElementById('filterTahun');
-            if(yrSelect) {
-                for(var i = yr - 2; i <= yr + 1; i++) {
-                    var opt = document.createElement('option'); opt.value = i; opt.innerText = i;
-                    if(i === yr) opt.selected = true;
-                    yrSelect.appendChild(opt);
-                }
-                document.getElementById('filterBulan').value = String(new Date().getMonth() + 1).padStart(2, '0');
+    function showLoginError(pesan) {
+        var el = document.getElementById('loginError');
+        el.innerText = pesan;
+        el.classList.remove('hidden');
+        el.style.display = 'block';
+    }
+    function hideLoginError() {
+        var el = document.getElementById('loginError');
+        el.classList.add('hidden');
+        el.style.display = 'none';
+    }
+
+    function toggleSidebar(open) {
+        var sidebar = document.getElementById('sidebar');
+        var overlay = document.getElementById('sidebarOverlay');
+        if (open) { sidebar.classList.add('open'); overlay.classList.add('open'); }
+        else { sidebar.classList.remove('open'); overlay.classList.remove('open'); }
+    }
+
+    window.onload = function() {
+        // Set tanggal default
+        var mTgl = document.getElementById('modalTgl');
+        if(mTgl) mTgl.value = getToday();
+        var jTgl = document.getElementById('jualTgl');
+        if(jTgl) jTgl.value = getToday();
+
+        // Set filter tahun
+        var yr = new Date().getFullYear();
+        var yrSelect = document.getElementById('filterTahun');
+        if(yrSelect) {
+            for(var i = yr - 2; i <= yr + 1; i++) {
+                var opt = document.createElement('option');
+                opt.value = i; opt.innerText = i;
+                if(i === yr) opt.selected = true;
+                yrSelect.appendChild(opt);
             }
-        };
+            document.getElementById('filterBulan').value = String(new Date().getMonth() + 1).padStart(2, '0');
+        }
 
-        // ================= NAVIGATION =================
-        function showPage(page, element) {
-            document.querySelectorAll('.page-content').forEach(function(p) { p.classList.add('hidden'); });
-            var target = document.getElementById('page-' + page);
-            if (target) {
-                target.classList.remove('hidden');
-                target.classList.remove('page-transition');
-                void target.offsetWidth;
-                target.classList.add('page-transition');
-            }
-            document.querySelectorAll('.sidebar-item').forEach(function(item) {
-                item.classList.remove('active'); item.classList.add('text-gray-600');
+        // ✅ PASANG EVENT LISTENER LOGIN (lebih aman dari inline onclick)
+        var btnLogin = document.getElementById('btnLogin');
+        if(btnLogin) {
+            btnLogin.addEventListener('click', function(e) {
+                e.preventDefault();
+                doLogin();
             });
+        }
+
+        var passField = document.getElementById('password');
+        if(passField) {
+            passField.addEventListener('keydown', function(e) {
+                if(e.key === 'Enter') { e.preventDefault(); doLogin(); }
+            });
+        }
+
+        var userField = document.getElementById('username');
+        if(userField) {
+            userField.addEventListener('keydown', function(e) {
+                if(e.key === 'Enter') { e.preventDefault(); document.getElementById('password').focus(); }
+            });
+        }
+
+        // ✅ PASTIKAN halaman login tampil & main app tersembunyi
+        document.getElementById('loginPage').style.display = 'flex';
+        document.getElementById('mainApp').style.display = 'none';
+
+        // ✅ Fokus ke username
+        setTimeout(function() {
+            if(userField) userField.focus();
+        }, 200);
+
+        console.log('✅ App loaded. Login siap. Username="admin", Password="admin123"');
+    };
+
+    // ================= NAVIGATION =================
+    function showPage(page, element) {
+        document.querySelectorAll('.page-content').forEach(function(p) { p.classList.add('hidden'); });
+        var target = document.getElementById('page-' + page);
+        if (target) {
+            target.classList.remove('hidden');
+            target.classList.remove('page-transition');
+            void target.offsetWidth;
+            target.classList.add('page-transition');
+        }
+        document.querySelectorAll('.sidebar-item').forEach(function(item) {
+            item.classList.remove('active'); item.classList.add('text-gray-600');
+        });
+        if(element) {
             element.classList.add('active'); element.classList.remove('text-gray-600');
-            
-            if (window.innerWidth <= 768) toggleSidebar(false);
-            
-            if(page === 'dashboard') loadDashboard();
-            if(page === 'stok') loadStok();
-            if(page === 'laporan') loadLaporan();
-            
-            document.getElementById('appBackground').scrollTop = 0;
         }
 
-        // ================= API JSONP =================
-        function apiGet(sheet) {
-            return new Promise(function(resolve, reject) {
-                var cbName = '_jcb_' + Date.now() + '_' + Math.floor(Math.random() * 999999);
-                var script = document.createElement('script');
-                var done = false;
+        if (window.innerWidth <= 768) toggleSidebar(false);
 
-                window[cbName] = function(data) {
-                    if (done) return;
-                    done = true;
-                    delete window[cbName];
-                    if (script.parentNode) script.parentNode.removeChild(script);
-                    resolve(data);
-                };
+        if(page === 'dashboard') loadDashboard();
+        if(page === 'stok') loadStok();
+        if(page === 'laporan') loadLaporan();
 
-                script.src = API_URL + '?sheet=' + sheet + '&action=read&callback=' + cbName;
-                script.onerror = function() {
-                    if (done) return;
-                    done = true;
-                    delete window[cbName];
-                    if (script.parentNode) script.parentNode.removeChild(script);
-                    reject(new Error('JSONP network error'));
-                };
-                document.head.appendChild(script);
+        document.getElementById('appBackground').scrollTop = 0;
+    }
 
-                setTimeout(function() {
-                    if (done) return;
-                    done = true;
-                    delete window[cbName];
-                    if (script.parentNode) script.parentNode.removeChild(script);
-                    reject(new Error('JSONP timeout 15s'));
-                }, 15000);
+    // ================= API JSONP =================
+    function apiGet(sheet) {
+        return new Promise(function(resolve, reject) {
+            var cbName = '_jcb_' + Date.now() + '_' + Math.floor(Math.random() * 999999);
+            var script = document.createElement('script');
+            var done = false;
+
+            window[cbName] = function(data) {
+                if (done) return;
+                done = true;
+                delete window[cbName];
+                if (script.parentNode) script.parentNode.removeChild(script);
+                resolve(data);
+            };
+
+            script.src = API_URL + '?sheet=' + sheet + '&action=read&callback=' + cbName;
+            script.onerror = function() {
+                if (done) return;
+                done = true;
+                delete window[cbName];
+                if (script.parentNode) script.parentNode.removeChild(script);
+                reject(new Error('JSONP network error'));
+            };
+            document.head.appendChild(script);
+
+            setTimeout(function() {
+                if (done) return;
+                done = true;
+                delete window[cbName];
+                if (script.parentNode) script.parentNode.removeChild(script);
+                reject(new Error('JSONP timeout 15s'));
+            }, 15000);
+        });
+    }
+
+    function apiPost(sheet, data) {
+        return new Promise(function(resolve, reject) {
+            var cbName = '_jcb_' + Date.now() + '_' + Math.floor(Math.random() * 999999);
+            var script = document.createElement('script');
+            var done = false;
+
+            window[cbName] = function(resp) {
+                if (done) return;
+                done = true;
+                delete window[cbName];
+                if (script.parentNode) script.parentNode.removeChild(script);
+                resolve(resp);
+            };
+
+            script.src = API_URL + '?sheet=' + sheet + '&action=write&data=' + encodeURIComponent(JSON.stringify(data)) + '&callback=' + cbName;
+            script.onerror = function() {
+                if (done) return;
+                done = true;
+                delete window[cbName];
+                if (script.parentNode) script.parentNode.removeChild(script);
+                reject(new Error('JSONP write error'));
+            };
+            document.head.appendChild(script);
+
+            setTimeout(function() {
+                if (done) return;
+                done = true;
+                delete window[cbName];
+                if (script.parentNode) script.parentNode.removeChild(script);
+                reject(new Error('JSONP write timeout'));
+            }, 15000);
+        });
+    }
+
+    // ================= LOGIN (DIPERBAIKI TOTAL) =================
+    function doLogin() {
+        var uField = document.getElementById('username');
+        var pField = document.getElementById('password');
+        var u = uField ? uField.value.trim().toLowerCase() : '';  // ✅ case-insensitive
+        var p = pField ? pField.value.trim() : '';
+
+        console.log('--- LOGIN DEBUG ---');
+        console.log('Username dimasukkan (trim+lowercase): "' + u + '"');
+        console.log('Password dimasukkan (trim): "' + p + '"');
+
+        if(!u || !p) {
+            showLoginError('❌ Lengkapi username dan password!');
+            return;
+        }
+
+        // ✅ CEK SEMUA USER YANG VALID
+        var loginBerhasil = false;
+        for(var i = 0; i < VALID_USERS.length; i++) {
+            if(u === VALID_USERS[i].username.toLowerCase() && p === VALID_USERS[i].password) {
+                loginBerhasil = true;
+                break;
+            }
+        }
+
+        if (loginBerhasil) {
+            console.log('✅ LOGIN BERHASIL! Masuk dashboard...');
+            masukDashboard();
+        } else {
+            console.log('❌ LOGIN GAGAL! Username/password tidak cocok');
+            console.log('Hint: username="admin", password="admin123"');
+            showLoginError('❌ Username atau password salah! (Gunakan: admin / admin123)');
+        }
+    }
+
+    function masukDashboard() {
+        console.log('Menyembunyikan login, menampilkan dashboard...');
+        document.getElementById('loginPage').style.display = 'none';
+        document.getElementById('mainApp').style.display = 'flex';
+        document.getElementById('username').value = '';
+        document.getElementById('password').value = '';
+        hideLoginError();
+        loadDashboard();
+        console.log('✅ Dashboard ditampilkan!');
+    }
+
+    function logout() {
+        document.getElementById('mainApp').style.display = 'none';
+        document.getElementById('loginPage').style.display = 'flex';
+        hideLoginError();
+        document.getElementById('username').value = '';
+        document.getElementById('password').value = '';
+        toggleSidebar(false);
+        setTimeout(function() { document.getElementById('username').focus(); }, 100);
+    }
+
+    // ================= SIMPAN MODAL =================
+    async function simpanModal() {
+        var tgl = document.getElementById('modalTgl').value;
+        var nama = document.getElementById('modalNama').value.trim();
+        var kg = parseFloat(document.getElementById('modalKg').value);
+        var harga = parseFloat(document.getElementById('modalHarga').value);
+
+        if(!tgl || !nama || !kg || !harga) return alert('❌ Lengkapi semua data modal!');
+        if(kg <= 0 || harga <= 0) return alert('❌ Jumlah dan harga harus lebih dari 0!');
+
+        try {
+            await apiPost('Modal', [tgl, nama, kg, harga]);
+            alert('✅ Modal berhasil dicatat & stok otomatis bertambah!');
+            document.getElementById('modalNama').value = '';
+            document.getElementById('modalKg').value = '';
+            document.getElementById('modalHarga').value = '';
+        } catch(err) {
+            alert('❌ Gagal menyimpan: ' + err.message);
+        }
+    }
+
+    // ================= SIMPAN PENJUALAN =================
+    async function simpanJual() {
+        var tgl = document.getElementById('jualTgl').value;
+        var nama = document.getElementById('jualNama').value.trim();
+        var kg = parseFloat(document.getElementById('jualKg').value);
+        var hargaJual = parseFloat(document.getElementById('jualHarga').value);
+        var potongan = parseFloat(document.getElementById('jualPotong').value) || 0;
+
+        if(!tgl || !nama || !kg || !hargaJual) return alert('❌ Lengkapi semua data penjualan!');
+        if(kg <= 0 || hargaJual <= 0) return alert('❌ Jumlah dan harga harus lebih dari 0!');
+
+        var totalBayar = (hargaJual * kg) - potongan;
+
+        try {
+            var modalData = await apiGet('Modal');
+            var hargaModalPerKg = 0;
+            if (modalData && Array.isArray(modalData)) {
+                for(var i = modalData.length - 1; i >= 1; i--) {
+                    if(modalData[i] && String(modalData[i][1]).trim() === nama) {
+                        hargaModalPerKg = modalData[i][3] / modalData[i][2];
+                        break;
+                    }
+                }
+            }
+            var untung = totalBayar - (hargaModalPerKg * kg);
+
+            await apiPost('Penjualan', [tgl, nama, kg, hargaJual, potongan, totalBayar, untung]);
+            alert('✅ Penjualan dicatat! Stok otomatis berkurang.');
+            document.getElementById('jualNama').value = '';
+            document.getElementById('jualKg').value = '';
+            document.getElementById('jualHarga').value = '';
+            document.getElementById('jualPotong').value = '0';
+        } catch(err) {
+            alert('❌ Gagal menyimpan: ' + err.message);
+        }
+    }
+
+    // ================= LOAD DASHBOARD =================
+    async function loadDashboard() {
+        try {
+            var jualData = await apiGet('Penjualan');
+            var modalData = await apiGet('Modal');
+            if (!jualData || !modalData) return;
+
+            var today = getToday();
+            var pemasukanHariIni = 0, pengeluaranHariIni = 0, untungHariIni = 0;
+            var chartBulanan = {};
+            var bulanIni = today.substring(0, 7);
+
+            for(var i=1; i < jualData.length; i++) {
+                if (!jualData[i]) continue;
+                var tgl = jualData[i][0], total = jualData[i][5], untung = jualData[i][6];
+                if(tgl == today) { pemasukanHariIni += Number(total); untungHariIni += Number(untung); }
+                if(String(tgl).substring(0,7) == bulanIni) {
+                    var day = String(tgl).substring(8,10);
+                    chartBulanan[day] = (chartBulanan[day] || 0) + Number(total);
+                }
+            }
+            for(var i=1; i < modalData.length; i++) {
+                if(modalData[i] && modalData[i][0] == today) pengeluaranHariIni += Number(modalData[i][3]);
+            }
+
+            document.getElementById('dPemasukan').innerText = formatRp(pemasukanHariIni);
+            document.getElementById('dPengeluaran').innerText = formatRp(pengeluaranHariIni);
+            document.getElementById('dUntung').innerText = formatRp(untungHariIni);
+
+            var labels = Object.keys(chartBulanan).sort();
+            var values = labels.map(function(l) { return chartBulanan[l]; });
+
+            if(salesChartInstance) salesChartInstance.destroy();
+            var ctx = document.getElementById('salesChart').getContext('2d');
+            salesChartInstance = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels.map(function(l){return 'Tgl '+l;}),
+                    datasets: [{
+                        label: 'Penjualan (Rp)',
+                        data: values,
+                        borderColor: '#4f46e5',
+                        backgroundColor: 'rgba(79,70,229,0.1)',
+                        fill: true,
+                        tension: 0.4,
+                        borderWidth: 3
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: { beginAtZero: true, ticks: { callback: function(v){return formatRp(v);} } }
+                    }
+                }
             });
+        } catch(err) {
+            console.error('Dashboard error:', err);
         }
+    }
 
-        function apiPost(sheet, data) {
-            return new Promise(function(resolve, reject) {
-                var cbName = '_jcb_' + Date.now() + '_' + Math.floor(Math.random() * 999999);
-                var script = document.createElement('script');
-                var done = false;
-
-                window[cbName] = function(resp) {
-                    if (done) return;
-                    done = true;
-                    delete window[cbName];
-                    if (script.parentNode) script.parentNode.removeChild(script);
-                    resolve(resp);
-                };
-
-                script.src = API_URL + '?sheet=' + sheet + '&action=write&data=' + encodeURIComponent(JSON.stringify(data)) + '&callback=' + cbName;
-                script.onerror = function() {
-                    if (done) return;
-                    done = true;
-                    delete window[cbName];
-                    if (script.parentNode) script.parentNode.removeChild(script);
-                    reject(new Error('JSONP write error'));
-                };
-                document.head.appendChild(script);
-
-                setTimeout(function() {
-                    if (done) return;
-                    done = true;
-                    delete window[cbName];
-                    if (script.parentNode) script.parentNode.removeChild(script);
-                    reject(new Error('JSONP write timeout'));
-                }, 15000);
-            });
-        }
-
-        // ================= LOGIN 100% LOCAL (NO SERVER WAIT) =================
-        function doLogin() {
-            var u = document.getElementById('username').value.trim();
-            var p = document.getElementById('password').value.trim();
-            
-            if(!u || !p) {
-                showLoginError('❌ Lengkapi username dan password!');
-                return;
+    // ================= LOAD STOK =================
+    async function loadStok() {
+        try {
+            var stokData = await apiGet('Stok');
+            if (!stokData) return;
+            var tbody = document.getElementById('tabelStok');
+            tbody.innerHTML = '';
+            for(var i=1; i < stokData.length; i++) {
+                if (!stokData[i]) continue;
+                tbody.innerHTML += '<tr class="border-b hover:bg-gray-50 transition"><td class="p-5">'+stokData[i][0]+'</td><td class="p-5">'+stokData[i][1]+' Kg</td></tr>';
             }
-            
-            if (u === 'admin' && p === 'admin123') {
-                masukDashboard();
-            } else {
-                showLoginError('❌ Username atau password salah!');
+        } catch(err) { console.error('Stok error:', err); }
+    }
+
+    // ================= LOAD LAPORAN =================
+    async function loadLaporan() {
+        try {
+            var bulan = document.getElementById('filterBulan').value;
+            var tahun = document.getElementById('filterTahun').value;
+            var prefix = tahun + '-' + bulan;
+            var jualData = await apiGet('Penjualan');
+            var modalData = await apiGet('Modal');
+            if (!jualData || !modalData) return;
+
+            var totalPemasukan = 0, totalModal = 0, totalUntung = 0;
+            var tbody = document.getElementById('tabelLaporan');
+            tbody.innerHTML = '';
+
+            for(var i=1; i < jualData.length; i++) {
+                if(!jualData[i]) continue;
+                if(String(jualData[i][0]).substring(0,7) == prefix) {
+                    totalPemasukan += Number(jualData[i][5]);
+                    totalUntung += Number(jualData[i][6]);
+                    tbody.innerHTML += '<tr class="border-b hover:bg-gray-50 transition"><td class="p-3">'+jualData[i][0]+'</td><td class="p-3">'+jualData[i][1]+'</td><td class="p-3">'+jualData[i][2]+'</td><td class="p-3">'+formatRp(jualData[i][5])+'</td><td class="p-3 text-green-600 font-bold">'+formatRp(jualData[i][6])+'</td></tr>';
+                }
             }
-        }
-
-        function masukDashboard() {
-            document.getElementById('loginPage').style.display = 'none';
-            document.getElementById('mainApp').style.display = 'flex';
-            document.getElementById('username').value = '';
-            document.getElementById('password').value = '';
-            hideLoginError();
-            loadDashboard();
-        }
-
-        function logout() {
-            document.getElementById('mainApp').style.display = 'none';
-            document.getElementById('loginPage').style.display = 'flex';
-            hideLoginError();
-            document.getElementById('username').value = '';
-            document.getElementById('password').value = '';
-            toggleSidebar(false);
-            setTimeout(function() { document.getElementById('username').focus(); }, 100);
-        }
-
-        // ================= SIMPAN MODAL =================
-        async function simpanModal() {
-            var tgl = document.getElementById('modalTgl').value;
-            var nama = document.getElementById('modalNama').value.trim();
-            var kg = parseFloat(document.getElementById('modalKg').value);
-            var harga = parseFloat(document.getElementById('modalHarga').value);
-            
-            if(!tgl || !nama || !kg || !harga) return alert('❌ Lengkapi semua data modal!');
-            if(kg <= 0 || harga <= 0) return alert('❌ Jumlah dan harga harus lebih dari 0!');
-
-            try {
-                await apiPost('Modal', [tgl, nama, kg, harga]);
-                alert('✅ Modal berhasil dicatat & stok otomatis bertambah!');
-                document.getElementById('modalNama').value = '';
-                document.getElementById('modalKg').value = '';
-                document.getElementById('modalHarga').value = '';
-            } catch(err) {
-                alert('❌ Gagal menyimpan: ' + err.message);
+            for(var i=1; i < modalData.length; i++) {
+                if(modalData[i] && String(modalData[i][0]).substring(0,7) == prefix) totalModal += Number(modalData[i][3]);
             }
-        }
 
-        // ================= SIMPAN PENJUALAN =================
-        async function simpanJual() {
-            var tgl = document.getElementById('jualTgl').value;
-            var nama = document.getElementById('jualNama').value.trim();
-            var kg = parseFloat(document.getElementById('jualKg').value);
-            var hargaJual = parseFloat(document.getElementById('jualHarga').value);
-            var potongan = parseFloat(document.getElementById('jualPotong').value) || 0;
-            
-            if(!tgl || !nama || !kg || !hargaJual) return alert('❌ Lengkapi semua data penjualan!');
-            if(kg <= 0 || hargaJual <= 0) return alert('❌ Jumlah dan harga harus lebih dari 0!');
-            
-            var totalBayar = (hargaJual * kg) - potongan;
-
-            try {
-                var modalData = await apiGet('Modal');
-                var hargaModalPerKg = 0;
-                if (modalData && Array.isArray(modalData)) {
-                    for(var i = modalData.length - 1; i >= 1; i--) {
-                        if(modalData[i] && String(modalData[i][1]).trim() === nama) {
-                            hargaModalPerKg = modalData[i][3] / modalData[i][2]; 
-                            break;
-                        }
-                    }
-                }
-                var untung = totalBayar - (hargaModalPerKg * kg);
-
-                await apiPost('Penjualan', [tgl, nama, kg, hargaJual, potongan, totalBayar, untung]);
-                alert('✅ Penjualan dicatat! Stok otomatis berkurang.');
-                document.getElementById('jualNama').value = '';
-                document.getElementById('jualKg').value = '';
-                document.getElementById('jualHarga').value = '';
-                document.getElementById('jualPotong').value = '0';
-            } catch(err) {
-                alert('❌ Gagal menyimpan: ' + err.message);
-            }
-        }
-
-        // ================= LOAD DASHBOARD =================
-        async function loadDashboard() {
-            try {
-                var jualData = await apiGet('Penjualan');
-                var modalData = await apiGet('Modal');
-                if (!jualData || !modalData) return;
-                
-                var today = getToday();
-                var pemasukanHariIni = 0, pengeluaranHariIni = 0, untungHariIni = 0;
-                var chartBulanan = {};
-                var bulanIni = today.substring(0, 7);
-
-                for(var i=1; i < jualData.length; i++) {
-                    if (!jualData[i]) continue;
-                    var tgl = jualData[i][0], total = jualData[i][5], untung = jualData[i][6];
-                    if(tgl == today) { pemasukanHariIni += Number(total); untungHariIni += Number(untung); }
-                    if(String(tgl).substring(0,7) == bulanIni) {
-                        var day = String(tgl).substring(8,10);
-                        chartBulanan[day] = (chartBulanan[day] || 0) + Number(total);
-                    }
-                }
-                for(var i=1; i < modalData.length; i++) {
-                    if(modalData[i] && modalData[i][0] == today) pengeluaranHariIni += Number(modalData[i][3]);
-                }
-
-                document.getElementById('dPemasukan').innerText = formatRp(pemasukanHariIni);
-                document.getElementById('dPengeluaran').innerText = formatRp(pengeluaranHariIni);
-                document.getElementById('dUntung').innerText = formatRp(untungHariIni);
-
-                var labels = Object.keys(chartBulanan).sort();
-                var values = labels.map(function(l) { return chartBulanan[l]; });
-                
-                if(salesChartInstance) salesChartInstance.destroy();
-                var ctx = document.getElementById('salesChart').getContext('2d');
-                salesChartInstance = new Chart(ctx, {
-                    type: 'line',
-                    data: { labels: labels.map(function(l){return 'Tgl '+l;}), datasets: [{ label: 'Penjualan (Rp)', data: values, borderColor: '#4f46e5', backgroundColor: 'rgba(79,70,229,0.1)', fill: true, tension: 0.4, borderWidth: 3 }] },
-                    options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true, ticks: { callback: function(v){return formatRp(v);} } } } } }
-                });
-            } catch(err) { console.error('Dashboard error:', err); }
-        }
-
-        // ================= LOAD STOK =================
-        async function loadStok() {
-            try {
-                var stokData = await apiGet('Stok');
-                if (!stokData) return;
-                var tbody = document.getElementById('tabelStok');
-                tbody.innerHTML = '';
-                for(var i=1; i < stokData.length; i++) {
-                    if (!stokData[i]) continue;
-                    tbody.innerHTML += '<tr class="border-b hover:bg-gray-50 transition"><td class="p-5">'+stokData[i][0]+'</td><td class="p-5">'+stokData[i][1]+' Kg</td></tr>';
-                }
-            } catch(err) { console.error('Stok error:', err); }
-        }
-
-        // ================= LOAD LAPORAN =================
-        async function loadLaporan() {
-            try {
-                var bulan = document.getElementById('filterBulan').value;
-                var tahun = document.getElementById('filterTahun').value;
-                var prefix = tahun + '-' + bulan;
-                var jualData = await apiGet('Penjualan');
-                var modalData = await apiGet('Modal');
-                if (!jualData || !modalData) return;
-
-                var totalPemasukan = 0, totalModal = 0, totalUntung = 0;
-                var tbody = document.getElementById('tabelLaporan');
-                tbody.innerHTML = '';
-
-                for(var i=1; i < jualData.length; i++) {
-                    if(!jualData[i]) continue;
-                    if(String(jualData[i][0]).substring(0,7) == prefix) {
-                        totalPemasukan += Number(jualData[i][5]);
-                        totalUntung += Number(jualData[i][6]);
-                        tbody.innerHTML += '<tr class="border-b hover:bg-gray-50 transition"><td class="p-3">'+jualData[i][0]+'</td><td class="p-3">'+jualData[i][1]+'</td><td class="p-3">'+jualData[i][2]+'</td><td class="p-3">'+formatRp(jualData[i][5])+'</td><td class="p-3 text-green-600 font-bold">'+formatRp(jualData[i][6])+'</td></tr>';
-                    }
-                }
-                for(var i=1; i < modalData.length; i++) {
-                    if(modalData[i] && String(modalData[i][0]).substring(0,7) == prefix) totalModal += Number(modalData[i][3]);
-                }
-
-                document.getElementById('lPemasukan').innerText = formatRp(totalPemasukan);
-                document.getElementById('lModal').innerText = formatRp(totalModal);
-                document.getElementById('lUntung').innerText = formatRp(totalUntung);
-            } catch(err) { console.error('Laporan error:', err); }
-        }
-    </script>
-</body>
-</html>
+            document.getElementById('lPemasukan').innerText = formatRp(totalPemasukan);
+            document.getElementById('lModal').innerText = formatRp(totalModal);
+            document.getElementById('lUntung').innerText = formatRp(totalUntung);
+        } catch(err) { console.error('Laporan error:', err); }
+    }
+</script>
