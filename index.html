@@ -2,14 +2,17 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <meta name="theme-color" content="#0f172a">
     <title>Dashboard Bumbu Kering Premium</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        body { font-family: 'Poppins', sans-serif; background-color: #0f172a; }
+        body { font-family: 'Poppins', sans-serif; background-color: #0f172a; -webkit-tap-highlight-color: transparent; }
+        * { -webkit-touch-callout: none; }
+        input, button, select { -webkit-appearance: none; appearance: none; }
         
         @keyframes neonPulse {
             0% { box-shadow: 0 0 15px #0ff, 0 0 30px #0ff, inset 0 0 15px #0ff; }
@@ -49,38 +52,74 @@
         
         .sidebar-item.active { background: linear-gradient(to right,#eef2ff,#fff); border-left: 5px solid #4f46e5; color: #4f46e5; font-weight: 800; }
         input:focus { box-shadow: 0 0 0 3px rgba(79,70,229,0.3); }
-        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
         ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        
+        /* ✅ RESPONSIVE SIDEBAR MOBILE */
+        #sidebar { transition: transform 0.3s ease; }
+        @media (max-width: 768px) {
+            #sidebar {
+                position: fixed; top: 0; left: 0; bottom: 0; z-index: 50;
+                transform: translateX(-100%);
+            }
+            #sidebar.open { transform: translateX(0); }
+            #sidebarOverlay {
+                position: fixed; inset: 0; background: rgba(0,0,0,0.5);
+                z-index: 40; opacity: 0; pointer-events: none;
+                transition: opacity 0.3s;
+            }
+            #sidebarOverlay.open { opacity: 1; pointer-events: auto; }
+            #hamburgerBtn { display: flex !important; }
+            #appBackground { padding: 1rem !important; }
+            #page-dashboard .grid-cols-3 { grid-template-columns: 1fr !important; gap: 1rem !important; }
+            #page-catatModal .max-w-3xl, #page-catatJual .max-w-3xl { max-width: 100% !important; }
+            #page-catatModal .grid-cols-2, #page-catatJual .grid-cols-2, #page-catatJual .grid-cols-3 {
+                grid-template-columns: 1fr !important;
+            }
+            #page-laporan .grid-cols-3 { grid-template-columns: 1fr !important; gap: 1rem !important; }
+            #page-laporan .flex.gap-4 { flex-direction: column; align-items: stretch; }
+            #page-stok table, #page-laporan table { font-size: 12px; }
+            #page-stok th, #page-stok td, #page-laporan th, #page-laporan td { padding: 8px !important; }
+            h2 { font-size: 1.5rem !important; }
+            #salesChart { height: 200px !important; }
+        }
+        #hamburgerBtn { display: none; }
     </style>
 </head>
 <body class="text-gray-800 text-base">
 
     <!-- ================= HALAMAN LOGIN ================= -->
-    <div id="loginPage" class="fixed inset-0 bg-gray-950 flex items-center justify-center z-50">
-        <div class="bg-gray-900 p-10 rounded-3xl w-[420px] text-center neon-border relative overflow-hidden">
-            <div class="mb-8">
-                <!-- TIDAK ADA GAMBAR KUNING. CUMA TEKS KEDAP-KEDIPI -->
-                <h1 class="text-3xl font-extrabold text-white mb-1 tracking-wide blink-login">✨ Silahkan Login ✨</h1>
+    <div id="loginPage" class="fixed inset-0 bg-gray-950 flex items-center justify-center z-50 p-4">
+        <div class="bg-gray-900 p-6 sm:p-10 rounded-3xl w-full max-w-[420px] text-center neon-border relative overflow-hidden">
+            <div class="mb-6 sm:mb-8">
+                <h1 class="text-2xl sm:text-3xl font-extrabold text-white mb-1 tracking-wide blink-login">✨ Silahkan Login ✨</h1>
             </div>
-            <div class="text-left mb-4">
-                <label class="block text-sm font-semibold text-gray-400 mb-1">👤 Username</label>
-                <input type="text" id="username" placeholder="Ketik username..." class="w-full p-3 bg-gray-800 border border-gray-700 rounded-xl text-white text-lg outline-none transition focus:border-indigo-500">
-            </div>
-            <div class="text-left mb-6">
-                <label class="block text-sm font-semibold text-gray-400 mb-1">🔒 Password</label>
-                <input type="password" id="password" placeholder="Ketik password..." class="w-full p-3 bg-gray-800 border border-gray-700 rounded-xl text-white text-lg outline-none transition focus:border-indigo-500">
-            </div>
-            <button id="btnLogin" onclick="login()" class="w-full bg-indigo-600 text-white p-3.5 rounded-xl text-lg font-bold hover:bg-indigo-700 transition transform hover:scale-105 shadow-lg">Masuk <i class="fas fa-arrow-right ml-2"></i></button>
+            <!-- ✅ FORM WRAPPER: agar Enter key 100% jalan -->
+            <form id="loginForm" onsubmit="return false;" autocomplete="off">
+                <div class="text-left mb-4">
+                    <label class="block text-sm font-semibold text-gray-400 mb-1">👤 Username</label>
+                    <input type="text" id="username" placeholder="Ketik username..." autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" class="w-full p-3 bg-gray-800 border border-gray-700 rounded-xl text-white text-lg outline-none transition focus:border-indigo-500">
+                </div>
+                <div class="text-left mb-6">
+                    <label class="block text-sm font-semibold text-gray-400 mb-1">🔒 Password</label>
+                    <input type="password" id="password" placeholder="Ketik password..." autocomplete="off" class="w-full p-3 bg-gray-800 border border-gray-700 rounded-xl text-white text-lg outline-none transition focus:border-indigo-500">
+                </div>
+                <button id="btnLogin" type="submit" class="w-full bg-indigo-600 text-white p-3.5 rounded-xl text-lg font-bold hover:bg-indigo-700 transition transform hover:scale-105 shadow-lg active:scale-95">Masuk <i class="fas fa-arrow-right ml-2"></i></button>
+            </form>
             <p id="loginError" class="text-red-400 mt-3 font-semibold text-sm hidden"></p>
             <p id="loginInfo" class="text-emerald-300 mt-2 text-xs hidden"></p>
+            <p class="text-gray-500 mt-4 text-xs">Default: <b class="text-gray-400">admin / admin123</b></p>
         </div>
     </div>
 
     <!-- ================= MAIN APP ================= -->
     <div id="mainApp" class="hidden flex h-screen overflow-hidden">
         
+        <!-- ✅ OVERLAY MOBILE -->
+        <div id="sidebarOverlay" onclick="toggleSidebar(false)"></div>
+        
         <!-- SIDEBAR -->
-        <div class="w-72 bg-white border-r border-gray-200 flex flex-col justify-between p-6 shadow-xl">
+        <div id="sidebar" class="w-72 bg-white border-r border-gray-200 flex flex-col justify-between p-6 shadow-xl">
             <div>
                 <h1 class="text-2xl font-extrabold text-indigo-600 mb-10 flex items-center">🌶️ BumbuKu</h1>
                 <ul class="space-y-2">
@@ -97,11 +136,16 @@
         </div>
 
         <!-- KONTEN -->
-        <div id="appBackground" class="flex-1 overflow-y-auto p-10 bg-slate-50">
+        <div id="appBackground" class="flex-1 overflow-y-auto p-6 sm:p-10 bg-slate-50 relative">
+            
+            <!-- ✅ HAMBURGER MOBILE -->
+            <button id="hamburgerBtn" onclick="toggleSidebar(true)" class="absolute top-4 left-4 z-30 bg-indigo-600 text-white p-3 rounded-xl shadow-lg">
+                <i class="fas fa-bars text-xl"></i>
+            </button>
             
             <!-- DASHBOARD -->
             <div id="page-dashboard" class="page-content page-transition">
-                <h2 class="text-4xl font-extrabold mb-2 text-gray-800">📊 Ringkasan Hari Ini</h2>
+                <h2 class="text-4xl font-extrabold mb-2 text-gray-800 mt-12 sm:mt-0">📊 Ringkasan Hari Ini</h2>
                 <p class="text-gray-500 mb-8 text-lg">Data pemasukan dan pengeluaran hari ini secara realtime.</p>
                 <div class="grid grid-cols-3 gap-8 mb-10">
                     <div class="bg-white p-8 rounded-3xl card-glow-indigo border border-indigo-100 transition transform hover:-translate-y-2">
@@ -125,8 +169,8 @@
 
             <!-- CATAT MODAL -->
             <div id="page-catatModal" class="page-content hidden">
-                <h2 class="text-4xl font-extrabold mb-8 text-gray-800"><i class="fas fa-truck-loading text-indigo-500 mr-3"></i> Catat Belanja Modal</h2>
-                <div class="bg-white p-10 rounded-3xl shadow-sm max-w-3xl border border-gray-100">
+                <h2 class="text-4xl font-extrabold mb-8 text-gray-800 mt-12 sm:mt-0"><i class="fas fa-truck-loading text-indigo-500 mr-3"></i> Catat Belanja Modal</h2>
+                <div class="bg-white p-6 sm:p-10 rounded-3xl shadow-sm max-w-3xl border border-gray-100">
                     <div class="grid grid-cols-2 gap-6 mb-6">
                         <div>
                             <label class="block text-lg font-bold mb-2 text-gray-600">📅 Tanggal Belanja</label>
@@ -147,14 +191,14 @@
                             <input type="number" id="modalKg" placeholder="10" class="w-full p-4 border-2 rounded-xl text-lg outline-none transition">
                         </div>
                     </div>
-                    <button onclick="simpanModal()" class="w-full bg-indigo-600 text-white p-4 rounded-xl text-xl font-bold hover:bg-indigo-700 transition transform hover:scale-105 shadow-lg"><i class="fas fa-save mr-2"></i> Simpan Modal</button>
+                    <button onclick="simpanModal()" class="w-full bg-indigo-600 text-white p-4 rounded-xl text-xl font-bold hover:bg-indigo-700 transition transform hover:scale-105 shadow-lg active:scale-95"><i class="fas fa-save mr-2"></i> Simpan Modal</button>
                 </div>
             </div>
 
             <!-- CATAT PENJUALAN -->
             <div id="page-catatJual" class="page-content hidden">
-                <h2 class="text-4xl font-extrabold mb-8 text-gray-800"><i class="fas fa-cash-register text-emerald-500 mr-3"></i> Catat Penjualan</h2>
-                <div class="bg-white p-10 rounded-3xl shadow-sm max-w-3xl border border-gray-100">
+                <h2 class="text-4xl font-extrabold mb-8 text-gray-800 mt-12 sm:mt-0"><i class="fas fa-cash-register text-emerald-500 mr-3"></i> Catat Penjualan</h2>
+                <div class="bg-white p-6 sm:p-10 rounded-3xl shadow-sm max-w-3xl border border-gray-100">
                     <div class="grid grid-cols-2 gap-6 mb-6">
                         <div>
                             <label class="block text-lg font-bold mb-2 text-gray-600">📅 Tanggal Jual</label>
@@ -179,14 +223,14 @@
                             <input type="number" id="jualPotong" value="0" placeholder="5000" class="w-full p-4 border-2 rounded-xl text-lg outline-none transition border-rose-300">
                         </div>
                     </div>
-                    <button onclick="simpanJual()" class="w-full bg-emerald-600 text-white p-4 rounded-xl text-xl font-bold hover:bg-emerald-700 transition transform hover:scale-105 shadow-lg"><i class="fas fa-receipt mr-2"></i> Simpan Penjualan</button>
+                    <button onclick="simpanJual()" class="w-full bg-emerald-600 text-white p-4 rounded-xl text-xl font-bold hover:bg-emerald-700 transition transform hover:scale-105 shadow-lg active:scale-95"><i class="fas fa-receipt mr-2"></i> Simpan Penjualan</button>
                 </div>
             </div>
 
             <!-- STOK -->
             <div id="page-stok" class="page-content hidden">
-                <h2 class="text-4xl font-extrabold mb-8 text-gray-800"><i class="fas fa-boxes-stacked text-amber-500 mr-3"></i> Sisa Stok Bumbu</h2>
-                <div class="bg-white p-8 rounded-3xl shadow-sm border border-gray-100">
+                <h2 class="text-4xl font-extrabold mb-8 text-gray-800 mt-12 sm:mt-0"><i class="fas fa-boxes-stacked text-amber-500 mr-3"></i> Sisa Stok Bumbu</h2>
+                <div class="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 overflow-x-auto">
                     <table class="w-full text-left border-collapse">
                         <thead>
                             <tr class="border-b-2 text-xl text-gray-500">
@@ -201,7 +245,7 @@
 
             <!-- LAPORAN -->
             <div id="page-laporan" class="page-content hidden">
-                <h2 class="text-4xl font-extrabold mb-8 text-gray-800"><i class="fas fa-file-invoice-dollar text-purple-500 mr-3"></i> Laporan Bulanan</h2>
+                <h2 class="text-4xl font-extrabold mb-8 text-gray-800 mt-12 sm:mt-0"><i class="fas fa-file-invoice-dollar text-purple-500 mr-3"></i> Laporan Bulanan</h2>
                 <div class="flex gap-4 mb-8 items-center">
                     <select id="filterBulan" class="p-3 border-2 rounded-xl text-lg font-bold outline-none" onchange="loadLaporan()">
                         <option value="01">Januari</option><option value="02">Februari</option><option value="03">Maret</option>
@@ -225,7 +269,7 @@
                         <h3 id="lUntung" class="text-3xl font-extrabold mt-2 text-green-600">Rp 0</h3>
                     </div>
                 </div>
-                <div class="bg-white p-6 rounded-3xl shadow-sm">
+                <div class="bg-white p-6 rounded-3xl shadow-sm overflow-x-auto">
                     <h3 class="text-xl font-extrabold mb-4 text-gray-700">Riwayat Penjualan Bulan Ini</h3>
                     <table class="w-full text-left border-collapse">
                         <thead>
@@ -261,6 +305,17 @@
         }
         function hideLoginInfo() { document.getElementById('loginInfo').classList.add('hidden'); }
         
+        function isEnterKey(e) {
+            return e.key === 'Enter' || e.code === 'Enter' || e.keyCode === 13 || e.which === 13;
+        }
+
+        function toggleSidebar(open) {
+            var sidebar = document.getElementById('sidebar');
+            var overlay = document.getElementById('sidebarOverlay');
+            if (open) { sidebar.classList.add('open'); overlay.classList.add('open'); }
+            else { sidebar.classList.remove('open'); overlay.classList.remove('open'); }
+        }
+
         window.onload = function() {
             document.getElementById('modalTgl').value = getToday();
             document.getElementById('jualTgl').value = getToday();
@@ -274,30 +329,64 @@
             }
             document.getElementById('filterBulan').value = String(new Date().getMonth() + 1).padStart(2, '0');
 
-            // ENTER LANGSUNG LOGIN
-            document.getElementById('username').addEventListener('keydown', function(e) {
-                if (e.key === 'Enter') { e.preventDefault(); login(); }
+            // ✅ FORM SUBMIT — Enter key 100% jalan di desktop & mobile
+            var loginForm = document.getElementById('loginForm');
+            if (loginForm) {
+                loginForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    login();
+                    return false;
+                });
+            }
+
+            // ✅ TRIPLE FALLBACK ENTER HANDLER (desktop + mobile Gboard + iOS Safari)
+            var username = document.getElementById('username');
+            var password = document.getElementById('password');
+            
+            [username, password].forEach(function(input) {
+                input.addEventListener('keydown', function(e) {
+                    if (isEnterKey(e)) { e.preventDefault(); login(); return false; }
+                });
+                input.addEventListener('keypress', function(e) {
+                    if (isEnterKey(e)) { e.preventDefault(); login(); return false; }
+                });
+                input.addEventListener('keyup', function(e) {
+                    if (isEnterKey(e)) { e.preventDefault(); login(); return false; }
+                });
             });
-            document.getElementById('password').addEventListener('keydown', function(e) {
-                if (e.key === 'Enter') { e.preventDefault(); login(); }
-            });
+
+            // ✅ Auto-focus username
+            setTimeout(function() { username.focus(); }, 200);
         };
 
         // ================= NAVIGATION =================
         function showPage(page, element) {
             document.querySelectorAll('.page-content').forEach(function(p) { p.classList.add('hidden'); });
-            document.getElementById('page-' + page).classList.remove('hidden');
+            var target = document.getElementById('page-' + page);
+            if (target) {
+                target.classList.remove('hidden');
+                target.classList.remove('page-transition');
+                void target.offsetWidth; // trigger reflow
+                target.classList.add('page-transition');
+            }
             document.querySelectorAll('.sidebar-item').forEach(function(item) {
                 item.classList.remove('active'); item.classList.add('text-gray-600');
             });
             element.classList.add('active'); element.classList.remove('text-gray-600');
+            
+            // ✅ Tutup sidebar di mobile
+            if (window.innerWidth <= 768) toggleSidebar(false);
+            
             if(page === 'dashboard') loadDashboard();
             if(page === 'stok') loadStok();
             if(page === 'laporan') loadLaporan();
+            
+            // ✅ Scroll ke atas
+            document.getElementById('appBackground').scrollTop = 0;
         }
 
         // ================= API PAKAI JSONP (BYPASS CORS 100%) =================
-        // JSONP: Inject <script> tag, browser eksekusi callback, TIDAK KENA CORS
         function apiGet(sheet) {
             return new Promise(function(resolve, reject) {
                 var cbName = '_jcb_' + Date.now() + '_' + Math.floor(Math.random() * 999999);
@@ -322,7 +411,6 @@
                 };
                 document.head.appendChild(script);
 
-                // Timeout 15 detik
                 setTimeout(function() {
                     if (done) return;
                     done = true;
@@ -388,12 +476,11 @@
                 console.log('✅ Data Users dari server:', users);
                 
                 if (users && Array.isArray(users) && users.length >= 2) {
-                    // API berhasil - cek login dari database
                     var match = null;
                     for (var i = 1; i < users.length; i++) {
                         if (!users[i] || !users[i][0]) continue;
                         var rowU = String(users[i][0]).trim();
-                        var rowP = String(users[i][1]).trim();
+                        var rowP = String(users[i][1] || '').trim();
                         if (rowU === u && rowP === p) {
                             match = users[i]; break;
                         }
@@ -404,7 +491,6 @@
                         showLoginError('❌ Username atau password salah!');
                     }
                 } else {
-                    // Data tidak valid - emergency login
                     if (u === 'admin' && p === 'admin123') {
                         showLoginInfo('⚠️ Login darurat (data Users tidak valid)');
                         masukDashboard();
@@ -414,7 +500,6 @@
                 }
             } catch(err) {
                 console.error('❌ Login error:', err.message);
-                // JSONP gagal total - emergency login
                 if (u === 'admin' && p === 'admin123') {
                     showLoginInfo('⚠️ Login darurat (server tidak terhubung)');
                     masukDashboard();
@@ -443,6 +528,8 @@
             hideLoginError(); hideLoginInfo();
             document.getElementById('username').value = '';
             document.getElementById('password').value = '';
+            toggleSidebar(false);
+            setTimeout(function() { document.getElementById('username').focus(); }, 200);
         }
 
         // ================= SIMPAN MODAL =================
@@ -540,7 +627,7 @@
                 salesChartInstance = new Chart(ctx, {
                     type: 'line',
                     data: { labels: labels.map(function(l){return 'Tgl '+l;}), datasets: [{ label: 'Penjualan (Rp)', data: values, borderColor: '#4f46e5', backgroundColor: 'rgba(79,70,229,0.1)', fill: true, tension: 0.4, borderWidth: 3 }] },
-                    options: { scales: { y: { beginAtZero: true, ticks: { callback: function(v){return formatRp(v);} } } } } }
+                    options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true, ticks: { callback: function(v){return formatRp(v);} } } } } }
                 });
             } catch(err) { console.error('Dashboard error:', err); }
         }
