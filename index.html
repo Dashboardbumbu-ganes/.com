@@ -1,1 +1,450 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Bumbu Kering Premium</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body { font-family: 'Poppins', sans-serif; background-color: #0f172a; }
+        
+        /* ANIMASI LAMPU KELILING NEON (LOGIN) */
+        @keyframes neonPulse {
+            0% { box-shadow: 0 0 15px #0ff, 0 0 30px #0ff, inset 0 0 15px #0ff; }
+            33% { box-shadow: 0 0 15px #f0f, 0 0 30px #f0f, inset 0 0 15px #f0f; }
+            66% { box-shadow: 0 0 15px #ff0, 0 0 30px #ff0, inset 0 0 15px #ff0; }
+            100% { box-shadow: 0 0 15px #0ff, 0 0 30px #0ff, inset 0 0 15px #0ff; }
+        }
+        .neon-border { animation: neonPulse 3s infinite alternate; border: 2px solid rgba(255,255,255,0.1); }
 
+        /* ANIMASI DASHBOARD CARDS */
+        @keyframes glowIndigo {
+            0% { box-shadow: 0 0 5px rgba(79, 70, 229, 0.2); }
+            50% { box-shadow: 0 0 25px rgba(79, 70, 229, 0.6); }
+            100% { box-shadow: 0 0 5px rgba(79, 70, 229, 0.2); }
+        }
+        @keyframes glowRose {
+            0% { box-shadow: 0 0 5px rgba(244, 63, 94, 0.2); }
+            50% { box-shadow: 0 0 25px rgba(244, 63, 94, 0.6); }
+            100% { box-shadow: 0 0 5px rgba(244, 63, 94, 0.2); }
+        }
+        @keyframes glowEmerald {
+            0% { box-shadow: 0 0 5px rgba(16, 185, 129, 0.2); }
+            50% { box-shadow: 0 0 25px rgba(16, 185, 129, 0.6); }
+            100% { box-shadow: 0 0 5px rgba(16, 185, 129, 0.2); }
+        }
+        .card-glow-indigo { animation: glowIndigo 3s infinite alternate; }
+        .card-glow-rose { animation: glowRose 3s infinite alternate; }
+        .card-glow-emerald { animation: glowEmerald 3s infinite alternate; }
+        
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .page-transition { animation: fadeIn 0.4s ease-out; }
+        
+        .sidebar-item.active { background: linear-gradient(to right, #eef2ff, #ffffff); border-left: 5px solid #4f46e5; color: #4f46e5; font-weight: 800; }
+        input:focus { box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.3); }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+    </style>
+</head>
+<body class="text-gray-800 text-base">
+
+    <!-- ================= HALAMAN LOGIN (GELAP + LAMPU KELILING) ================= -->
+    <div id="loginPage" class="fixed inset-0 bg-gray-950 flex items-center justify-center z-50">
+        <div class="bg-gray-900 p-10 rounded-3xl w-[420px] text-center neon-border relative overflow-hidden">
+            <div class="mb-8">
+                <i class="fas fa-pepper-hot text-5xl text-yellow-400 mb-4 block"></i>
+                <h1 class="text-3xl font-extrabold text-white mb-1 tracking-wide">✨ Silahkan Login ✨</h1>
+                <p class="text-gray-400 text-sm">Masuk untuk mengakses dashboard penjualan</p>
+            </div>
+            <div class="text-left mb-4">
+                <label class="block text-sm font-semibold text-gray-400 mb-1">👤 Username</label>
+                <input type="text" id="username" placeholder="Ketik username..." class="w-full p-3 bg-gray-800 border border-gray-700 rounded-xl text-white text-lg outline-none transition focus:border-indigo-500">
+            </div>
+            <div class="text-left mb-6">
+                <label class="block text-sm font-semibold text-gray-400 mb-1">🔒 Password</label>
+                <input type="password" id="password" placeholder="Ketik password..." class="w-full p-3 bg-gray-800 border border-gray-700 rounded-xl text-white text-lg outline-none transition focus:border-indigo-500">
+            </div>
+            <button onclick="login()" class="w-full bg-indigo-600 text-white p-3.5 rounded-xl text-lg font-bold hover:bg-indigo-700 transition transform hover:scale-105 shadow-lg">Masuk <i class="fas fa-arrow-right ml-2"></i></button>
+            <p id="loginError" class="text-red-400 mt-4 font-semibold hidden text-sm">❌ Username atau password salah!</p>
+        </div>
+    </div>
+
+    <!-- ================= MAIN APP ================= -->
+    <div id="mainApp" class="hidden flex h-screen overflow-hidden">
+        
+        <!-- SIDEBAR PREMIUM -->
+        <div class="w-72 bg-white border-r border-gray-200 flex flex-col justify-between p-6 shadow-xl">
+            <div>
+                <h1 class="text-2xl font-extrabold text-indigo-600 mb-10 flex items-center"><i class="fas fa-pepper-hot mr-3 text-3xl"></i> BumbuKu</h1>
+                <ul class="space-y-2">
+                    <li onclick="showPage('dashboard', this)" class="sidebar-item active cursor-pointer p-4 rounded-xl text-lg font-semibold flex items-center transition hover:bg-indigo-50"><i class="fas fa-chart-pie w-8 text-xl"></i> Dashboard</li>
+                    <li onclick="showPage('catatModal', this)" class="sidebar-item cursor-pointer p-4 rounded-xl text-lg font-semibold flex items-center transition hover:bg-indigo-50 text-gray-600"><i class="fas fa-truck-loading w-8 text-xl"></i> Catat Modal</li>
+                    <li onclick="showPage('catatJual', this)" class="sidebar-item cursor-pointer p-4 rounded-xl text-lg font-semibold flex items-center transition hover:bg-indigo-50 text-gray-600"><i class="fas fa-cash-register w-8 text-xl"></i> Catat Penjualan</li>
+                    <li onclick="showPage('stok', this)" class="sidebar-item cursor-pointer p-4 rounded-xl text-lg font-semibold flex items-center transition hover:bg-indigo-50 text-gray-600"><i class="fas fa-boxes-stacked w-8 text-xl"></i> Stok Bumbu</li>
+                    <li onclick="showPage('laporan', this)" class="sidebar-item cursor-pointer p-4 rounded-xl text-lg font-semibold flex items-center transition hover:bg-indigo-50 text-gray-600"><i class="fas fa-file-invoice-dollar w-8 text-xl"></i> Laporan Bulanan</li>
+                </ul>
+            </div>
+            <div>
+                <button onclick="logout()" class="w-full p-4 rounded-xl bg-red-50 text-red-600 font-bold hover:bg-red-100 transition flex items-center justify-center text-lg"><i class="fas fa-sign-out-alt mr-3"></i> Keluar</button>
+            </div>
+        </div>
+
+        <!-- AREA KONTEN (BACKGROUND LUAR BISA DIGANTI DI SINI) -->
+        <div id="appBackground" class="flex-1 overflow-y-auto p-10 bg-slate-50">
+            
+            <!-- HALAMAN DASHBOARD -->
+            <div id="page-dashboard" class="page-content page-transition">
+                <h2 class="text-4xl font-extrabold mb-2 text-gray-800">📊 Ringkasan Hari Ini</h2>
+                <p class="text-gray-500 mb-8 text-lg">Data pemasukan dan pengeluaran hari ini secara realtime.</p>
+                
+                <div class="grid grid-cols-3 gap-8 mb-10">
+                    <div class="bg-white p-8 rounded-3xl card-glow-indigo border border-indigo-100 transition transform hover:-translate-y-2">
+                        <p class="text-lg text-indigo-400 font-bold"><i class="fas fa-arrow-down mr-2"></i> Pemasukan</p>
+                        <h3 id="dPemasukan" class="text-4xl font-extrabold mt-3 text-indigo-600">Rp 0</h3>
+                    </div>
+                    <div class="bg-white p-8 rounded-3xl card-glow-rose border border-rose-100 transition transform hover:-translate-y-2">
+                        <p class="text-lg text-rose-400 font-bold"><i class="fas fa-arrow-up mr-2"></i> Pengeluaran Modal</p>
+                        <h3 id="dPengeluaran" class="text-4xl font-extrabold mt-3 text-rose-600">Rp 0</h3>
+                    </div>
+                    <div class="bg-white p-8 rounded-3xl card-glow-emerald border border-emerald-100 transition transform hover:-translate-y-2">
+                        <p class="text-lg text-emerald-400 font-bold"><i class="fas fa-coins mr-2"></i> Untung Bersih</p>
+                        <h3 id="dUntung" class="text-4xl font-extrabold mt-3 text-emerald-600">Rp 0</h3>
+                    </div>
+                </div>
+                
+                <div class="bg-white p-8 rounded-3xl shadow-sm border border-gray-100">
+                    <h3 class="text-2xl font-extrabold mb-6 text-gray-700"><i class="fas fa-chart-area text-indigo-500 mr-2"></i> Grafik Penjualan Bulan Ini</h3>
+                    <canvas id="salesChart" height="100"></canvas>
+                </div>
+            </div>
+
+            <!-- HALAMAN CATAT MODAL -->
+            <div id="page-catatModal" class="page-content hidden">
+                <h2 class="text-4xl font-extrabold mb-8 text-gray-800"><i class="fas fa-truck-loading text-indigo-500 mr-3"></i> Catat Belanja Modal</h2>
+                <div class="bg-white p-10 rounded-3xl shadow-sm max-w-3xl border border-gray-100">
+                    <div class="grid grid-cols-2 gap-6 mb-6">
+                        <div>
+                            <label class="block text-lg font-bold mb-2 text-gray-600">📅 Tanggal Belanja</label>
+                            <input type="date" id="modalTgl" class="w-full p-4 border-2 rounded-xl text-lg outline-none transition">
+                        </div>
+                        <div>
+                            <label class="block text-lg font-bold mb-2 text-gray-600">💰 Total Harga Modal (Rp)</label>
+                            <input type="number" id="modalHarga" placeholder="500000" class="w-full p-4 border-2 rounded-xl text-lg outline-none transition">
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-6 mb-8">
+                        <div>
+                            <label class="block text-lg font-bold mb-2 text-gray-600">🌶️ Nama Bumbu</label>
+                            <input type="text" id="modalNama" placeholder="Cabe Kering Brekele" class="w-full p-4 border-2 rounded-xl text-lg outline-none transition">
+                        </div>
+                        <div>
+                            <label class="block text-lg font-bold mb-2 text-gray-600">⚖️ Jumlah Beli (Kg)</label>
+                            <input type="number" id="modalKg" placeholder="10" class="w-full p-4 border-2 rounded-xl text-lg outline-none transition">
+                        </div>
+                    </div>
+                    <button onclick="simpanModal()" class="w-full bg-indigo-600 text-white p-4 rounded-xl text-xl font-bold hover:bg-indigo-700 transition transform hover:scale-105 shadow-lg"><i class="fas fa-save mr-2"></i> Simpan Modal</button>
+                </div>
+            </div>
+
+            <!-- HALAMAN CATAT PENJUALAN -->
+            <div id="page-catatJual" class="page-content hidden">
+                <h2 class="text-4xl font-extrabold mb-8 text-gray-800"><i class="fas fa-cash-register text-emerald-500 mr-3"></i> Catat Penjualan</h2>
+                <div class="bg-white p-10 rounded-3xl shadow-sm max-w-3xl border border-gray-100">
+                    <div class="grid grid-cols-2 gap-6 mb-6">
+                        <div>
+                            <label class="block text-lg font-bold mb-2 text-gray-600">📅 Tanggal Jual</label>
+                            <input type="date" id="jualTgl" class="w-full p-4 border-2 rounded-xl text-lg outline-none transition">
+                        </div>
+                        <div>
+                            <label class="block text-lg font-bold mb-2 text-gray-600">🌶️ Nama Bumbu</label>
+                            <input type="text" id="jualNama" placeholder="Cabe Kering Brekele" class="w-full p-4 border-2 rounded-xl text-lg outline-none transition">
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-3 gap-6 mb-6">
+                        <div>
+                            <label class="block text-lg font-bold mb-2 text-gray-600">⚖️ Jumlah Jual (Kg)</label>
+                            <input type="number" id="jualKg" placeholder="2" class="w-full p-4 border-2 rounded-xl text-lg outline-none transition">
+                        </div>
+                        <div>
+                            <label class="block text-lg font-bold mb-2 text-gray-600">💵 Harga Jual Normal (Rp)</label>
+                            <input type="number" id="jualHarga" placeholder="150000" class="w-full p-4 border-2 rounded-xl text-lg outline-none transition">
+                        </div>
+                        <div>
+                            <label class="block text-lg font-bold mb-2 text-gray-600">📉 Potongan / Kurang (Rp)</label>
+                            <input type="number" id="jualPotong" value="0" placeholder="5000" class="w-full p-4 border-2 rounded-xl text-lg outline-none transition border-rose-300">
+                        </div>
+                    </div>
+                    <button onclick="simpanJual()" class="w-full bg-emerald-600 text-white p-4 rounded-xl text-xl font-bold hover:bg-emerald-700 transition transform hover:scale-105 shadow-lg"><i class="fas fa-receipt mr-2"></i> Simpan Penjualan</button>
+                </div>
+            </div>
+
+            <!-- HALAMAN STOK -->
+            <div id="page-stok" class="page-content hidden">
+                <h2 class="text-4xl font-extrabold mb-8 text-gray-800"><i class="fas fa-boxes-stacked text-amber-500 mr-3"></i> Sisa Stok Bumbu</h2>
+                <div class="bg-white p-8 rounded-3xl shadow-sm border border-gray-100">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="border-b-2 text-xl text-gray-500">
+                                <th class="p-5">🌶️ Nama Bumbu</th>
+                                <th class="p-5">⚖️ Sisa Stok (Kg)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabelStok" class="text-lg font-bold"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- HALAMAN LAPORAN -->
+            <div id="page-laporan" class="page-content hidden">
+                <h2 class="text-4xl font-extrabold mb-8 text-gray-800"><i class="fas fa-file-invoice-dollar text-purple-500 mr-3"></i> Laporan Bulanan</h2>
+                <div class="flex gap-4 mb-8 items-center">
+                    <select id="filterBulan" class="p-3 border-2 rounded-xl text-lg font-bold outline-none" onchange="loadLaporan()">
+                        <option value="01">Januari</option><option value="02">Februari</option><option value="03">Maret</option>
+                        <option value="04">April</option><option value="05">Mei</option><option value="06">Juni</option>
+                        <option value="07">Juli</option><option value="08">Agustus</option><option value="09">September</option>
+                        <option value="10">Oktober</option><option value="11">November</option><option value="12">Desember</option>
+                    </select>
+                    <select id="filterTahun" class="p-3 border-2 rounded-xl text-lg font-bold outline-none" onchange="loadLaporan()"></select>
+                </div>
+                <div class="grid grid-cols-3 gap-8 mb-10">
+                    <div class="bg-white p-6 rounded-3xl shadow-sm border-l-8 border-blue-500">
+                        <p class="text-lg text-gray-500 font-bold">Total Pemasukan</p>
+                        <h3 id="lPemasukan" class="text-3xl font-extrabold mt-2 text-blue-600">Rp 0</h3>
+                    </div>
+                    <div class="bg-white p-6 rounded-3xl shadow-sm border-l-8 border-red-500">
+                        <p class="text-lg text-gray-500 font-bold">Total Modal</p>
+                        <h3 id="lModal" class="text-3xl font-extrabold mt-2 text-red-600">Rp 0</h3>
+                    </div>
+                    <div class="bg-white p-6 rounded-3xl shadow-sm border-l-8 border-green-500">
+                        <p class="text-lg text-gray-500 font-bold">Total Untung</p>
+                        <h3 id="lUntung" class="text-3xl font-extrabold mt-2 text-green-600">Rp 0</h3>
+                    </div>
+                </div>
+                <div class="bg-white p-6 rounded-3xl shadow-sm">
+                    <h3 class="text-xl font-extrabold mb-4 text-gray-700">Riwayat Penjualan Bulan Ini</h3>
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="border-b text-lg text-gray-500">
+                                <th class="p-3">Tanggal</th><th class="p-3">Item</th><th class="p-3">Kg</th><th class="p-3">Total Bayar</th><th class="p-3">Untung</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabelLaporan" class="text-base font-semibold"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ================= KONFIGURASI =================
+        const API_URL = 'https://script.google.com/macros/s/AKfycbyxqX912y9AIEUk0MOXFo2h6n_YsGUhkfQ3zUVTnFcy4UP44tuRpmEgCREUjJUP5-00/exec'; // <--- GANTI INI PAK URL GOOGLE APPS SCRIPT MU
+        let salesChartInstance = null;
+
+        // ================= HELPER =================
+        const formatRp = (angka) => 'Rp ' + Number(angka || 0).toLocaleString('id-ID');
+        const getToday = () => new Date().toISOString().split('T')[0];
+        
+        window.onload = () => {
+            document.getElementById('modalTgl').value = getToday();
+            document.getElementById('jualTgl').value = getToday();
+            
+            const yr = new Date().getFullYear();
+            const yrSelect = document.getElementById('filterTahun');
+            for(let i = yr - 2; i <= yr + 1; i++) {
+                const opt = document.createElement('option'); opt.value = i; opt.innerText = i;
+                if(i === yr) opt.selected = true;
+                yrSelect.appendChild(opt);
+            }
+            document.getElementById('filterBulan').value = String(new Date().getMonth() + 1).padStart(2, '0');
+        };
+
+        // ================= NAVIGATION =================
+        function showPage(page, element) {
+            document.querySelectorAll('.page-content').forEach(p => p.classList.add('hidden'));
+            document.getElementById('page-' + page).classList.remove('hidden');
+            
+            document.querySelectorAll('.sidebar-item').forEach(item => {
+                item.classList.remove('active');
+                item.classList.add('text-gray-600');
+            });
+            element.classList.add('active');
+            element.classList.remove('text-gray-600');
+
+            if(page === 'dashboard') loadDashboard();
+            if(page === 'stok') loadStok();
+            if(page === 'laporan') loadLaporan();
+        }
+
+        // ================= API CALLS =================
+        async function apiGet(sheet) {
+            const res = await fetch(`${API_URL}?sheet=${sheet}&action=read`);
+            return await res.json();
+        }
+        async function apiPost(sheet, data) {
+            await fetch(`${API_URL}?sheet=${sheet}&action=write&data=${encodeURIComponent(JSON.stringify(data))}`);
+        }
+
+        // ================= LOGIN =================
+        async function login() {
+            const u = document.getElementById('username').value;
+            const p = document.getElementById('password').value;
+            if(!u || !p) return alert('Lengkapi username dan password!');
+            
+            const users = await apiGet('Users');
+            const match = users.find(row => row[0] == u && row[1] == p);
+            if(match) {
+                document.getElementById('loginPage').classList.add('hidden');
+                document.getElementById('mainApp').classList.remove('hidden');
+                loadDashboard();
+            } else {
+                document.getElementById('loginError').classList.remove('hidden');
+            }
+        }
+        function logout() {
+            document.getElementById('mainApp').classList.add('hidden');
+            document.getElementById('loginPage').classList.remove('hidden');
+            document.getElementById('loginError').classList.add('hidden');
+        }
+
+        // ================= SIMPAN MODAL =================
+        async function simpanModal() {
+            const tgl = document.getElementById('modalTgl').value;
+            const nama = document.getElementById('modalNama').value;
+            const kg = parseFloat(document.getElementById('modalKg').value);
+            const harga = parseFloat(document.getElementById('modalHarga').value);
+            
+            if(!tgl || !nama || !kg || !harga) return alert('❌ Lengkapi semua data modal!');
+            await apiPost('Modal', [tgl, nama, kg, harga]);
+            alert('✅ Modal berhasil dicatat & stok otomatis bertambah!');
+            document.getElementById('modalNama').value = '';
+            document.getElementById('modalKg').value = '';
+            document.getElementById('modalHarga').value = '';
+        }
+
+        // ================= SIMPAN PENJUALAN =================
+        async function simpanJual() {
+            const tgl = document.getElementById('jualTgl').value;
+            const nama = document.getElementById('jualNama').value;
+            const kg = parseFloat(document.getElementById('jualKg').value);
+            const hargaJual = parseFloat(document.getElementById('jualHarga').value);
+            const potongan = parseFloat(document.getElementById('jualPotong').value) || 0;
+            
+            if(!tgl || !nama || !kg || !hargaJual) return alert('❌ Lengkapi semua data penjualan!');
+            
+            const totalBayar = hargaJual - potongan;
+            
+            // Cari harga modal per Kg untuk hitung untung
+            const modalData = await apiGet('Modal');
+            let hargaModalPerKg = 0;
+            for(let i = modalData.length - 1; i >= 1; i--) {
+                if(modalData[i][1] == nama) {
+                    hargaModalPerKg = modalData[i][3] / modalData[i][2]; 
+                    break;
+                }
+            }
+            const untung = totalBayar - (hargaModalPerKg * kg);
+
+            await apiPost('Penjualan', [tgl, nama, kg, hargaJual, potongan, totalBayar, untung]);
+            alert('✅ Penjualan dicatat! Stok otomatis berkurang.');
+            document.getElementById('jualNama').value = '';
+            document.getElementById('jualKg').value = '';
+            document.getElementById('jualHarga').value = '';
+            document.getElementById('jualPotong').value = '0';
+        }
+
+        // ================= LOAD DASHBOARD =================
+        async function loadDashboard() {
+            const jualData = await apiGet('Penjualan');
+            const modalData = await apiGet('Modal');
+            const today = getToday();
+
+            let pemasukanHariIni = 0, pengeluaranHariIni = 0, untungHariIni = 0;
+            const chartBulanan = {};
+            const bulanIni = today.substring(0, 7);
+
+            for(let i=1; i < jualData.length; i++) {
+                const [tgl, nama, kg, hj, pot, total, untung] = jualData[i];
+                if(tgl == today) {
+                    pemasukanHariIni += total;
+                    untungHariIni += untung;
+                }
+                if(String(tgl).substring(0,7) == bulanIni) {
+                    const day = String(tgl).substring(8,10);
+                    chartBulanan[day] = (chartBulanan[day] || 0) + total;
+                }
+            }
+            for(let i=1; i < modalData.length; i++) {
+                if(modalData[i][0] == today) pengeluaranHariIni += modalData[i][3];
+            }
+
+            document.getElementById('dPemasukan').innerText = formatRp(pemasukanHariIni);
+            document.getElementById('dPengeluaran').innerText = formatRp(pengeluaranHariIni);
+            document.getElementById('dUntung').innerText = formatRp(untungHariIni);
+
+            const labels = Object.keys(chartBulanan).sort();
+            const values = labels.map(l => chartBulanan[l]);
+            
+            if(salesChartInstance) salesChartInstance.destroy();
+            const ctx = document.getElementById('salesChart').getContext('2d');
+            salesChartInstance = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels.map(l => 'Tgl ' + l),
+                    datasets: [{
+                        label: 'Penjualan (Rp)',
+                        data: values,
+                        borderColor: '#4f46e5',
+                        backgroundColor: 'rgba(79, 70, 229, 0.1)',
+                        fill: true, tension: 0.4, borderWidth: 3
+                    }]
+                },
+                options: { scales: { y: { beginAtZero: true, ticks: { callback: v => formatRp(v) } } } } }
+            });
+        }
+
+        // ================= LOAD STOK =================
+        async function loadStok() {
+            const stokData = await apiGet('Stok');
+            const tbody = document.getElementById('tabelStok');
+            tbody.innerHTML = '';
+            for(let i=1; i < stokData.length; i++) {
+                tbody.innerHTML += `<tr class="border-b hover:bg-gray-50 transition"><td class="p-5">${stokData[i][0]}</td><td class="p-5">${stokData[i][1]} Kg</td></tr>`;
+            }
+        }
+
+        // ================= LOAD LAPORAN =================
+        async function loadLaporan() {
+            const bulan = document.getElementById('filterBulan').value;
+            const tahun = document.getElementById('filterTahun').value;
+            const prefix = `${tahun}-${bulan}`;
+
+            const jualData = await apiGet('Penjualan');
+            const modalData = await apiGet('Modal');
+
+            let totalPemasukan = 0, totalModal = 0, totalUntung = 0;
+            const tbody = document.getElementById('tabelLaporan');
+            tbody.innerHTML = '';
+
+            for(let i=1; i < jualData.length; i++) {
+                if(String(jualData[i][0]).substring(0,7) == prefix) {
+                    totalPemasukan += jualData[i][5];
+                    totalUntung += jualData[i][6];
+                    tbody.innerHTML += `<tr class="border-b hover:bg-gray-50 transition"><td class="p-3">${jualData[i][0]}</td><td class="p-3">${jualData[i][1]}</td><td class="p-3">${jualData[i][2]}</td><td class="p-3">${formatRp(jualData[i][5])}</td><td class="p-3 text-green-600 font-bold">${formatRp(jualData[i][6])}</td></tr>`;
+                }
+            }
+            for(let i=1; i < modalData.length; i++) {
+                if(String(modalData[i][0]).substring(0,7) == prefix) {
+                    totalModal += modalData[i][3];
+                }
+            }
+
+            document.getElementById('lPemasukan').innerText = formatRp(totalPemasukan);
+            document.getElementById('lModal').innerText = formatRp(totalModal);
+            document.getElementById('lUntung').innerText = formatRp(totalUntung);
+        }
+    </script>
+</body>
+</html>
