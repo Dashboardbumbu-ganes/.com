@@ -3,16 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-    <meta name="theme-color" content="#0f172a">
-    <title>Dashboard Bumbu Kering Premium</title>
+    <title>Dashboard Bumbu Kering</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         body { font-family: 'Poppins', sans-serif; background-color: #0f172a; -webkit-tap-highlight-color: transparent; }
-        * { -webkit-touch-callout: none; }
-        input, button, select { -webkit-appearance: none; appearance: none; }
         
         @keyframes neonPulse {
             0% { box-shadow: 0 0 15px #0ff, 0 0 30px #0ff, inset 0 0 15px #0ff; }
@@ -22,27 +19,12 @@
         }
         .neon-border { animation: neonPulse 3s infinite alternate; border: 2px solid rgba(255,255,255,0.1); }
 
-        @keyframes blinkText {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.12; }
-        }
+        @keyframes blinkText { 0%, 100% { opacity: 1; } 50% { opacity: 0.12; } }
         .blink-login { animation: blinkText 1.2s ease-in-out infinite; }
 
-        @keyframes glowIndigo {
-            0% { box-shadow: 0 0 5px rgba(79,70,229,0.2); }
-            50% { box-shadow: 0 0 25px rgba(79,70,229,0.6); }
-            100% { box-shadow: 0 0 5px rgba(79,70,229,0.2); }
-        }
-        @keyframes glowRose {
-            0% { box-shadow: 0 0 5px rgba(244,63,94,0.2); }
-            50% { box-shadow: 0 0 25px rgba(244,63,94,0.6); }
-            100% { box-shadow: 0 0 5px rgba(244,63,94,0.2); }
-        }
-        @keyframes glowEmerald {
-            0% { box-shadow: 0 0 5px rgba(16,185,129,0.2); }
-            50% { box-shadow: 0 0 25px rgba(16,185,129,0.6); }
-            100% { box-shadow: 0 0 5px rgba(16,185,129,0.2); }
-        }
+        @keyframes glowIndigo { 0% { box-shadow: 0 0 5px rgba(79,70,229,0.2); } 50% { box-shadow: 0 0 25px rgba(79,70,229,0.6); } 100% { box-shadow: 0 0 5px rgba(79,70,229,0.2); } }
+        @keyframes glowRose { 0% { box-shadow: 0 0 5px rgba(244,63,94,0.2); } 50% { box-shadow: 0 0 25px rgba(244,63,94,0.6); } 100% { box-shadow: 0 0 5px rgba(244,63,94,0.2); } }
+        @keyframes glowEmerald { 0% { box-shadow: 0 0 5px rgba(16,185,129,0.2); } 50% { box-shadow: 0 0 25px rgba(16,185,129,0.6); } 100% { box-shadow: 0 0 5px rgba(16,185,129,0.2); } }
         .card-glow-indigo { animation: glowIndigo 3s infinite alternate; }
         .card-glow-rose { animation: glowRose 3s infinite alternate; }
         .card-glow-emerald { animation: glowEmerald 3s infinite alternate; }
@@ -55,21 +37,19 @@
         ::-webkit-scrollbar { width: 8px; height: 8px; }
         ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
         
-        /* ✅ RESPONSIVE SIDEBAR MOBILE */
         #sidebar { transition: transform 0.3s ease; }
         @media (max-width: 768px) {
             #sidebar {
-                position: fixed; top: 0; left: 0; bottom: 0; z-index: 50;
+                position: fixed; top: 0; left: 0; bottom: 0; z-index: 60;
                 transform: translateX(-100%);
             }
             #sidebar.open { transform: translateX(0); }
             #sidebarOverlay {
                 position: fixed; inset: 0; background: rgba(0,0,0,0.5);
-                z-index: 40; opacity: 0; pointer-events: none;
-                transition: opacity 0.3s;
+                z-index: 55; display: none;
             }
-            #sidebarOverlay.open { opacity: 1; pointer-events: auto; }
-            #hamburgerBtn { display: flex !important; }
+            #sidebarOverlay.open { display: block; }
+            #hamburgerBtn { display: block !important; }
             #appBackground { padding: 1rem !important; }
             #page-dashboard .grid-cols-3 { grid-template-columns: 1fr !important; gap: 1rem !important; }
             #page-catatModal .max-w-3xl, #page-catatJual .max-w-3xl { max-width: 100% !important; }
@@ -89,23 +69,23 @@
 <body class="text-gray-800 text-base">
 
     <!-- ================= HALAMAN LOGIN ================= -->
-    <div id="loginPage" class="fixed inset-0 bg-gray-950 flex items-center justify-center z-50 p-4">
-        <div class="bg-gray-900 p-6 sm:p-10 rounded-3xl w-full max-w-[420px] text-center neon-border relative overflow-hidden">
-            <div class="mb-6 sm:mb-8">
+    <!-- Posisi dipaksa persis di tengah pakai inline style agar tidak terganggu css lain -->
+    <div id="loginPage" style="display: flex; position: fixed; top:0; left:0; width:100%; height:100%; background:#0f172a; align-items:center; justify-content:center; z-index:50; padding: 1rem;">
+        <div class="bg-gray-900 p-6 sm:p-10 rounded-3xl w-full max-w-[400px] text-center neon-border">
+            <div class="mb-6">
                 <h1 class="text-2xl sm:text-3xl font-extrabold text-white mb-1 tracking-wide blink-login">✨ Silahkan Login ✨</h1>
             </div>
-            <!-- ✅ FORM WRAPPER: agar Enter key 100% jalan -->
-            <form id="loginForm" onsubmit="return false;" autocomplete="off">
-                <div class="text-left mb-4">
-                    <label class="block text-sm font-semibold text-gray-400 mb-1">👤 Username</label>
-                    <input type="text" id="username" placeholder="Ketik username..." autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" class="w-full p-3 bg-gray-800 border border-gray-700 rounded-xl text-white text-lg outline-none transition focus:border-indigo-500">
-                </div>
-                <div class="text-left mb-6">
-                    <label class="block text-sm font-semibold text-gray-400 mb-1">🔒 Password</label>
-                    <input type="password" id="password" placeholder="Ketik password..." autocomplete="off" class="w-full p-3 bg-gray-800 border border-gray-700 rounded-xl text-white text-lg outline-none transition focus:border-indigo-500">
-                </div>
-                <button id="btnLogin" type="submit" class="w-full bg-indigo-600 text-white p-3.5 rounded-xl text-lg font-bold hover:bg-indigo-700 transition transform hover:scale-105 shadow-lg active:scale-95">Masuk <i class="fas fa-arrow-right ml-2"></i></button>
-            </form>
+            <div class="text-left mb-4">
+                <label class="block text-sm font-semibold text-gray-400 mb-1">👤 Username</label>
+                <!-- onkeydown digunakan agar ENTER PASTI JALAN di HP maupun Desktop -->
+                <input type="text" id="username" placeholder="Ketik username..." autocomplete="off" autocapitalize="off" spellcheck="false" onkeydown="if(event.key==='Enter'){document.getElementById('password').focus();}" class="w-full p-3 bg-gray-800 border border-gray-700 rounded-xl text-white text-lg outline-none transition focus:border-indigo-500">
+            </div>
+            <div class="text-left mb-6">
+                <label class="block text-sm font-semibold text-gray-400 mb-1">🔒 Password</label>
+                <input type="password" id="password" placeholder="Ketik password..." autocomplete="off" onkeydown="if(event.key==='Enter'){login();}" class="w-full p-3 bg-gray-800 border border-gray-700 rounded-xl text-white text-lg outline-none transition focus:border-indigo-500">
+            </div>
+            <!-- onclick digunakan agar tombol PASTI JALAN saat diklik -->
+            <button id="btnLogin" onclick="login()" class="w-full bg-indigo-600 text-white p-3.5 rounded-xl text-lg font-bold hover:bg-indigo-700 transition transform hover:scale-105 shadow-lg active:scale-95">Masuk <i class="fas fa-arrow-right ml-2"></i></button>
             <p id="loginError" class="text-red-400 mt-3 font-semibold text-sm hidden"></p>
             <p id="loginInfo" class="text-emerald-300 mt-2 text-xs hidden"></p>
             <p class="text-gray-500 mt-4 text-xs">Default: <b class="text-gray-400">admin / admin123</b></p>
@@ -113,9 +93,9 @@
     </div>
 
     <!-- ================= MAIN APP ================= -->
-    <div id="mainApp" class="hidden flex h-screen overflow-hidden">
+    <!-- Style display none INLINE agar PASTI tersembunyi sebelum login berhasil -->
+    <div id="mainApp" style="display: none; height: 100vh; overflow: hidden;" class="flex">
         
-        <!-- ✅ OVERLAY MOBILE -->
         <div id="sidebarOverlay" onclick="toggleSidebar(false)"></div>
         
         <!-- SIDEBAR -->
@@ -138,7 +118,6 @@
         <!-- KONTEN -->
         <div id="appBackground" class="flex-1 overflow-y-auto p-6 sm:p-10 bg-slate-50 relative">
             
-            <!-- ✅ HAMBURGER MOBILE -->
             <button id="hamburgerBtn" onclick="toggleSidebar(true)" class="absolute top-4 left-4 z-30 bg-indigo-600 text-white p-3 rounded-xl shadow-lg">
                 <i class="fas fa-bars text-xl"></i>
             </button>
@@ -305,10 +284,6 @@
         }
         function hideLoginInfo() { document.getElementById('loginInfo').classList.add('hidden'); }
         
-        function isEnterKey(e) {
-            return e.key === 'Enter' || e.code === 'Enter' || e.keyCode === 13 || e.which === 13;
-        }
-
         function toggleSidebar(open) {
             var sidebar = document.getElementById('sidebar');
             var overlay = document.getElementById('sidebarOverlay');
@@ -317,47 +292,21 @@
         }
 
         window.onload = function() {
-            document.getElementById('modalTgl').value = getToday();
-            document.getElementById('jualTgl').value = getToday();
+            var mTgl = document.getElementById('modalTgl');
+            if(mTgl) mTgl.value = getToday();
+            var jTgl = document.getElementById('jualTgl');
+            if(jTgl) jTgl.value = getToday();
             
             var yr = new Date().getFullYear();
             var yrSelect = document.getElementById('filterTahun');
-            for(var i = yr - 2; i <= yr + 1; i++) {
-                var opt = document.createElement('option'); opt.value = i; opt.innerText = i;
-                if(i === yr) opt.selected = true;
-                yrSelect.appendChild(opt);
+            if(yrSelect) {
+                for(var i = yr - 2; i <= yr + 1; i++) {
+                    var opt = document.createElement('option'); opt.value = i; opt.innerText = i;
+                    if(i === yr) opt.selected = true;
+                    yrSelect.appendChild(opt);
+                }
+                document.getElementById('filterBulan').value = String(new Date().getMonth() + 1).padStart(2, '0');
             }
-            document.getElementById('filterBulan').value = String(new Date().getMonth() + 1).padStart(2, '0');
-
-            // ✅ FORM SUBMIT — Enter key 100% jalan di desktop & mobile
-            var loginForm = document.getElementById('loginForm');
-            if (loginForm) {
-                loginForm.addEventListener('submit', function(e) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    login();
-                    return false;
-                });
-            }
-
-            // ✅ TRIPLE FALLBACK ENTER HANDLER (desktop + mobile Gboard + iOS Safari)
-            var username = document.getElementById('username');
-            var password = document.getElementById('password');
-            
-            [username, password].forEach(function(input) {
-                input.addEventListener('keydown', function(e) {
-                    if (isEnterKey(e)) { e.preventDefault(); login(); return false; }
-                });
-                input.addEventListener('keypress', function(e) {
-                    if (isEnterKey(e)) { e.preventDefault(); login(); return false; }
-                });
-                input.addEventListener('keyup', function(e) {
-                    if (isEnterKey(e)) { e.preventDefault(); login(); return false; }
-                });
-            });
-
-            // ✅ Auto-focus username
-            setTimeout(function() { username.focus(); }, 200);
         };
 
         // ================= NAVIGATION =================
@@ -375,14 +324,12 @@
             });
             element.classList.add('active'); element.classList.remove('text-gray-600');
             
-            // ✅ Tutup sidebar di mobile
             if (window.innerWidth <= 768) toggleSidebar(false);
             
             if(page === 'dashboard') loadDashboard();
             if(page === 'stok') loadStok();
             if(page === 'laporan') loadLaporan();
             
-            // ✅ Scroll ke atas
             document.getElementById('appBackground').scrollTop = 0;
         }
 
@@ -473,10 +420,8 @@
 
             try {
                 var users = await apiGet('Users');
-                console.log('✅ Data Users dari server:', users);
-                
-                if (users && Array.isArray(users) && users.length >= 2) {
-                    var match = null;
+                var match = null;
+                if (users && Array.isArray(users)) {
                     for (var i = 1; i < users.length; i++) {
                         if (!users[i] || !users[i][0]) continue;
                         var rowU = String(users[i][0]).trim();
@@ -485,27 +430,26 @@
                             match = users[i]; break;
                         }
                     }
-                    if (match) {
+                }
+                
+                if (match) {
+                    masukDashboard();
+                } else {
+                    // Jika data tidak ditemukan di sheet, tapi user pakai admin/admin123
+                    if (u === 'admin' && p === 'admin123') {
+                        showLoginInfo('⚠️ Login darurat (admin default)');
                         masukDashboard();
                     } else {
                         showLoginError('❌ Username atau password salah!');
                     }
-                } else {
-                    if (u === 'admin' && p === 'admin123') {
-                        showLoginInfo('⚠️ Login darurat (data Users tidak valid)');
-                        masukDashboard();
-                    } else {
-                        showLoginError('❌ Data login tidak ditemukan! Coba: admin / admin123');
-                    }
                 }
             } catch(err) {
-                console.error('❌ Login error:', err.message);
+                // Jika server mati / JSONP gagal total, tapi user pakai admin/admin123
                 if (u === 'admin' && p === 'admin123') {
                     showLoginInfo('⚠️ Login darurat (server tidak terhubung)');
                     masukDashboard();
                 } else {
                     showLoginError('❌ Server tidak terhubung! Coba: admin / admin123');
-                    showLoginInfo('💡 Pastikan Apps Script sudah di-update & deploy ulang dengan JSONP');
                 }
             }
 
@@ -514,8 +458,9 @@
         }
 
         function masukDashboard() {
-            document.getElementById('loginPage').classList.add('hidden');
-            document.getElementById('mainApp').classList.remove('hidden');
+            // INLINE STYLE DIPAKSA agar PASTI tampil/sembunyi
+            document.getElementById('loginPage').style.display = 'none';
+            document.getElementById('mainApp').style.display = 'flex';
             document.getElementById('username').value = '';
             document.getElementById('password').value = '';
             hideLoginError(); hideLoginInfo();
@@ -523,13 +468,13 @@
         }
 
         function logout() {
-            document.getElementById('mainApp').classList.add('hidden');
-            document.getElementById('loginPage').classList.remove('hidden');
+            document.getElementById('mainApp').style.display = 'none';
+            document.getElementById('loginPage').style.display = 'flex';
             hideLoginError(); hideLoginInfo();
             document.getElementById('username').value = '';
             document.getElementById('password').value = '';
             toggleSidebar(false);
-            setTimeout(function() { document.getElementById('username').focus(); }, 200);
+            setTimeout(function() { document.getElementById('username').focus(); }, 100);
         }
 
         // ================= SIMPAN MODAL =================
