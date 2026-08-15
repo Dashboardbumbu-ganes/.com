@@ -69,31 +69,29 @@
 <body class="text-gray-800 text-base">
 
     <!-- ================= HALAMAN LOGIN ================= -->
-    <!-- Posisi dipaksa persis di tengah pakai inline style agar tidak terganggu css lain -->
-    <div id="loginPage" style="display: flex; position: fixed; top:0; left:0; width:100%; height:100%; background:#0f172a; align-items:center; justify-content:center; z-index:50; padding: 1rem;">
+    <!-- Posisi dipaksa persis di tengah layar (inset:0 + flex center) -->
+    <div id="loginPage" style="position: fixed; inset: 0; background: #0f172a; display: flex; align-items: center; justify-content: center; z-index: 9999; padding: 1rem;">
         <div class="bg-gray-900 p-6 sm:p-10 rounded-3xl w-full max-w-[400px] text-center neon-border">
             <div class="mb-6">
                 <h1 class="text-2xl sm:text-3xl font-extrabold text-white mb-1 tracking-wide blink-login">✨ Silahkan Login ✨</h1>
             </div>
             <div class="text-left mb-4">
                 <label class="block text-sm font-semibold text-gray-400 mb-1">👤 Username</label>
-                <!-- onkeydown digunakan agar ENTER PASTI JALAN di HP maupun Desktop -->
                 <input type="text" id="username" placeholder="Ketik username..." autocomplete="off" autocapitalize="off" spellcheck="false" onkeydown="if(event.key==='Enter'){document.getElementById('password').focus();}" class="w-full p-3 bg-gray-800 border border-gray-700 rounded-xl text-white text-lg outline-none transition focus:border-indigo-500">
             </div>
             <div class="text-left mb-6">
                 <label class="block text-sm font-semibold text-gray-400 mb-1">🔒 Password</label>
                 <input type="password" id="password" placeholder="Ketik password..." autocomplete="off" onkeydown="if(event.key==='Enter'){login();}" class="w-full p-3 bg-gray-800 border border-gray-700 rounded-xl text-white text-lg outline-none transition focus:border-indigo-500">
             </div>
-            <!-- onclick digunakan agar tombol PASTI JALAN saat diklik -->
             <button id="btnLogin" onclick="login()" class="w-full bg-indigo-600 text-white p-3.5 rounded-xl text-lg font-bold hover:bg-indigo-700 transition transform hover:scale-105 shadow-lg active:scale-95">Masuk <i class="fas fa-arrow-right ml-2"></i></button>
             <p id="loginError" class="text-red-400 mt-3 font-semibold text-sm hidden"></p>
             <p id="loginInfo" class="text-emerald-300 mt-2 text-xs hidden"></p>
-            <p class="text-gray-500 mt-4 text-xs">Default: <b class="text-gray-400">admin / admin123</b></p>
+            <!-- Tulisan Default Sudah Dihapus -->
         </div>
     </div>
 
     <!-- ================= MAIN APP ================= -->
-    <!-- Style display none INLINE agar PASTI tersembunyi sebelum login berhasil -->
+    <!-- Dipaksa display:none agar tidak bocor sebelum login -->
     <div id="mainApp" style="display: none; height: 100vh; overflow: hidden;" class="flex">
         
         <div id="sidebarOverlay" onclick="toggleSidebar(false)"></div>
@@ -265,7 +263,6 @@
 
     <script>
         // ================= KONFIGURASI =================
-        // ⚠️ GANTI URL INI DENGAN URL DEPLOYMENT BARU SETELAH UPDATE APPS SCRIPT!
         const API_URL = 'https://script.google.com/macros/s/AKfycbzZQLDX6xchHUexXdh0cS2Sm3WSnQUkDUaxKbmywAPdczhxv5NSvno-qoL1b3ESxJGoWw/exec';
         let salesChartInstance = null;
 
@@ -316,7 +313,7 @@
             if (target) {
                 target.classList.remove('hidden');
                 target.classList.remove('page-transition');
-                void target.offsetWidth; // trigger reflow
+                void target.offsetWidth;
                 target.classList.add('page-transition');
             }
             document.querySelectorAll('.sidebar-item').forEach(function(item) {
@@ -333,7 +330,7 @@
             document.getElementById('appBackground').scrollTop = 0;
         }
 
-        // ================= API PAKAI JSONP (BYPASS CORS 100%) =================
+        // ================= API JSONP =================
         function apiGet(sheet) {
             return new Promise(function(resolve, reject) {
                 var cbName = '_jcb_' + Date.now() + '_' + Math.floor(Math.random() * 999999);
@@ -403,7 +400,7 @@
         }
 
         // ================= LOGIN =================
-        async function login() {
+        function login() {
             var u = document.getElementById('username').value.trim();
             var p = document.getElementById('password').value.trim();
             
@@ -412,6 +409,14 @@
                 return;
             }
             
+            // RAHASIANYA DI SINI:
+            // Kalau pakai admin/admin123, LANGSUNG MASUK! Tidak nunggu server 15 detik!
+            if (u === 'admin' && p === 'admin123') {
+                masukDashboard();
+                return;
+            }
+            
+            // Kalau bukan admin, baru cek ke server
             hideLoginError(); hideLoginInfo();
             var btn = document.getElementById('btnLogin');
             var originalText = btn.innerHTML;
@@ -419,46 +424,40 @@
             btn.disabled = true;
 
             try {
-                var users = await apiGet('Users');
-                var match = null;
-                if (users && Array.isArray(users)) {
-                    for (var i = 1; i < users.length; i++) {
-                        if (!users[i] || !users[i][0]) continue;
-                        var rowU = String(users[i][0]).trim();
-                        var rowP = String(users[i][1] || '').trim();
-                        if (rowU === u && rowP === p) {
-                            match = users[i]; break;
+                var users = apiGet('Users');
+                users.then(function(users) {
+                    var match = null;
+                    if (users && Array.isArray(users)) {
+                        for (var i = 1; i < users.length; i++) {
+                            if (!users[i] || !users[i][0]) continue;
+                            var rowU = String(users[i][0]).trim();
+                            var rowP = String(users[i][1] || '').trim();
+                            if (rowU === u && rowP === p) {
+                                match = users[i]; break;
+                            }
                         }
                     }
-                }
-                
-                if (match) {
-                    masukDashboard();
-                } else {
-                    // Jika data tidak ditemukan di sheet, tapi user pakai admin/admin123
-                    if (u === 'admin' && p === 'admin123') {
-                        showLoginInfo('⚠️ Login darurat (admin default)');
+                    
+                    if (match) {
                         masukDashboard();
                     } else {
                         showLoginError('❌ Username atau password salah!');
                     }
-                }
+                    btn.innerHTML = originalText;
+                    btn.disabled = false;
+                }).catch(function(err) {
+                    showLoginError('❌ Server tidak terhubung!');
+                    btn.innerHTML = originalText;
+                    btn.disabled = false;
+                });
             } catch(err) {
-                // Jika server mati / JSONP gagal total, tapi user pakai admin/admin123
-                if (u === 'admin' && p === 'admin123') {
-                    showLoginInfo('⚠️ Login darurat (server tidak terhubung)');
-                    masukDashboard();
-                } else {
-                    showLoginError('❌ Server tidak terhubung! Coba: admin / admin123');
-                }
+                showLoginError('❌ Terjadi kesalahan sistem!');
+                btn.innerHTML = originalText;
+                btn.disabled = false;
             }
-
-            btn.innerHTML = originalText;
-            btn.disabled = false;
         }
 
         function masukDashboard() {
-            // INLINE STYLE DIPAKSA agar PASTI tampil/sembunyi
             document.getElementById('loginPage').style.display = 'none';
             document.getElementById('mainApp').style.display = 'flex';
             document.getElementById('username').value = '';
