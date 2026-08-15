@@ -69,29 +69,25 @@
 <body class="text-gray-800 text-base">
 
     <!-- ================= HALAMAN LOGIN ================= -->
-    <!-- Posisi dipaksa persis di tengah layar (inset:0 + flex center) -->
     <div id="loginPage" style="position: fixed; inset: 0; background: #0f172a; display: flex; align-items: center; justify-content: center; z-index: 9999; padding: 1rem;">
         <div class="bg-gray-900 p-6 sm:p-10 rounded-3xl w-full max-w-[400px] text-center neon-border">
             <div class="mb-6">
-                <h1 class="text-2xl sm:text-3xl font-extrabold text-white mb-1 tracking-wide blink-login">✨ Silahkan Login ✨</h1>
+                <h1 class="text-2xl sm:text-3xl font-extrabold text-white mb-1 tracking-wide blink-login">Silahkan Login</h1>
             </div>
             <div class="text-left mb-4">
-                <label class="block text-sm font-semibold text-gray-400 mb-1">👤 Username</label>
+                <label class="block text-sm font-semibold text-gray-400 mb-1">Username</label>
                 <input type="text" id="username" placeholder="Ketik username..." autocomplete="off" autocapitalize="off" spellcheck="false" onkeydown="if(event.key==='Enter'){document.getElementById('password').focus();}" class="w-full p-3 bg-gray-800 border border-gray-700 rounded-xl text-white text-lg outline-none transition focus:border-indigo-500">
             </div>
             <div class="text-left mb-6">
-                <label class="block text-sm font-semibold text-gray-400 mb-1">🔒 Password</label>
-                <input type="password" id="password" placeholder="Ketik password..." autocomplete="off" onkeydown="if(event.key==='Enter'){login();}" class="w-full p-3 bg-gray-800 border border-gray-700 rounded-xl text-white text-lg outline-none transition focus:border-indigo-500">
+                <label class="block text-sm font-semibold text-gray-400 mb-1">Password</label>
+                <input type="password" id="password" placeholder="Ketik password..." autocomplete="off" onkeydown="if(event.key==='Enter'){doLogin();}" class="w-full p-3 bg-gray-800 border border-gray-700 rounded-xl text-white text-lg outline-none transition focus:border-indigo-500">
             </div>
-            <button id="btnLogin" onclick="login()" class="w-full bg-indigo-600 text-white p-3.5 rounded-xl text-lg font-bold hover:bg-indigo-700 transition transform hover:scale-105 shadow-lg active:scale-95">Masuk <i class="fas fa-arrow-right ml-2"></i></button>
+            <button id="btnLogin" onclick="doLogin()" class="w-full bg-indigo-600 text-white p-3.5 rounded-xl text-lg font-bold hover:bg-indigo-700 transition transform hover:scale-105 shadow-lg active:scale-95">Masuk <i class="fas fa-arrow-right ml-2"></i></button>
             <p id="loginError" class="text-red-400 mt-3 font-semibold text-sm hidden"></p>
-            <p id="loginInfo" class="text-emerald-300 mt-2 text-xs hidden"></p>
-            <!-- Tulisan Default Sudah Dihapus -->
         </div>
     </div>
 
     <!-- ================= MAIN APP ================= -->
-    <!-- Dipaksa display:none agar tidak bocor sebelum login -->
     <div id="mainApp" style="display: none; height: 100vh; overflow: hidden;" class="flex">
         
         <div id="sidebarOverlay" onclick="toggleSidebar(false)"></div>
@@ -99,7 +95,7 @@
         <!-- SIDEBAR -->
         <div id="sidebar" class="w-72 bg-white border-r border-gray-200 flex flex-col justify-between p-6 shadow-xl">
             <div>
-                <h1 class="text-2xl font-extrabold text-indigo-600 mb-10 flex items-center">🌶️ BumbuKu</h1>
+                <h1 class="text-2xl font-extrabold text-indigo-600 mb-10 flex items-center">BumbuKu</h1>
                 <ul class="space-y-2">
                     <li onclick="showPage('dashboard',this)" class="sidebar-item active cursor-pointer p-4 rounded-xl text-lg font-semibold flex items-center transition hover:bg-indigo-50"><i class="fas fa-chart-pie w-8 text-xl"></i> Dashboard</li>
                     <li onclick="showPage('catatModal',this)" class="sidebar-item cursor-pointer p-4 rounded-xl text-lg font-semibold flex items-center transition hover:bg-indigo-50 text-gray-600"><i class="fas fa-truck-loading w-8 text-xl"></i> Catat Modal</li>
@@ -122,7 +118,7 @@
             
             <!-- DASHBOARD -->
             <div id="page-dashboard" class="page-content page-transition">
-                <h2 class="text-4xl font-extrabold mb-2 text-gray-800 mt-12 sm:mt-0">📊 Ringkasan Hari Ini</h2>
+                <h2 class="text-4xl font-extrabold mb-2 text-gray-800 mt-12 sm:mt-0">Ringkasan Hari Ini</h2>
                 <p class="text-gray-500 mb-8 text-lg">Data pemasukan dan pengeluaran hari ini secara realtime.</p>
                 <div class="grid grid-cols-3 gap-8 mb-10">
                     <div class="bg-white p-8 rounded-3xl card-glow-indigo border border-indigo-100 transition transform hover:-translate-y-2">
@@ -150,21 +146,21 @@
                 <div class="bg-white p-6 sm:p-10 rounded-3xl shadow-sm max-w-3xl border border-gray-100">
                     <div class="grid grid-cols-2 gap-6 mb-6">
                         <div>
-                            <label class="block text-lg font-bold mb-2 text-gray-600">📅 Tanggal Belanja</label>
+                            <label class="block text-lg font-bold mb-2 text-gray-600">Tanggal Belanja</label>
                             <input type="date" id="modalTgl" class="w-full p-4 border-2 rounded-xl text-lg outline-none transition">
                         </div>
                         <div>
-                            <label class="block text-lg font-bold mb-2 text-gray-600">💰 Total Harga Modal (Rp)</label>
+                            <label class="block text-lg font-bold mb-2 text-gray-600">Total Harga Modal (Rp)</label>
                             <input type="number" id="modalHarga" placeholder="500000" class="w-full p-4 border-2 rounded-xl text-lg outline-none transition">
                         </div>
                     </div>
                     <div class="grid grid-cols-2 gap-6 mb-8">
                         <div>
-                            <label class="block text-lg font-bold mb-2 text-gray-600">🌶️ Nama Bumbu</label>
+                            <label class="block text-lg font-bold mb-2 text-gray-600">Nama Bumbu</label>
                             <input type="text" id="modalNama" placeholder="Cabe Kering Brekele" class="w-full p-4 border-2 rounded-xl text-lg outline-none transition">
                         </div>
                         <div>
-                            <label class="block text-lg font-bold mb-2 text-gray-600">⚖️ Jumlah Beli (Kg)</label>
+                            <label class="block text-lg font-bold mb-2 text-gray-600">Jumlah Beli (Kg)</label>
                             <input type="number" id="modalKg" placeholder="10" class="w-full p-4 border-2 rounded-xl text-lg outline-none transition">
                         </div>
                     </div>
@@ -178,25 +174,25 @@
                 <div class="bg-white p-6 sm:p-10 rounded-3xl shadow-sm max-w-3xl border border-gray-100">
                     <div class="grid grid-cols-2 gap-6 mb-6">
                         <div>
-                            <label class="block text-lg font-bold mb-2 text-gray-600">📅 Tanggal Jual</label>
+                            <label class="block text-lg font-bold mb-2 text-gray-600">Tanggal Jual</label>
                             <input type="date" id="jualTgl" class="w-full p-4 border-2 rounded-xl text-lg outline-none transition">
                         </div>
                         <div>
-                            <label class="block text-lg font-bold mb-2 text-gray-600">🌶️ Nama Bumbu</label>
+                            <label class="block text-lg font-bold mb-2 text-gray-600">Nama Bumbu</label>
                             <input type="text" id="jualNama" placeholder="Cabe Kering Brekele" class="w-full p-4 border-2 rounded-xl text-lg outline-none transition">
                         </div>
                     </div>
                     <div class="grid grid-cols-3 gap-6 mb-6">
                         <div>
-                            <label class="block text-lg font-bold mb-2 text-gray-600">⚖️ Jumlah Jual (Kg)</label>
+                            <label class="block text-lg font-bold mb-2 text-gray-600">Jumlah Jual (Kg)</label>
                             <input type="number" id="jualKg" placeholder="2" class="w-full p-4 border-2 rounded-xl text-lg outline-none transition">
                         </div>
                         <div>
-                            <label class="block text-lg font-bold mb-2 text-gray-600">💵 Harga Jual Normal (Rp)</label>
+                            <label class="block text-lg font-bold mb-2 text-gray-600">Harga Jual Normal (Rp)</label>
                             <input type="number" id="jualHarga" placeholder="150000" class="w-full p-4 border-2 rounded-xl text-lg outline-none transition">
                         </div>
                         <div>
-                            <label class="block text-lg font-bold mb-2 text-gray-600">📉 Potongan / Kurang (Rp)</label>
+                            <label class="block text-lg font-bold mb-2 text-gray-600">Potongan / Kurang (Rp)</label>
                             <input type="number" id="jualPotong" value="0" placeholder="5000" class="w-full p-4 border-2 rounded-xl text-lg outline-none transition border-rose-300">
                         </div>
                     </div>
@@ -211,8 +207,8 @@
                     <table class="w-full text-left border-collapse">
                         <thead>
                             <tr class="border-b-2 text-xl text-gray-500">
-                                <th class="p-5">🌶️ Nama Bumbu</th>
-                                <th class="p-5">⚖️ Sisa Stok (Kg)</th>
+                                <th class="p-5">Nama Bumbu</th>
+                                <th class="p-5">Sisa Stok (Kg)</th>
                             </tr>
                         </thead>
                         <tbody id="tabelStok" class="text-lg font-bold"></tbody>
@@ -263,7 +259,7 @@
 
     <script>
         // ================= KONFIGURASI =================
-        const API_URL = 'https://script.google.com/macros/s/AKfycbzZQLDX6xchHUexXdh0cS2Sm3WSnQUkDUaxKbmywAPdczhxv5NSvno-qoL1b3ESxJGoWw/exec';
+        const API_URL = 'https://script.google.com/macros/s/AKfycbzDmMJFAxEbSc-66g16wdn6lIW3BCNJeqZaYsI8R6LpBieAoTdt49S3yYu3HQQvmluBUg/exec';
         let salesChartInstance = null;
 
         // ================= HELPER =================
@@ -275,11 +271,6 @@
             el.innerText = pesan; el.classList.remove('hidden');
         }
         function hideLoginError() { document.getElementById('loginError').classList.add('hidden'); }
-        function showLoginInfo(pesan) {
-            var el = document.getElementById('loginInfo');
-            el.innerText = pesan; el.classList.remove('hidden');
-        }
-        function hideLoginInfo() { document.getElementById('loginInfo').classList.add('hidden'); }
         
         function toggleSidebar(open) {
             var sidebar = document.getElementById('sidebar');
@@ -399,8 +390,8 @@
             });
         }
 
-        // ================= LOGIN =================
-        function login() {
+        // ================= LOGIN 100% LOCAL (NO SERVER WAIT) =================
+        function doLogin() {
             var u = document.getElementById('username').value.trim();
             var p = document.getElementById('password').value.trim();
             
@@ -409,51 +400,10 @@
                 return;
             }
             
-            // RAHASIANYA DI SINI:
-            // Kalau pakai admin/admin123, LANGSUNG MASUK! Tidak nunggu server 15 detik!
             if (u === 'admin' && p === 'admin123') {
                 masukDashboard();
-                return;
-            }
-            
-            // Kalau bukan admin, baru cek ke server
-            hideLoginError(); hideLoginInfo();
-            var btn = document.getElementById('btnLogin');
-            var originalText = btn.innerHTML;
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Mengecek...';
-            btn.disabled = true;
-
-            try {
-                var users = apiGet('Users');
-                users.then(function(users) {
-                    var match = null;
-                    if (users && Array.isArray(users)) {
-                        for (var i = 1; i < users.length; i++) {
-                            if (!users[i] || !users[i][0]) continue;
-                            var rowU = String(users[i][0]).trim();
-                            var rowP = String(users[i][1] || '').trim();
-                            if (rowU === u && rowP === p) {
-                                match = users[i]; break;
-                            }
-                        }
-                    }
-                    
-                    if (match) {
-                        masukDashboard();
-                    } else {
-                        showLoginError('❌ Username atau password salah!');
-                    }
-                    btn.innerHTML = originalText;
-                    btn.disabled = false;
-                }).catch(function(err) {
-                    showLoginError('❌ Server tidak terhubung!');
-                    btn.innerHTML = originalText;
-                    btn.disabled = false;
-                });
-            } catch(err) {
-                showLoginError('❌ Terjadi kesalahan sistem!');
-                btn.innerHTML = originalText;
-                btn.disabled = false;
+            } else {
+                showLoginError('❌ Username atau password salah!');
             }
         }
 
@@ -462,14 +412,14 @@
             document.getElementById('mainApp').style.display = 'flex';
             document.getElementById('username').value = '';
             document.getElementById('password').value = '';
-            hideLoginError(); hideLoginInfo();
+            hideLoginError();
             loadDashboard();
         }
 
         function logout() {
             document.getElementById('mainApp').style.display = 'none';
             document.getElementById('loginPage').style.display = 'flex';
-            hideLoginError(); hideLoginInfo();
+            hideLoginError();
             document.getElementById('username').value = '';
             document.getElementById('password').value = '';
             toggleSidebar(false);
