@@ -21,34 +21,34 @@
 
         @keyframes blinkText {
             0%, 100% { opacity: 1; }
-            50% { opacity: 0.15; }
+            50% { opacity: 0.12; }
         }
         .blink-login { animation: blinkText 1.2s ease-in-out infinite; }
 
         @keyframes glowIndigo {
-            0% { box-shadow: 0 0 5px rgba(79, 70, 229, 0.2); }
-            50% { box-shadow: 0 0 25px rgba(79, 70, 229, 0.6); }
-            100% { box-shadow: 0 0 5px rgba(79, 70, 229, 0.2); }
+            0% { box-shadow: 0 0 5px rgba(79,70,229,0.2); }
+            50% { box-shadow: 0 0 25px rgba(79,70,229,0.6); }
+            100% { box-shadow: 0 0 5px rgba(79,70,229,0.2); }
         }
         @keyframes glowRose {
-            0% { box-shadow: 0 0 5px rgba(244, 63, 94, 0.2); }
-            50% { box-shadow: 0 0 25px rgba(244, 63, 94, 0.6); }
-            100% { box-shadow: 0 0 5px rgba(244, 63, 94, 0.2); }
+            0% { box-shadow: 0 0 5px rgba(244,63,94,0.2); }
+            50% { box-shadow: 0 0 25px rgba(244,63,94,0.6); }
+            100% { box-shadow: 0 0 5px rgba(244,63,94,0.2); }
         }
         @keyframes glowEmerald {
-            0% { box-shadow: 0 0 5px rgba(16, 185, 129, 0.2); }
-            50% { box-shadow: 0 0 25px rgba(16, 185, 129, 0.6); }
-            100% { box-shadow: 0 0 5px rgba(16, 185, 129, 0.2); }
+            0% { box-shadow: 0 0 5px rgba(16,185,129,0.2); }
+            50% { box-shadow: 0 0 25px rgba(16,185,129,0.6); }
+            100% { box-shadow: 0 0 5px rgba(16,185,129,0.2); }
         }
         .card-glow-indigo { animation: glowIndigo 3s infinite alternate; }
         .card-glow-rose { animation: glowRose 3s infinite alternate; }
         .card-glow-emerald { animation: glowEmerald 3s infinite alternate; }
         
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeIn { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
         .page-transition { animation: fadeIn 0.4s ease-out; }
         
-        .sidebar-item.active { background: linear-gradient(to right, #eef2ff, #ffffff); border-left: 5px solid #4f46e5; color: #4f46e5; font-weight: 800; }
-        input:focus { box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.3); }
+        .sidebar-item.active { background: linear-gradient(to right,#eef2ff,#fff); border-left: 5px solid #4f46e5; color: #4f46e5; font-weight: 800; }
+        input:focus { box-shadow: 0 0 0 3px rgba(79,70,229,0.3); }
         ::-webkit-scrollbar { width: 8px; }
         ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
     </style>
@@ -59,7 +59,7 @@
     <div id="loginPage" class="fixed inset-0 bg-gray-950 flex items-center justify-center z-50">
         <div class="bg-gray-900 p-10 rounded-3xl w-[420px] text-center neon-border relative overflow-hidden">
             <div class="mb-8">
-                <!-- TIDAK ADA GAMBAR KUNING. HANYA TEKS KEDAP-KEDIPI -->
+                <!-- TIDAK ADA GAMBAR KUNING. CUMA TEKS KEDAP-KEDIPI -->
                 <h1 class="text-3xl font-extrabold text-white mb-1 tracking-wide blink-login">✨ Silahkan Login ✨</h1>
             </div>
             <div class="text-left mb-4">
@@ -72,7 +72,7 @@
             </div>
             <button id="btnLogin" onclick="login()" class="w-full bg-indigo-600 text-white p-3.5 rounded-xl text-lg font-bold hover:bg-indigo-700 transition transform hover:scale-105 shadow-lg">Masuk <i class="fas fa-arrow-right ml-2"></i></button>
             <p id="loginError" class="text-red-400 mt-3 font-semibold text-sm hidden"></p>
-            <p id="loginInfo" class="text-yellow-300 mt-2 text-xs hidden"></p>
+            <p id="loginInfo" class="text-emerald-300 mt-2 text-xs hidden"></p>
         </div>
     </div>
 
@@ -84,11 +84,11 @@
             <div>
                 <h1 class="text-2xl font-extrabold text-indigo-600 mb-10 flex items-center">🌶️ BumbuKu</h1>
                 <ul class="space-y-2">
-                    <li onclick="showPage('dashboard', this)" class="sidebar-item active cursor-pointer p-4 rounded-xl text-lg font-semibold flex items-center transition hover:bg-indigo-50"><i class="fas fa-chart-pie w-8 text-xl"></i> Dashboard</li>
-                    <li onclick="showPage('catatModal', this)" class="sidebar-item cursor-pointer p-4 rounded-xl text-lg font-semibold flex items-center transition hover:bg-indigo-50 text-gray-600"><i class="fas fa-truck-loading w-8 text-xl"></i> Catat Modal</li>
-                    <li onclick="showPage('catatJual', this)" class="sidebar-item cursor-pointer p-4 rounded-xl text-lg font-semibold flex items-center transition hover:bg-indigo-50 text-gray-600"><i class="fas fa-cash-register w-8 text-xl"></i> Catat Penjualan</li>
-                    <li onclick="showPage('stok', this)" class="sidebar-item cursor-pointer p-4 rounded-xl text-lg font-semibold flex items-center transition hover:bg-indigo-50 text-gray-600"><i class="fas fa-boxes-stacked w-8 text-xl"></i> Stok Bumbu</li>
-                    <li onclick="showPage('laporan', this)" class="sidebar-item cursor-pointer p-4 rounded-xl text-lg font-semibold flex items-center transition hover:bg-indigo-50 text-gray-600"><i class="fas fa-file-invoice-dollar w-8 text-xl"></i> Laporan Bulanan</li>
+                    <li onclick="showPage('dashboard',this)" class="sidebar-item active cursor-pointer p-4 rounded-xl text-lg font-semibold flex items-center transition hover:bg-indigo-50"><i class="fas fa-chart-pie w-8 text-xl"></i> Dashboard</li>
+                    <li onclick="showPage('catatModal',this)" class="sidebar-item cursor-pointer p-4 rounded-xl text-lg font-semibold flex items-center transition hover:bg-indigo-50 text-gray-600"><i class="fas fa-truck-loading w-8 text-xl"></i> Catat Modal</li>
+                    <li onclick="showPage('catatJual',this)" class="sidebar-item cursor-pointer p-4 rounded-xl text-lg font-semibold flex items-center transition hover:bg-indigo-50 text-gray-600"><i class="fas fa-cash-register w-8 text-xl"></i> Catat Penjualan</li>
+                    <li onclick="showPage('stok',this)" class="sidebar-item cursor-pointer p-4 rounded-xl text-lg font-semibold flex items-center transition hover:bg-indigo-50 text-gray-600"><i class="fas fa-boxes-stacked w-8 text-xl"></i> Stok Bumbu</li>
+                    <li onclick="showPage('laporan',this)" class="sidebar-item cursor-pointer p-4 rounded-xl text-lg font-semibold flex items-center transition hover:bg-indigo-50 text-gray-600"><i class="fas fa-file-invoice-dollar w-8 text-xl"></i> Laporan Bulanan</li>
                 </ul>
             </div>
             <div>
@@ -242,7 +242,8 @@
 
     <script>
         // ================= KONFIGURASI =================
-        const API_URL = 'https://script.google.com/macros/s/AKfycbx89b_7XCMbknc-qlfgsCq1US6heXdT541L14OgIH4F-_J7A8mhB3ALw5Qxfm212mQTOQ/exec';
+        // ⚠️ GANTI URL INI DENGAN URL DEPLOYMENT BARU SETELAH UPDATE APPS SCRIPT!
+        const API_URL = 'https://script.google.com/macros/s/AKfycbzZQLDX6xchHUexXdh0cS2Sm3WSnQUkDUaxKbmywAPdczhxv5NSvno-qoL1b3ESxJGoWw/exec';
         let salesChartInstance = null;
 
         // ================= HELPER =================
@@ -250,28 +251,24 @@
         const getToday = () => new Date().toISOString().split('T')[0];
 
         function showLoginError(pesan) {
-            const el = document.getElementById('loginError');
+            var el = document.getElementById('loginError');
             el.innerText = pesan; el.classList.remove('hidden');
         }
-        function hideLoginError() {
-            document.getElementById('loginError').classList.add('hidden');
-        }
+        function hideLoginError() { document.getElementById('loginError').classList.add('hidden'); }
         function showLoginInfo(pesan) {
-            const el = document.getElementById('loginInfo');
+            var el = document.getElementById('loginInfo');
             el.innerText = pesan; el.classList.remove('hidden');
         }
-        function hideLoginInfo() {
-            document.getElementById('loginInfo').classList.add('hidden');
-        }
+        function hideLoginInfo() { document.getElementById('loginInfo').classList.add('hidden'); }
         
-        window.onload = () => {
+        window.onload = function() {
             document.getElementById('modalTgl').value = getToday();
             document.getElementById('jualTgl').value = getToday();
             
-            const yr = new Date().getFullYear();
-            const yrSelect = document.getElementById('filterTahun');
-            for(let i = yr - 2; i <= yr + 1; i++) {
-                const opt = document.createElement('option'); opt.value = i; opt.innerText = i;
+            var yr = new Date().getFullYear();
+            var yrSelect = document.getElementById('filterTahun');
+            for(var i = yr - 2; i <= yr + 1; i++) {
+                var opt = document.createElement('option'); opt.value = i; opt.innerText = i;
                 if(i === yr) opt.selected = true;
                 yrSelect.appendChild(opt);
             }
@@ -288,9 +285,9 @@
 
         // ================= NAVIGATION =================
         function showPage(page, element) {
-            document.querySelectorAll('.page-content').forEach(p => p.classList.add('hidden'));
+            document.querySelectorAll('.page-content').forEach(function(p) { p.classList.add('hidden'); });
             document.getElementById('page-' + page).classList.remove('hidden');
-            document.querySelectorAll('.sidebar-item').forEach(item => {
+            document.querySelectorAll('.sidebar-item').forEach(function(item) {
                 item.classList.remove('active'); item.classList.add('text-gray-600');
             });
             element.classList.add('active'); element.classList.remove('text-gray-600');
@@ -299,134 +296,104 @@
             if(page === 'laporan') loadLaporan();
         }
 
-        // ================= API CALLS (3 METODE) =================
-        // Metode 1: fetch biasa
-        // Metode 2: XMLHttpRequest (lebih kompatibel CORS)
-        // Metode 3: Fallback kalau CORS total nge-block
+        // ================= API PAKAI JSONP (BYPASS CORS 100%) =================
+        // JSONP: Inject <script> tag, browser eksekusi callback, TIDAK KENA CORS
+        function apiGet(sheet) {
+            return new Promise(function(resolve, reject) {
+                var cbName = '_jcb_' + Date.now() + '_' + Math.floor(Math.random() * 999999);
+                var script = document.createElement('script');
+                var done = false;
 
-        async function apiGet(sheet) {
-            const url = `${API_URL}?sheet=${sheet}&action=read&_t=${Date.now()}`;
-            
-            // METODE 1: fetch
-            try {
-                const res = await fetch(url, { redirect: 'follow', cache: 'no-store' });
-                const text = await res.text();
-                const data = JSON.parse(text);
-                if (Array.isArray(data)) return data;
-            } catch(e1) {
-                console.warn('Metode fetch gagal:', e1.message);
-            }
+                window[cbName] = function(data) {
+                    if (done) return;
+                    done = true;
+                    delete window[cbName];
+                    if (script.parentNode) script.parentNode.removeChild(script);
+                    resolve(data);
+                };
 
-            // METODE 2: XMLHttpRequest
-            try {
-                const data = await new Promise((resolve, reject) => {
-                    const xhr = new XMLHttpRequest();
-                    xhr.open('GET', url, true);
-                    xhr.setRequestHeader('Accept', 'application/json');
-                    xhr.onload = function() {
-                        if (xhr.status === 200) {
-                            try { resolve(JSON.parse(xhr.responseText)); } 
-                            catch(e) { reject(new Error('Bukan JSON')); }
-                        } else { reject(new Error('Status ' + xhr.status)); }
-                    };
-                    xhr.onerror = function() { reject(new Error('XHR network error')); };
-                    xhr.send();
-                });
-                if (Array.isArray(data)) return data;
-            } catch(e2) {
-                console.warn('Metode XHR gagal:', e2.message);
-            }
+                script.src = API_URL + '?sheet=' + sheet + '&action=read&callback=' + cbName;
+                script.onerror = function() {
+                    if (done) return;
+                    done = true;
+                    delete window[cbName];
+                    if (script.parentNode) script.parentNode.removeChild(script);
+                    reject(new Error('JSONP network error'));
+                };
+                document.head.appendChild(script);
 
-            // METODE 3: Google Apps Script redirect workaround - buka di iframe tersembunyi
-            try {
-                const data = await new Promise((resolve, reject) => {
-                    const callbackName = 'cb_' + Date.now();
-                    const iframe = document.createElement('iframe');
-                    iframe.style.display = 'none';
-                    iframe.src = url;
-                    document.body.appendChild(iframe);
-                    
-                    const timeout = setTimeout(() => {
-                        document.body.removeChild(iframe);
-                        reject(new Error('Iframe timeout'));
-                    }, 8000);
-
-                    // Coba baca iframe setelah load
-                    iframe.onload = function() {
-                        try {
-                            const doc = iframe.contentDocument || iframe.contentWindow.document;
-                            const text = doc.body.innerText;
-                            const parsed = JSON.parse(text);
-                            clearTimeout(timeout);
-                            document.body.removeChild(iframe);
-                            resolve(parsed);
-                        } catch(e) {
-                            clearTimeout(timeout);
-                            try { document.body.removeChild(iframe); } catch(x){}
-                            reject(new Error('Iframe CORS block'));
-                        }
-                    };
-                });
-                if (Array.isArray(data)) return data;
-            } catch(e3) {
-                console.warn('Metode iframe gagal:', e3.message);
-            }
-
-            // Semua metode gagal - return null
-            console.error('SEMUA METODE GAGAL. API tidak bisa diakses.');
-            return null;
+                // Timeout 15 detik
+                setTimeout(function() {
+                    if (done) return;
+                    done = true;
+                    delete window[cbName];
+                    if (script.parentNode) script.parentNode.removeChild(script);
+                    reject(new Error('JSONP timeout 15s'));
+                }, 15000);
+            });
         }
 
-        async function apiPost(sheet, data) {
-            const url = `${API_URL}?sheet=${sheet}&action=write&data=${encodeURIComponent(JSON.stringify(data))}&_t=${Date.now()}`;
-            try {
-                await fetch(url, { redirect: 'follow', cache: 'no-store', mode: 'no-cors' });
-                return 'ok';
-            } catch(e) {
-                // Fallback XHR
-                try {
-                    await new Promise((resolve, reject) => {
-                        const xhr = new XMLHttpRequest();
-                        xhr.open('GET', url, true);
-                        xhr.onload = () => resolve();
-                        xhr.onerror = () => reject();
-                        xhr.send();
-                    });
-                    return 'ok';
-                } catch(e2) {
-                    throw new Error('Gagal kirim data ke server');
-                }
-            }
+        function apiPost(sheet, data) {
+            return new Promise(function(resolve, reject) {
+                var cbName = '_jcb_' + Date.now() + '_' + Math.floor(Math.random() * 999999);
+                var script = document.createElement('script');
+                var done = false;
+
+                window[cbName] = function(resp) {
+                    if (done) return;
+                    done = true;
+                    delete window[cbName];
+                    if (script.parentNode) script.parentNode.removeChild(script);
+                    resolve(resp);
+                };
+
+                script.src = API_URL + '?sheet=' + sheet + '&action=write&data=' + encodeURIComponent(JSON.stringify(data)) + '&callback=' + cbName;
+                script.onerror = function() {
+                    if (done) return;
+                    done = true;
+                    delete window[cbName];
+                    if (script.parentNode) script.parentNode.removeChild(script);
+                    reject(new Error('JSONP write error'));
+                };
+                document.head.appendChild(script);
+
+                setTimeout(function() {
+                    if (done) return;
+                    done = true;
+                    delete window[cbName];
+                    if (script.parentNode) script.parentNode.removeChild(script);
+                    reject(new Error('JSONP write timeout'));
+                }, 15000);
+            });
         }
 
         // ================= LOGIN =================
         async function login() {
-            const u = document.getElementById('username').value.trim();
-            const p = document.getElementById('password').value.trim();
+            var u = document.getElementById('username').value.trim();
+            var p = document.getElementById('password').value.trim();
             
             if(!u || !p) {
                 showLoginError('❌ Lengkapi username dan password!');
                 return;
             }
             
-            hideLoginError();
-            hideLoginInfo();
-            const btn = document.getElementById('btnLogin');
-            const originalText = btn.innerHTML;
+            hideLoginError(); hideLoginInfo();
+            var btn = document.getElementById('btnLogin');
+            var originalText = btn.innerHTML;
             btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Mengecek...';
             btn.disabled = true;
 
             try {
-                const users = await apiGet('Users');
-                console.log('Data Users dari server:', users);
+                var users = await apiGet('Users');
+                console.log('✅ Data Users dari server:', users);
                 
                 if (users && Array.isArray(users) && users.length >= 2) {
                     // API berhasil - cek login dari database
-                    let match = null;
-                    for (let i = 1; i < users.length; i++) {
+                    var match = null;
+                    for (var i = 1; i < users.length; i++) {
                         if (!users[i] || !users[i][0]) continue;
-                        const rowU = String(users[i][0]).trim();
-                        const rowP = String(users[i][1]).trim();
+                        var rowU = String(users[i][0]).trim();
+                        var rowP = String(users[i][1]).trim();
                         if (rowU === u && rowP === p) {
                             match = users[i]; break;
                         }
@@ -435,27 +402,25 @@
                         masukDashboard();
                     } else {
                         showLoginError('❌ Username atau password salah!');
-                        showLoginInfo('💡 Data di sheet Users: ' + JSON.stringify(users));
                     }
                 } else {
-                    // API gagal atau data kosong - EMERGENCY LOGIN
-                    console.warn('API gagal/null, pakai emergency login');
+                    // Data tidak valid - emergency login
                     if (u === 'admin' && p === 'admin123') {
-                        showLoginInfo('⚠️ Login darurat (API tidak terhubung)');
+                        showLoginInfo('⚠️ Login darurat (data Users tidak valid)');
                         masukDashboard();
                     } else {
-                        showLoginError('❌ API tidak terhubung! Coba: admin / admin123');
-                        showLoginInfo('💡 Buka URL ini di tab baru untuk cek:\n' + API_URL + '?sheet=Users&action=read');
+                        showLoginError('❌ Data login tidak ditemukan! Coba: admin / admin123');
                     }
                 }
             } catch(err) {
-                console.error('Error login total:', err);
-                // Emergency login
+                console.error('❌ Login error:', err.message);
+                // JSONP gagal total - emergency login
                 if (u === 'admin' && p === 'admin123') {
-                    showLoginInfo('⚠️ Login darurat (server error)');
+                    showLoginInfo('⚠️ Login darurat (server tidak terhubung)');
                     masukDashboard();
                 } else {
-                    showLoginError('❌ Server error! Coba: admin / admin123');
+                    showLoginError('❌ Server tidak terhubung! Coba: admin / admin123');
+                    showLoginInfo('💡 Pastikan Apps Script sudah di-update & deploy ulang dengan JSONP');
                 }
             }
 
@@ -468,7 +433,7 @@
             document.getElementById('mainApp').classList.remove('hidden');
             document.getElementById('username').value = '';
             document.getElementById('password').value = '';
-            hideLoginError();
+            hideLoginError(); hideLoginInfo();
             loadDashboard();
         }
 
@@ -482,10 +447,10 @@
 
         // ================= SIMPAN MODAL =================
         async function simpanModal() {
-            const tgl = document.getElementById('modalTgl').value;
-            const nama = document.getElementById('modalNama').value.trim();
-            const kg = parseFloat(document.getElementById('modalKg').value);
-            const harga = parseFloat(document.getElementById('modalHarga').value);
+            var tgl = document.getElementById('modalTgl').value;
+            var nama = document.getElementById('modalNama').value.trim();
+            var kg = parseFloat(document.getElementById('modalKg').value);
+            var harga = parseFloat(document.getElementById('modalHarga').value);
             
             if(!tgl || !nama || !kg || !harga) return alert('❌ Lengkapi semua data modal!');
             if(kg <= 0 || harga <= 0) return alert('❌ Jumlah dan harga harus lebih dari 0!');
@@ -503,29 +468,29 @@
 
         // ================= SIMPAN PENJUALAN =================
         async function simpanJual() {
-            const tgl = document.getElementById('jualTgl').value;
-            const nama = document.getElementById('jualNama').value.trim();
-            const kg = parseFloat(document.getElementById('jualKg').value);
-            const hargaJual = parseFloat(document.getElementById('jualHarga').value);
-            const potongan = parseFloat(document.getElementById('jualPotong').value) || 0;
+            var tgl = document.getElementById('jualTgl').value;
+            var nama = document.getElementById('jualNama').value.trim();
+            var kg = parseFloat(document.getElementById('jualKg').value);
+            var hargaJual = parseFloat(document.getElementById('jualHarga').value);
+            var potongan = parseFloat(document.getElementById('jualPotong').value) || 0;
             
             if(!tgl || !nama || !kg || !hargaJual) return alert('❌ Lengkapi semua data penjualan!');
             if(kg <= 0 || hargaJual <= 0) return alert('❌ Jumlah dan harga harus lebih dari 0!');
             
-            const totalBayar = (hargaJual * kg) - potongan;
+            var totalBayar = (hargaJual * kg) - potongan;
 
             try {
-                const modalData = await apiGet('Modal');
-                let hargaModalPerKg = 0;
+                var modalData = await apiGet('Modal');
+                var hargaModalPerKg = 0;
                 if (modalData && Array.isArray(modalData)) {
-                    for(let i = modalData.length - 1; i >= 1; i--) {
-                        if(String(modalData[i][1]).trim() === nama) {
+                    for(var i = modalData.length - 1; i >= 1; i--) {
+                        if(modalData[i] && String(modalData[i][1]).trim() === nama) {
                             hargaModalPerKg = modalData[i][3] / modalData[i][2]; 
                             break;
                         }
                     }
                 }
-                const untung = totalBayar - (hargaModalPerKg * kg);
+                var untung = totalBayar - (hargaModalPerKg * kg);
 
                 await apiPost('Penjualan', [tgl, nama, kg, hargaJual, potongan, totalBayar, untung]);
                 alert('✅ Penjualan dicatat! Stok otomatis berkurang.');
@@ -541,32 +506,25 @@
         // ================= LOAD DASHBOARD =================
         async function loadDashboard() {
             try {
-                const jualData = await apiGet('Penjualan');
-                const modalData = await apiGet('Modal');
+                var jualData = await apiGet('Penjualan');
+                var modalData = await apiGet('Modal');
+                if (!jualData || !modalData) return;
                 
-                if (!jualData || !modalData) {
-                    console.warn('Dashboard: data null dari API');
-                    return;
-                }
-                
-                const today = getToday();
-                let pemasukanHariIni = 0, pengeluaranHariIni = 0, untungHariIni = 0;
-                const chartBulanan = {};
-                const bulanIni = today.substring(0, 7);
+                var today = getToday();
+                var pemasukanHariIni = 0, pengeluaranHariIni = 0, untungHariIni = 0;
+                var chartBulanan = {};
+                var bulanIni = today.substring(0, 7);
 
-                for(let i=1; i < jualData.length; i++) {
+                for(var i=1; i < jualData.length; i++) {
                     if (!jualData[i]) continue;
-                    const tgl = jualData[i][0], total = jualData[i][5], untung = jualData[i][6];
-                    if(tgl == today) {
-                        pemasukanHariIni += Number(total);
-                        untungHariIni += Number(untung);
-                    }
+                    var tgl = jualData[i][0], total = jualData[i][5], untung = jualData[i][6];
+                    if(tgl == today) { pemasukanHariIni += Number(total); untungHariIni += Number(untung); }
                     if(String(tgl).substring(0,7) == bulanIni) {
-                        const day = String(tgl).substring(8,10);
+                        var day = String(tgl).substring(8,10);
                         chartBulanan[day] = (chartBulanan[day] || 0) + Number(total);
                     }
                 }
-                for(let i=1; i < modalData.length; i++) {
+                for(var i=1; i < modalData.length; i++) {
                     if(modalData[i] && modalData[i][0] == today) pengeluaranHariIni += Number(modalData[i][3]);
                 }
 
@@ -574,73 +532,63 @@
                 document.getElementById('dPengeluaran').innerText = formatRp(pengeluaranHariIni);
                 document.getElementById('dUntung').innerText = formatRp(untungHariIni);
 
-                const labels = Object.keys(chartBulanan).sort();
-                const values = labels.map(l => chartBulanan[l]);
+                var labels = Object.keys(chartBulanan).sort();
+                var values = labels.map(function(l) { return chartBulanan[l]; });
                 
                 if(salesChartInstance) salesChartInstance.destroy();
-                const ctx = document.getElementById('salesChart').getContext('2d');
+                var ctx = document.getElementById('salesChart').getContext('2d');
                 salesChartInstance = new Chart(ctx, {
                     type: 'line',
-                    data: {
-                        labels: labels.map(l => 'Tgl ' + l),
-                        datasets: [{
-                            label: 'Penjualan (Rp)', data: values,
-                            borderColor: '#4f46e5', backgroundColor: 'rgba(79, 70, 229, 0.1)',
-                            fill: true, tension: 0.4, borderWidth: 3
-                        }]
-                    },
-                    options: { scales: { y: { beginAtZero: true, ticks: { callback: v => formatRp(v) } } } } }
+                    data: { labels: labels.map(function(l){return 'Tgl '+l;}), datasets: [{ label: 'Penjualan (Rp)', data: values, borderColor: '#4f46e5', backgroundColor: 'rgba(79,70,229,0.1)', fill: true, tension: 0.4, borderWidth: 3 }] },
+                    options: { scales: { y: { beginAtZero: true, ticks: { callback: function(v){return formatRp(v);} } } } } }
                 });
-            } catch(err) { console.error('Error dashboard:', err); }
+            } catch(err) { console.error('Dashboard error:', err); }
         }
 
         // ================= LOAD STOK =================
         async function loadStok() {
             try {
-                const stokData = await apiGet('Stok');
+                var stokData = await apiGet('Stok');
                 if (!stokData) return;
-                const tbody = document.getElementById('tabelStok');
+                var tbody = document.getElementById('tabelStok');
                 tbody.innerHTML = '';
-                for(let i=1; i < stokData.length; i++) {
+                for(var i=1; i < stokData.length; i++) {
                     if (!stokData[i]) continue;
-                    tbody.innerHTML += `<tr class="border-b hover:bg-gray-50 transition"><td class="p-5">${stokData[i][0]}</td><td class="p-5">${stokData[i][1]} Kg</td></tr>`;
+                    tbody.innerHTML += '<tr class="border-b hover:bg-gray-50 transition"><td class="p-5">'+stokData[i][0]+'</td><td class="p-5">'+stokData[i][1]+' Kg</td></tr>';
                 }
-            } catch(err) { console.error('Error stok:', err); }
+            } catch(err) { console.error('Stok error:', err); }
         }
 
         // ================= LOAD LAPORAN =================
         async function loadLaporan() {
             try {
-                const bulan = document.getElementById('filterBulan').value;
-                const tahun = document.getElementById('filterTahun').value;
-                const prefix = `${tahun}-${bulan}`;
-
-                const jualData = await apiGet('Penjualan');
-                const modalData = await apiGet('Modal');
+                var bulan = document.getElementById('filterBulan').value;
+                var tahun = document.getElementById('filterTahun').value;
+                var prefix = tahun + '-' + bulan;
+                var jualData = await apiGet('Penjualan');
+                var modalData = await apiGet('Modal');
                 if (!jualData || !modalData) return;
 
-                let totalPemasukan = 0, totalModal = 0, totalUntung = 0;
-                const tbody = document.getElementById('tabelLaporan');
+                var totalPemasukan = 0, totalModal = 0, totalUntung = 0;
+                var tbody = document.getElementById('tabelLaporan');
                 tbody.innerHTML = '';
 
-                for(let i=1; i < jualData.length; i++) {
+                for(var i=1; i < jualData.length; i++) {
                     if(!jualData[i]) continue;
                     if(String(jualData[i][0]).substring(0,7) == prefix) {
                         totalPemasukan += Number(jualData[i][5]);
                         totalUntung += Number(jualData[i][6]);
-                        tbody.innerHTML += `<tr class="border-b hover:bg-gray-50 transition"><td class="p-3">${jualData[i][0]}</td><td class="p-3">${jualData[i][1]}</td><td class="p-3">${jualData[i][2]}</td><td class="p-3">${formatRp(jualData[i][5])}</td><td class="p-3 text-green-600 font-bold">${formatRp(jualData[i][6])}</td></tr>`;
+                        tbody.innerHTML += '<tr class="border-b hover:bg-gray-50 transition"><td class="p-3">'+jualData[i][0]+'</td><td class="p-3">'+jualData[i][1]+'</td><td class="p-3">'+jualData[i][2]+'</td><td class="p-3">'+formatRp(jualData[i][5])+'</td><td class="p-3 text-green-600 font-bold">'+formatRp(jualData[i][6])+'</td></tr>';
                     }
                 }
-                for(let i=1; i < modalData.length; i++) {
-                    if(modalData[i] && String(modalData[i][0]).substring(0,7) == prefix) {
-                        totalModal += Number(modalData[i][3]);
-                    }
+                for(var i=1; i < modalData.length; i++) {
+                    if(modalData[i] && String(modalData[i][0]).substring(0,7) == prefix) totalModal += Number(modalData[i][3]);
                 }
 
                 document.getElementById('lPemasukan').innerText = formatRp(totalPemasukan);
                 document.getElementById('lModal').innerText = formatRp(totalModal);
                 document.getElementById('lUntung').innerText = formatRp(totalUntung);
-            } catch(err) { console.error('Error laporan:', err); }
+            } catch(err) { console.error('Laporan error:', err); }
         }
     </script>
 </body>
