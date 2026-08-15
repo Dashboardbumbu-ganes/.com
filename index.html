@@ -11,7 +11,6 @@
     <style>
         body { font-family: 'Poppins', sans-serif; background-color: #0f172a; }
         
-        /* ANIMASI LAMPU KELILING NEON (LOGIN) */
         @keyframes neonPulse {
             0% { box-shadow: 0 0 15px #0ff, 0 0 30px #0ff, inset 0 0 15px #0ff; }
             33% { box-shadow: 0 0 15px #f0f, 0 0 30px #f0f, inset 0 0 15px #f0f; }
@@ -20,22 +19,12 @@
         }
         .neon-border { animation: neonPulse 3s infinite alternate; border: 2px solid rgba(255,255,255,0.1); }
 
-        /* ANIMASI KEDAP-KEDIPI (BLINK) UNTUK SILAHKAN LOGIN */
         @keyframes blinkText {
             0%, 100% { opacity: 1; }
             50% { opacity: 0.1; }
         }
         .blink-login { animation: blinkText 1.5s ease-in-out infinite; }
 
-        /* ANIMASI PISANG MUNCUL */
-        @keyframes bananaBounce {
-            0% { transform: scale(0) rotate(-30deg); opacity: 0; }
-            50% { transform: scale(1.3) rotate(10deg); opacity: 1; }
-            100% { transform: scale(1) rotate(0deg); opacity: 1; }
-        }
-        .banana-animate { animation: bananaBounce 1s ease-out forwards; }
-
-        /* ANIMASI DASHBOARD CARDS */
         @keyframes glowIndigo {
             0% { box-shadow: 0 0 5px rgba(79, 70, 229, 0.2); }
             50% { box-shadow: 0 0 25px rgba(79, 70, 229, 0.6); }
@@ -66,38 +55,11 @@
 </head>
 <body class="text-gray-800 text-base">
 
-    <!-- ================= HALAMAN LOGIN (GELAP + LAMPU KELILING + PISANG + BLINK) ================= -->
+    <!-- ================= HALAMAN LOGIN ================= -->
     <div id="loginPage" class="fixed inset-0 bg-gray-950 flex items-center justify-center z-50">
         <div class="bg-gray-900 p-10 rounded-3xl w-[420px] text-center neon-border relative overflow-hidden">
             <div class="mb-8">
-                <!-- GAMBAR PISANG DI ATAS SILAHKAN LOGIN -->
-                <div class="banana-animate mb-4">
-                    <svg viewBox="0 0 100 100" width="90" height="90" class="inline-block drop-shadow-lg">
-                        <!-- Pisang SVG yang bagus -->
-                        <defs>
-                            <linearGradient id="bananaGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                                <stop offset="0%" style="stop-color:#FFE135;stop-opacity:1" />
-                                <stop offset="50%" style="stop-color:#FDD835;stop-opacity:1" />
-                                <stop offset="100%" style="stop-color:#F9A825;stop-opacity:1" />
-                            </linearGradient>
-                            <linearGradient id="bananaTip" x1="0%" y1="0%" x2="100%" y2="0%">
-                                <stop offset="0%" style="stop-color:#8D6E63;stop-opacity:1" />
-                                <stop offset="100%" style="stop-color:#5D4037;stop-opacity:1" />
-                            </linearGradient>
-                        </defs>
-                        <!-- Badan pisang -->
-                        <path d="M25,75 C20,55 15,35 30,20 C40,10 55,8 65,15 C75,22 80,40 78,60 C76,75 70,85 60,88 C50,91 35,88 25,75 Z" fill="url(#bananaGrad)" stroke="#E6C200" stroke-width="1.5"/>
-                        <!-- Garis lengkung pisang -->
-                        <path d="M35,70 C32,50 30,32 45,20 C52,14 62,16 68,25 C74,35 75,55 70,72" fill="none" stroke="#D4A800" stroke-width="2" stroke-linecap="round" opacity="0.5"/>
-                        <!-- Ujung atas pisang (tangkai) -->
-                        <ellipse cx="48" cy="14" rx="6" ry="4" fill="url(#bananaTip)" transform="rotate(-15, 48, 14)"/>
-                        <!-- Ujung bawah pisang -->
-                        <ellipse cx="55" cy="89" rx="4" ry="3" fill="url(#bananaTip)" transform="rotate(10, 55, 89)"/>
-                        <!-- Highlight / cahaya -->
-                        <path d="M38,60 C36,45 38,30 50,22 C55,19 60,20 63,24" fill="none" stroke="rgba(255,255,255,0.35)" stroke-width="4" stroke-linecap="round"/>
-                    </svg>
-                </div>
-                <!-- TEKS SILAHKAN LOGIN KEDAP-KEDIPI -->
+                <i class="fas fa-pepper-hot text-5xl text-yellow-400 mb-4 block"></i>
                 <h1 class="text-3xl font-extrabold text-white mb-1 tracking-wide blink-login">✨ Silahkan Login ✨</h1>
             </div>
             <div class="text-left mb-4">
@@ -108,15 +70,15 @@
                 <label class="block text-sm font-semibold text-gray-400 mb-1">🔒 Password</label>
                 <input type="password" id="password" placeholder="Ketik password..." class="w-full p-3 bg-gray-800 border border-gray-700 rounded-xl text-white text-lg outline-none transition focus:border-indigo-500">
             </div>
-            <button onclick="login()" class="w-full bg-indigo-600 text-white p-3.5 rounded-xl text-lg font-bold hover:bg-indigo-700 transition transform hover:scale-105 shadow-lg">Masuk <i class="fas fa-arrow-right ml-2"></i></button>
-            <p id="loginError" class="text-red-400 mt-4 font-semibold hidden text-sm">❌ Username atau password salah!</p>
+            <button id="btnLogin" onclick="login()" class="w-full bg-indigo-600 text-white p-3.5 rounded-xl text-lg font-bold hover:bg-indigo-700 transition transform hover:scale-105 shadow-lg">Masuk <i class="fas fa-arrow-right ml-2"></i></button>
+            <p id="loginError" class="text-red-400 mt-4 font-semibold hidden text-sm"></p>
         </div>
     </div>
 
     <!-- ================= MAIN APP ================= -->
     <div id="mainApp" class="hidden flex h-screen overflow-hidden">
         
-        <!-- SIDEBAR PREMIUM -->
+        <!-- SIDEBAR -->
         <div class="w-72 bg-white border-r border-gray-200 flex flex-col justify-between p-6 shadow-xl">
             <div>
                 <h1 class="text-2xl font-extrabold text-indigo-600 mb-10 flex items-center"><i class="fas fa-pepper-hot mr-3 text-3xl"></i> BumbuKu</h1>
@@ -133,14 +95,13 @@
             </div>
         </div>
 
-        <!-- AREA KONTEN -->
+        <!-- KONTEN -->
         <div id="appBackground" class="flex-1 overflow-y-auto p-10 bg-slate-50">
             
-            <!-- HALAMAN DASHBOARD -->
+            <!-- DASHBOARD -->
             <div id="page-dashboard" class="page-content page-transition">
                 <h2 class="text-4xl font-extrabold mb-2 text-gray-800">📊 Ringkasan Hari Ini</h2>
                 <p class="text-gray-500 mb-8 text-lg">Data pemasukan dan pengeluaran hari ini secara realtime.</p>
-                
                 <div class="grid grid-cols-3 gap-8 mb-10">
                     <div class="bg-white p-8 rounded-3xl card-glow-indigo border border-indigo-100 transition transform hover:-translate-y-2">
                         <p class="text-lg text-indigo-400 font-bold"><i class="fas fa-arrow-down mr-2"></i> Pemasukan</p>
@@ -155,14 +116,13 @@
                         <h3 id="dUntung" class="text-4xl font-extrabold mt-3 text-emerald-600">Rp 0</h3>
                     </div>
                 </div>
-                
                 <div class="bg-white p-8 rounded-3xl shadow-sm border border-gray-100">
                     <h3 class="text-2xl font-extrabold mb-6 text-gray-700"><i class="fas fa-chart-area text-indigo-500 mr-2"></i> Grafik Penjualan Bulan Ini</h3>
                     <canvas id="salesChart" height="100"></canvas>
                 </div>
             </div>
 
-            <!-- HALAMAN CATAT MODAL -->
+            <!-- CATAT MODAL -->
             <div id="page-catatModal" class="page-content hidden">
                 <h2 class="text-4xl font-extrabold mb-8 text-gray-800"><i class="fas fa-truck-loading text-indigo-500 mr-3"></i> Catat Belanja Modal</h2>
                 <div class="bg-white p-10 rounded-3xl shadow-sm max-w-3xl border border-gray-100">
@@ -190,7 +150,7 @@
                 </div>
             </div>
 
-            <!-- HALAMAN CATAT PENJUALAN -->
+            <!-- CATAT PENJUALAN -->
             <div id="page-catatJual" class="page-content hidden">
                 <h2 class="text-4xl font-extrabold mb-8 text-gray-800"><i class="fas fa-cash-register text-emerald-500 mr-3"></i> Catat Penjualan</h2>
                 <div class="bg-white p-10 rounded-3xl shadow-sm max-w-3xl border border-gray-100">
@@ -222,7 +182,7 @@
                 </div>
             </div>
 
-            <!-- HALAMAN STOK -->
+            <!-- STOK -->
             <div id="page-stok" class="page-content hidden">
                 <h2 class="text-4xl font-extrabold mb-8 text-gray-800"><i class="fas fa-boxes-stacked text-amber-500 mr-3"></i> Sisa Stok Bumbu</h2>
                 <div class="bg-white p-8 rounded-3xl shadow-sm border border-gray-100">
@@ -238,7 +198,7 @@
                 </div>
             </div>
 
-            <!-- HALAMAN LAPORAN -->
+            <!-- LAPORAN -->
             <div id="page-laporan" class="page-content hidden">
                 <h2 class="text-4xl font-extrabold mb-8 text-gray-800"><i class="fas fa-file-invoice-dollar text-purple-500 mr-3"></i> Laporan Bulanan</h2>
                 <div class="flex gap-4 mb-8 items-center">
@@ -281,12 +241,22 @@
 
     <script>
         // ================= KONFIGURASI =================
-        const API_URL = 'https://script.google.com/macros/s/AKfycbyxqX912y9AIEUk0MOXFo2h6n_YsGUhkfQ3zUVTnFcy4UP44tuRpmEgCREUjJUP5-00/exec';
+        const API_URL = 'https://script.google.com/macros/s/AKfycbzK35pjAPNArxxBOm5cgsBgbu24wHkc-oj9HzbHvriCBRy75X-v2XJBOv9Gf7MsvXliUA/exec';
         let salesChartInstance = null;
 
         // ================= HELPER =================
         const formatRp = (angka) => 'Rp ' + Number(angka || 0).toLocaleString('id-ID');
         const getToday = () => new Date().toISOString().split('T')[0];
+
+        // ================= TAMPILKAN ERROR LOGIN =================
+        function showLoginError(pesan) {
+            const el = document.getElementById('loginError');
+            el.innerText = pesan;
+            el.classList.remove('hidden');
+        }
+        function hideLoginError() {
+            document.getElementById('loginError').classList.add('hidden');
+        }
         
         window.onload = () => {
             document.getElementById('modalTgl').value = getToday();
@@ -301,20 +271,33 @@
             }
             document.getElementById('filterBulan').value = String(new Date().getMonth() + 1).padStart(2, '0');
 
-            // ===== EVENT ENTER UNTUK LOGIN LANGSUNG MASUK =====
+            // ===== ENTER LANGSUNG LOGIN =====
             document.getElementById('username').addEventListener('keydown', function(e) {
-                if (e.key === 'Enter') {
-                    e.preventDefault();
-                    login();
-                }
+                if (e.key === 'Enter') { e.preventDefault(); login(); }
             });
             document.getElementById('password').addEventListener('keydown', function(e) {
-                if (e.key === 'Enter') {
-                    e.preventDefault();
-                    login();
-                }
+                if (e.key === 'Enter') { e.preventDefault(); login(); }
             });
+
+            // ===== CEK KONEKSI API SAAT AWAL =====
+            testKoneksi();
         };
+
+        // ================= TEST KONEKSI =================
+        async function testKoneksi() {
+            try {
+                const res = await fetch(API_URL + '?sheet=Users&action=read');
+                const text = await res.text();
+                try {
+                    const data = JSON.parse(text);
+                    console.log('✅ API terhubung! Data Users:', data);
+                } catch(e) {
+                    console.error('❌ API merespon tapi bukan JSON. Response:', text.substring(0, 200));
+                }
+            } catch(err) {
+                console.error('❌ GAGAL terhubung ke API:', err.message);
+            }
+        }
 
         // ================= NAVIGATION =================
         function showPage(page, element) {
@@ -335,52 +318,84 @@
 
         // ================= API CALLS =================
         async function apiGet(sheet) {
-            const res = await fetch(`${API_URL}?sheet=${sheet}&action=read`);
-            return await res.json();
+            const url = `${API_URL}?sheet=${sheet}&action=read`;
+            const res = await fetch(url);
+            const text = await res.text();
+            try {
+                return JSON.parse(text);
+            } catch(e) {
+                console.error('Gagal parse JSON dari API:', text.substring(0, 300));
+                throw new Error('Server bukan kirim JSON. Cek deployment Google Apps Script!');
+            }
         }
+
         async function apiPost(sheet, data) {
-            await fetch(`${API_URL}?sheet=${sheet}&action=write&data=${encodeURIComponent(JSON.stringify(data))}`);
+            const url = `${API_URL}?sheet=${sheet}&action=write&data=${encodeURIComponent(JSON.stringify(data))}`;
+            const res = await fetch(url);
+            const text = await res.text();
+            return text;
         }
 
         // ================= LOGIN =================
         async function login() {
             const u = document.getElementById('username').value.trim();
             const p = document.getElementById('password').value.trim();
-            if(!u || !p) return alert('Lengkapi username dan password!');
             
-            // Tampilkan loading sementara
-            const btnLogin = document.querySelector('#loginPage button');
-            const originalText = btnLogin.innerHTML;
-            btnLogin.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Memproses...';
-            btnLogin.disabled = true;
+            if(!u || !p) {
+                showLoginError('❌ Lengkapi username dan password!');
+                return;
+            }
+            
+            hideLoginError();
+            const btn = document.getElementById('btnLogin');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Mengecek...';
+            btn.disabled = true;
 
             try {
                 const users = await apiGet('Users');
-                const match = users.find(row => row[0] == u && row[1] == p);
+                console.log('Data Users dari server:', users);
+                
+                if (!Array.isArray(users) || users.length < 2) {
+                    showLoginError('❌ Sheet Users kosong! Tambahkan data login di Google Sheets.');
+                    btn.innerHTML = originalText;
+                    btn.disabled = false;
+                    return;
+                }
+
+                // Cek mulai baris 1 (skip header baris 0)
+                let match = null;
+                for (let i = 1; i < users.length; i++) {
+                    const rowU = String(users[i][0]).trim();
+                    const rowP = String(users[i][1]).trim();
+                    if (rowU === u && rowP === p) {
+                        match = users[i];
+                        break;
+                    }
+                }
+
                 if(match) {
                     document.getElementById('loginPage').classList.add('hidden');
                     document.getElementById('mainApp').classList.remove('hidden');
-                    document.getElementById('loginError').classList.add('hidden');
-                    // Reset form login
                     document.getElementById('username').value = '';
                     document.getElementById('password').value = '';
                     loadDashboard();
                 } else {
-                    document.getElementById('loginError').classList.remove('hidden');
+                    showLoginError('❌ Username atau password salah!');
                 }
             } catch(err) {
-                alert('❌ Gagal terhubung ke server. Periksa koneksi internet!');
+                console.error('Error login:', err);
+                showLoginError('❌ Gagal terhubung server! Cek URL & deployment Apps Script.');
             }
 
-            // Kembalikan tombol
-            btnLogin.innerHTML = originalText;
-            btnLogin.disabled = false;
+            btn.innerHTML = originalText;
+            btn.disabled = false;
         }
 
         function logout() {
             document.getElementById('mainApp').classList.add('hidden');
             document.getElementById('loginPage').classList.remove('hidden');
-            document.getElementById('loginError').classList.add('hidden');
+            hideLoginError();
             document.getElementById('username').value = '';
             document.getElementById('password').value = '';
         }
@@ -395,11 +410,6 @@
             if(!tgl || !nama || !kg || !harga) return alert('❌ Lengkapi semua data modal!');
             if(kg <= 0 || harga <= 0) return alert('❌ Jumlah dan harga harus lebih dari 0!');
 
-            const btn = event.target;
-            const originalText = btn.innerHTML;
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Menyimpan...';
-            btn.disabled = true;
-
             try {
                 await apiPost('Modal', [tgl, nama, kg, harga]);
                 alert('✅ Modal berhasil dicatat & stok otomatis bertambah!');
@@ -407,11 +417,8 @@
                 document.getElementById('modalKg').value = '';
                 document.getElementById('modalHarga').value = '';
             } catch(err) {
-                alert('❌ Gagal menyimpan. Periksa koneksi internet!');
+                alert('❌ Gagal menyimpan: ' + err.message);
             }
-
-            btn.innerHTML = originalText;
-            btn.disabled = false;
         }
 
         // ================= SIMPAN PENJUALAN =================
@@ -426,18 +433,12 @@
             if(kg <= 0 || hargaJual <= 0) return alert('❌ Jumlah dan harga harus lebih dari 0!');
             
             const totalBayar = (hargaJual * kg) - potongan;
-            
-            const btn = event.target;
-            const originalText = btn.innerHTML;
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Menyimpan...';
-            btn.disabled = true;
 
             try {
-                // Cari harga modal per Kg untuk hitung untung
                 const modalData = await apiGet('Modal');
                 let hargaModalPerKg = 0;
                 for(let i = modalData.length - 1; i >= 1; i--) {
-                    if(modalData[i][1] == nama) {
+                    if(String(modalData[i][1]).trim() === nama) {
                         hargaModalPerKg = modalData[i][3] / modalData[i][2]; 
                         break;
                     }
@@ -451,102 +452,111 @@
                 document.getElementById('jualHarga').value = '';
                 document.getElementById('jualPotong').value = '0';
             } catch(err) {
-                alert('❌ Gagal menyimpan. Periksa koneksi internet!');
+                alert('❌ Gagal menyimpan: ' + err.message);
             }
-
-            btn.innerHTML = originalText;
-            btn.disabled = false;
         }
 
         // ================= LOAD DASHBOARD =================
         async function loadDashboard() {
-            const jualData = await apiGet('Penjualan');
-            const modalData = await apiGet('Modal');
-            const today = getToday();
+            try {
+                const jualData = await apiGet('Penjualan');
+                const modalData = await apiGet('Modal');
+                const today = getToday();
 
-            let pemasukanHariIni = 0, pengeluaranHariIni = 0, untungHariIni = 0;
-            const chartBulanan = {};
-            const bulanIni = today.substring(0, 7);
+                let pemasukanHariIni = 0, pengeluaranHariIni = 0, untungHariIni = 0;
+                const chartBulanan = {};
+                const bulanIni = today.substring(0, 7);
 
-            for(let i=1; i < jualData.length; i++) {
-                const [tgl, nama, kg, hj, pot, total, untung] = jualData[i];
-                if(tgl == today) {
-                    pemasukanHariIni += Number(total);
-                    untungHariIni += Number(untung);
+                for(let i=1; i < jualData.length; i++) {
+                    const [tgl, nama, kg, hj, pot, total, untung] = jualData[i];
+                    if(tgl == today) {
+                        pemasukanHariIni += Number(total);
+                        untungHariIni += Number(untung);
+                    }
+                    if(String(tgl).substring(0,7) == bulanIni) {
+                        const day = String(tgl).substring(8,10);
+                        chartBulanan[day] = (chartBulanan[day] || 0) + Number(total);
+                    }
                 }
-                if(String(tgl).substring(0,7) == bulanIni) {
-                    const day = String(tgl).substring(8,10);
-                    chartBulanan[day] = (chartBulanan[day] || 0) + Number(total);
+                for(let i=1; i < modalData.length; i++) {
+                    if(modalData[i][0] == today) pengeluaranHariIni += Number(modalData[i][3]);
                 }
-            }
-            for(let i=1; i < modalData.length; i++) {
-                if(modalData[i][0] == today) pengeluaranHariIni += Number(modalData[i][3]);
-            }
 
-            document.getElementById('dPemasukan').innerText = formatRp(pemasukanHariIni);
-            document.getElementById('dPengeluaran').innerText = formatRp(pengeluaranHariIni);
-            document.getElementById('dUntung').innerText = formatRp(untungHariIni);
+                document.getElementById('dPemasukan').innerText = formatRp(pemasukanHariIni);
+                document.getElementById('dPengeluaran').innerText = formatRp(pengeluaranHariIni);
+                document.getElementById('dUntung').innerText = formatRp(untungHariIni);
 
-            const labels = Object.keys(chartBulanan).sort();
-            const values = labels.map(l => chartBulanan[l]);
-            
-            if(salesChartInstance) salesChartInstance.destroy();
-            const ctx = document.getElementById('salesChart').getContext('2d');
-            salesChartInstance = new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: labels.map(l => 'Tgl ' + l),
-                    datasets: [{
-                        label: 'Penjualan (Rp)',
-                        data: values,
-                        borderColor: '#4f46e5',
-                        backgroundColor: 'rgba(79, 70, 229, 0.1)',
-                        fill: true, tension: 0.4, borderWidth: 3
-                    }]
-                },
-                options: { scales: { y: { beginAtZero: true, ticks: { callback: v => formatRp(v) } } } } }
-            });
+                const labels = Object.keys(chartBulanan).sort();
+                const values = labels.map(l => chartBulanan[l]);
+                
+                if(salesChartInstance) salesChartInstance.destroy();
+                const ctx = document.getElementById('salesChart').getContext('2d');
+                salesChartInstance = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: labels.map(l => 'Tgl ' + l),
+                        datasets: [{
+                            label: 'Penjualan (Rp)',
+                            data: values,
+                            borderColor: '#4f46e5',
+                            backgroundColor: 'rgba(79, 70, 229, 0.1)',
+                            fill: true, tension: 0.4, borderWidth: 3
+                        }]
+                    },
+                    options: { scales: { y: { beginAtZero: true, ticks: { callback: v => formatRp(v) } } } } }
+                });
+            } catch(err) {
+                console.error('Error loadDashboard:', err);
+            }
         }
 
         // ================= LOAD STOK =================
         async function loadStok() {
-            const stokData = await apiGet('Stok');
-            const tbody = document.getElementById('tabelStok');
-            tbody.innerHTML = '';
-            for(let i=1; i < stokData.length; i++) {
-                tbody.innerHTML += `<tr class="border-b hover:bg-gray-50 transition"><td class="p-5">${stokData[i][0]}</td><td class="p-5">${stokData[i][1]} Kg</td></tr>`;
+            try {
+                const stokData = await apiGet('Stok');
+                const tbody = document.getElementById('tabelStok');
+                tbody.innerHTML = '';
+                for(let i=1; i < stokData.length; i++) {
+                    tbody.innerHTML += `<tr class="border-b hover:bg-gray-50 transition"><td class="p-5">${stokData[i][0]}</td><td class="p-5">${stokData[i][1]} Kg</td></tr>`;
+                }
+            } catch(err) {
+                console.error('Error loadStok:', err);
             }
         }
 
         // ================= LOAD LAPORAN =================
         async function loadLaporan() {
-            const bulan = document.getElementById('filterBulan').value;
-            const tahun = document.getElementById('filterTahun').value;
-            const prefix = `${tahun}-${bulan}`;
+            try {
+                const bulan = document.getElementById('filterBulan').value;
+                const tahun = document.getElementById('filterTahun').value;
+                const prefix = `${tahun}-${bulan}`;
 
-            const jualData = await apiGet('Penjualan');
-            const modalData = await apiGet('Modal');
+                const jualData = await apiGet('Penjualan');
+                const modalData = await apiGet('Modal');
 
-            let totalPemasukan = 0, totalModal = 0, totalUntung = 0;
-            const tbody = document.getElementById('tabelLaporan');
-            tbody.innerHTML = '';
+                let totalPemasukan = 0, totalModal = 0, totalUntung = 0;
+                const tbody = document.getElementById('tabelLaporan');
+                tbody.innerHTML = '';
 
-            for(let i=1; i < jualData.length; i++) {
-                if(String(jualData[i][0]).substring(0,7) == prefix) {
-                    totalPemasukan += Number(jualData[i][5]);
-                    totalUntung += Number(jualData[i][6]);
-                    tbody.innerHTML += `<tr class="border-b hover:bg-gray-50 transition"><td class="p-3">${jualData[i][0]}</td><td class="p-3">${jualData[i][1]}</td><td class="p-3">${jualData[i][2]}</td><td class="p-3">${formatRp(jualData[i][5])}</td><td class="p-3 text-green-600 font-bold">${formatRp(jualData[i][6])}</td></tr>`;
+                for(let i=1; i < jualData.length; i++) {
+                    if(String(jualData[i][0]).substring(0,7) == prefix) {
+                        totalPemasukan += Number(jualData[i][5]);
+                        totalUntung += Number(jualData[i][6]);
+                        tbody.innerHTML += `<tr class="border-b hover:bg-gray-50 transition"><td class="p-3">${jualData[i][0]}</td><td class="p-3">${jualData[i][1]}</td><td class="p-3">${jualData[i][2]}</td><td class="p-3">${formatRp(jualData[i][5])}</td><td class="p-3 text-green-600 font-bold">${formatRp(jualData[i][6])}</td></tr>`;
+                    }
                 }
-            }
-            for(let i=1; i < modalData.length; i++) {
-                if(String(modalData[i][0]).substring(0,7) == prefix) {
-                    totalModal += Number(modalData[i][3]);
+                for(let i=1; i < modalData.length; i++) {
+                    if(String(modalData[i][0]).substring(0,7) == prefix) {
+                        totalModal += Number(modalData[i][3]);
+                    }
                 }
-            }
 
-            document.getElementById('lPemasukan').innerText = formatRp(totalPemasukan);
-            document.getElementById('lModal').innerText = formatRp(totalModal);
-            document.getElementById('lUntung').innerText = formatRp(totalUntung);
+                document.getElementById('lPemasukan').innerText = formatRp(totalPemasukan);
+                document.getElementById('lModal').innerText = formatRp(totalModal);
+                document.getElementById('lUntung').innerText = formatRp(totalUntung);
+            } catch(err) {
+                console.error('Error loadLaporan:', err);
+            }
         }
     </script>
 </body>
