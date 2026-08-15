@@ -20,6 +20,21 @@
         }
         .neon-border { animation: neonPulse 3s infinite alternate; border: 2px solid rgba(255,255,255,0.1); }
 
+        /* ANIMASI KEDAP-KEDIPI (BLINK) UNTUK SILAHKAN LOGIN */
+        @keyframes blinkText {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.1; }
+        }
+        .blink-login { animation: blinkText 1.5s ease-in-out infinite; }
+
+        /* ANIMASI PISANG MUNCUL */
+        @keyframes bananaBounce {
+            0% { transform: scale(0) rotate(-30deg); opacity: 0; }
+            50% { transform: scale(1.3) rotate(10deg); opacity: 1; }
+            100% { transform: scale(1) rotate(0deg); opacity: 1; }
+        }
+        .banana-animate { animation: bananaBounce 1s ease-out forwards; }
+
         /* ANIMASI DASHBOARD CARDS */
         @keyframes glowIndigo {
             0% { box-shadow: 0 0 5px rgba(79, 70, 229, 0.2); }
@@ -51,13 +66,39 @@
 </head>
 <body class="text-gray-800 text-base">
 
-    <!-- ================= HALAMAN LOGIN (GELAP + LAMPU KELILING) ================= -->
+    <!-- ================= HALAMAN LOGIN (GELAP + LAMPU KELILING + PISANG + BLINK) ================= -->
     <div id="loginPage" class="fixed inset-0 bg-gray-950 flex items-center justify-center z-50">
         <div class="bg-gray-900 p-10 rounded-3xl w-[420px] text-center neon-border relative overflow-hidden">
             <div class="mb-8">
-                <i class="fas fa-pepper-hot text-5xl text-yellow-400 mb-4 block"></i>
-                <h1 class="text-3xl font-extrabold text-white mb-1 tracking-wide">✨ Silahkan Login ✨</h1>
-                <p class="text-gray-400 text-sm">Masuk untuk mengakses dashboard penjualan</p>
+                <!-- GAMBAR PISANG DI ATAS SILAHKAN LOGIN -->
+                <div class="banana-animate mb-4">
+                    <svg viewBox="0 0 100 100" width="90" height="90" class="inline-block drop-shadow-lg">
+                        <!-- Pisang SVG yang bagus -->
+                        <defs>
+                            <linearGradient id="bananaGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" style="stop-color:#FFE135;stop-opacity:1" />
+                                <stop offset="50%" style="stop-color:#FDD835;stop-opacity:1" />
+                                <stop offset="100%" style="stop-color:#F9A825;stop-opacity:1" />
+                            </linearGradient>
+                            <linearGradient id="bananaTip" x1="0%" y1="0%" x2="100%" y2="0%">
+                                <stop offset="0%" style="stop-color:#8D6E63;stop-opacity:1" />
+                                <stop offset="100%" style="stop-color:#5D4037;stop-opacity:1" />
+                            </linearGradient>
+                        </defs>
+                        <!-- Badan pisang -->
+                        <path d="M25,75 C20,55 15,35 30,20 C40,10 55,8 65,15 C75,22 80,40 78,60 C76,75 70,85 60,88 C50,91 35,88 25,75 Z" fill="url(#bananaGrad)" stroke="#E6C200" stroke-width="1.5"/>
+                        <!-- Garis lengkung pisang -->
+                        <path d="M35,70 C32,50 30,32 45,20 C52,14 62,16 68,25 C74,35 75,55 70,72" fill="none" stroke="#D4A800" stroke-width="2" stroke-linecap="round" opacity="0.5"/>
+                        <!-- Ujung atas pisang (tangkai) -->
+                        <ellipse cx="48" cy="14" rx="6" ry="4" fill="url(#bananaTip)" transform="rotate(-15, 48, 14)"/>
+                        <!-- Ujung bawah pisang -->
+                        <ellipse cx="55" cy="89" rx="4" ry="3" fill="url(#bananaTip)" transform="rotate(10, 55, 89)"/>
+                        <!-- Highlight / cahaya -->
+                        <path d="M38,60 C36,45 38,30 50,22 C55,19 60,20 63,24" fill="none" stroke="rgba(255,255,255,0.35)" stroke-width="4" stroke-linecap="round"/>
+                    </svg>
+                </div>
+                <!-- TEKS SILAHKAN LOGIN KEDAP-KEDIPI -->
+                <h1 class="text-3xl font-extrabold text-white mb-1 tracking-wide blink-login">✨ Silahkan Login ✨</h1>
             </div>
             <div class="text-left mb-4">
                 <label class="block text-sm font-semibold text-gray-400 mb-1">👤 Username</label>
@@ -92,7 +133,7 @@
             </div>
         </div>
 
-        <!-- AREA KONTEN (BACKGROUND LUAR BISA DIGANTI DI SINI) -->
+        <!-- AREA KONTEN -->
         <div id="appBackground" class="flex-1 overflow-y-auto p-10 bg-slate-50">
             
             <!-- HALAMAN DASHBOARD -->
@@ -240,7 +281,7 @@
 
     <script>
         // ================= KONFIGURASI =================
-        const API_URL = 'https://script.google.com/macros/s/AKfycbyxqX912y9AIEUk0MOXFo2h6n_YsGUhkfQ3zUVTnFcy4UP44tuRpmEgCREUjJUP5-00/exec'; // <--- GANTI INI PAK URL GOOGLE APPS SCRIPT MU
+        const API_URL = 'https://script.google.com/macros/s/AKfycbyxqX912y9AIEUk0MOXFo2h6n_YsGUhkfQ3zUVTnFcy4UP44tuRpmEgCREUjJUP5-00/exec';
         let salesChartInstance = null;
 
         // ================= HELPER =================
@@ -259,6 +300,20 @@
                 yrSelect.appendChild(opt);
             }
             document.getElementById('filterBulan').value = String(new Date().getMonth() + 1).padStart(2, '0');
+
+            // ===== EVENT ENTER UNTUK LOGIN LANGSUNG MASUK =====
+            document.getElementById('username').addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    login();
+                }
+            });
+            document.getElementById('password').addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    login();
+                }
+            });
         };
 
         // ================= NAVIGATION =================
@@ -289,70 +344,118 @@
 
         // ================= LOGIN =================
         async function login() {
-            const u = document.getElementById('username').value;
-            const p = document.getElementById('password').value;
+            const u = document.getElementById('username').value.trim();
+            const p = document.getElementById('password').value.trim();
             if(!u || !p) return alert('Lengkapi username dan password!');
             
-            const users = await apiGet('Users');
-            const match = users.find(row => row[0] == u && row[1] == p);
-            if(match) {
-                document.getElementById('loginPage').classList.add('hidden');
-                document.getElementById('mainApp').classList.remove('hidden');
-                loadDashboard();
-            } else {
-                document.getElementById('loginError').classList.remove('hidden');
+            // Tampilkan loading sementara
+            const btnLogin = document.querySelector('#loginPage button');
+            const originalText = btnLogin.innerHTML;
+            btnLogin.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Memproses...';
+            btnLogin.disabled = true;
+
+            try {
+                const users = await apiGet('Users');
+                const match = users.find(row => row[0] == u && row[1] == p);
+                if(match) {
+                    document.getElementById('loginPage').classList.add('hidden');
+                    document.getElementById('mainApp').classList.remove('hidden');
+                    document.getElementById('loginError').classList.add('hidden');
+                    // Reset form login
+                    document.getElementById('username').value = '';
+                    document.getElementById('password').value = '';
+                    loadDashboard();
+                } else {
+                    document.getElementById('loginError').classList.remove('hidden');
+                }
+            } catch(err) {
+                alert('❌ Gagal terhubung ke server. Periksa koneksi internet!');
             }
+
+            // Kembalikan tombol
+            btnLogin.innerHTML = originalText;
+            btnLogin.disabled = false;
         }
+
         function logout() {
             document.getElementById('mainApp').classList.add('hidden');
             document.getElementById('loginPage').classList.remove('hidden');
             document.getElementById('loginError').classList.add('hidden');
+            document.getElementById('username').value = '';
+            document.getElementById('password').value = '';
         }
 
         // ================= SIMPAN MODAL =================
         async function simpanModal() {
             const tgl = document.getElementById('modalTgl').value;
-            const nama = document.getElementById('modalNama').value;
+            const nama = document.getElementById('modalNama').value.trim();
             const kg = parseFloat(document.getElementById('modalKg').value);
             const harga = parseFloat(document.getElementById('modalHarga').value);
             
             if(!tgl || !nama || !kg || !harga) return alert('❌ Lengkapi semua data modal!');
-            await apiPost('Modal', [tgl, nama, kg, harga]);
-            alert('✅ Modal berhasil dicatat & stok otomatis bertambah!');
-            document.getElementById('modalNama').value = '';
-            document.getElementById('modalKg').value = '';
-            document.getElementById('modalHarga').value = '';
+            if(kg <= 0 || harga <= 0) return alert('❌ Jumlah dan harga harus lebih dari 0!');
+
+            const btn = event.target;
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Menyimpan...';
+            btn.disabled = true;
+
+            try {
+                await apiPost('Modal', [tgl, nama, kg, harga]);
+                alert('✅ Modal berhasil dicatat & stok otomatis bertambah!');
+                document.getElementById('modalNama').value = '';
+                document.getElementById('modalKg').value = '';
+                document.getElementById('modalHarga').value = '';
+            } catch(err) {
+                alert('❌ Gagal menyimpan. Periksa koneksi internet!');
+            }
+
+            btn.innerHTML = originalText;
+            btn.disabled = false;
         }
 
         // ================= SIMPAN PENJUALAN =================
         async function simpanJual() {
             const tgl = document.getElementById('jualTgl').value;
-            const nama = document.getElementById('jualNama').value;
+            const nama = document.getElementById('jualNama').value.trim();
             const kg = parseFloat(document.getElementById('jualKg').value);
             const hargaJual = parseFloat(document.getElementById('jualHarga').value);
             const potongan = parseFloat(document.getElementById('jualPotong').value) || 0;
             
             if(!tgl || !nama || !kg || !hargaJual) return alert('❌ Lengkapi semua data penjualan!');
+            if(kg <= 0 || hargaJual <= 0) return alert('❌ Jumlah dan harga harus lebih dari 0!');
             
-            const totalBayar = hargaJual - potongan;
+            const totalBayar = (hargaJual * kg) - potongan;
             
-            // Cari harga modal per Kg untuk hitung untung
-            const modalData = await apiGet('Modal');
-            let hargaModalPerKg = 0;
-            for(let i = modalData.length - 1; i >= 1; i--) {
-                if(modalData[i][1] == nama) {
-                    hargaModalPerKg = modalData[i][3] / modalData[i][2]; 
-                    break;
-                }
-            }
-            const untung = totalBayar - (hargaModalPerKg * kg);
+            const btn = event.target;
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Menyimpan...';
+            btn.disabled = true;
 
-            await apiPost('Penjualan', [tgl, nama, kg, hargaJual, potongan, totalBayar, untung]);
-            alert('✅ Penjualan dicatat! Stok otomatis berkurang.');
-            document.getElementById('jualNama').value = '';
-            document.getElementById('jualKg').value = '';
-            document.getElementById('jualHarga').value = '';
-            document.getElementById('jualPotong').value = '0';
+            try {
+                // Cari harga modal per Kg untuk hitung untung
+                const modalData = await apiGet('Modal');
+                let hargaModalPerKg = 0;
+                for(let i = modalData.length - 1; i >= 1; i--) {
+                    if(modalData[i][1] == nama) {
+                        hargaModalPerKg = modalData[i][3] / modalData[i][2]; 
+                        break;
+                    }
+                }
+                const untung = totalBayar - (hargaModalPerKg * kg);
+
+                await apiPost('Penjualan', [tgl, nama, kg, hargaJual, potongan, totalBayar, untung]);
+                alert('✅ Penjualan dicatat! Stok otomatis berkurang.');
+                document.getElementById('jualNama').value = '';
+                document.getElementById('jualKg').value = '';
+                document.getElementById('jualHarga').value = '';
+                document.getElementById('jualPotong').value = '0';
+            } catch(err) {
+                alert('❌ Gagal menyimpan. Periksa koneksi internet!');
+            }
+
+            btn.innerHTML = originalText;
+            btn.disabled = false;
         }
 
         // ================= LOAD DASHBOARD =================
@@ -368,16 +471,16 @@
             for(let i=1; i < jualData.length; i++) {
                 const [tgl, nama, kg, hj, pot, total, untung] = jualData[i];
                 if(tgl == today) {
-                    pemasukanHariIni += total;
-                    untungHariIni += untung;
+                    pemasukanHariIni += Number(total);
+                    untungHariIni += Number(untung);
                 }
                 if(String(tgl).substring(0,7) == bulanIni) {
                     const day = String(tgl).substring(8,10);
-                    chartBulanan[day] = (chartBulanan[day] || 0) + total;
+                    chartBulanan[day] = (chartBulanan[day] || 0) + Number(total);
                 }
             }
             for(let i=1; i < modalData.length; i++) {
-                if(modalData[i][0] == today) pengeluaranHariIni += modalData[i][3];
+                if(modalData[i][0] == today) pengeluaranHariIni += Number(modalData[i][3]);
             }
 
             document.getElementById('dPemasukan').innerText = formatRp(pemasukanHariIni);
@@ -430,14 +533,14 @@
 
             for(let i=1; i < jualData.length; i++) {
                 if(String(jualData[i][0]).substring(0,7) == prefix) {
-                    totalPemasukan += jualData[i][5];
-                    totalUntung += jualData[i][6];
+                    totalPemasukan += Number(jualData[i][5]);
+                    totalUntung += Number(jualData[i][6]);
                     tbody.innerHTML += `<tr class="border-b hover:bg-gray-50 transition"><td class="p-3">${jualData[i][0]}</td><td class="p-3">${jualData[i][1]}</td><td class="p-3">${jualData[i][2]}</td><td class="p-3">${formatRp(jualData[i][5])}</td><td class="p-3 text-green-600 font-bold">${formatRp(jualData[i][6])}</td></tr>`;
                 }
             }
             for(let i=1; i < modalData.length; i++) {
                 if(String(modalData[i][0]).substring(0,7) == prefix) {
-                    totalModal += modalData[i][3];
+                    totalModal += Number(modalData[i][3]);
                 }
             }
 
