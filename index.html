@@ -322,8 +322,7 @@
                     <li onclick="showPage('dashboard',this)" class="sidebar-item active cursor-pointer p-4 rounded-xl text-lg font-semibold flex items-center transition"><i class="fas fa-chart-pie w-8 text-xl"></i> Dashboard</li>
                     <li onclick="showPage('rekap',this)" class="sidebar-item cursor-pointer p-4 rounded-xl text-lg font-semibold flex items-center transition text-gray-400"><i class="fas fa-clipboard-list w-8 text-xl"></i> Rekap Hari Ini</li>
                     <li onclick="showPage('catatModal',this)" class="sidebar-item cursor-pointer p-4 rounded-xl text-lg font-semibold flex items-center transition text-gray-400"><i class="fas fa-truck-loading w-8 text-xl"></i> Catat Modal</li>
-                    <li onclick="showPage('catatJual',this)" class="sidebar-item cursor-pointer p-4 rounded-xl text-lg font-semibold flex items-center transition text-gray-400"><i class="fas fa-cash-register w-8 text-xl"></i> Catat Penjualan (Kg)</li>
-                    <li onclick="showPage('catatJualPcs',this)" class="sidebar-item cursor-pointer p-4 rounded-xl text-lg font-semibold flex items-center transition text-gray-400"><i class="fas fa-prescription-bottle w-8 text-xl"></i> Catat Penjualan (Pcs/Btl)</li>
+                    <li onclick="showPage('catatJual',this)" class="sidebar-item cursor-pointer p-4 rounded-xl text-lg font-semibold flex items-center transition text-gray-400"><i class="fas fa-cash-register w-8 text-xl"></i> Catat Penjualan</li>
                     <li onclick="showPage('daftarHarga',this)" class="sidebar-item cursor-pointer p-4 rounded-xl text-lg font-semibold flex items-center transition text-gray-400"><i class="fas fa-tags w-8 text-xl"></i> Daftar Harga Jual</li>
                     <li onclick="showPage('stok',this)" class="sidebar-item cursor-pointer p-4 rounded-xl text-lg font-semibold flex items-center transition text-gray-400"><i class="fas fa-boxes-stacked w-8 text-xl"></i> Stok Bumbu</li>
                     <li onclick="showPage('tambahBarang',this)" class="sidebar-item cursor-pointer p-4 rounded-xl text-lg font-semibold flex items-center transition text-gray-400"><i class="fas fa-plus-circle w-8 text-xl"></i> Tambah Barang</li>
@@ -338,8 +337,7 @@
         <!-- BOTTOM NAV MOBILE -->
         <div class="bottom-nav" id="bottomNav">
             <button onclick="showPage('dashboard',this)" class="active"><i class="fas fa-chart-pie"></i>Home</button>
-            <button onclick="showPage('catatJual',this)"><i class="fas fa-cash-register"></i>Kg</button>
-            <button onclick="showPage('catatJualPcs',this)"><i class="fas fa-prescription-bottle"></i>Pcs</button>
+            <button onclick="showPage('catatJual',this)"><i class="fas fa-cash-register"></i>Jual</button>
             <button onclick="showPage('daftarHarga',this)"><i class="fas fa-tags"></i>Harga</button>
             <button onclick="showPage('stok',this)"><i class="fas fa-boxes-stacked"></i>Stok</button>
             <button onclick="showPage('laporan',this)"><i class="fas fa-file-invoice-dollar"></i>Kas</button>
@@ -426,10 +424,18 @@
                 </div>
             </div>
 
-            <!-- CATAT PENJUALAN KG -->
+            <!-- CATAT PENJUALAN (1 MENU DENGAN TOGGLE MODE) -->
             <div id="page-catatJual" class="page-content hidden">
-                <h2 class="text-4xl font-extrabold mb-8 text-white mt-12 sm:mt-0"><i class="fas fa-cash-register text-emerald-400 mr-3"></i> Catat Penjualan (Per Kg/Ons)</h2>
-                <div class="bg-[#0f1629] p-6 sm:p-10 rounded-3xl container-full border border-emerald-500/20 card-glow-emerald">
+                <h2 class="text-4xl font-extrabold mb-8 text-white mt-12 sm:mt-0"><i class="fas fa-cash-register text-emerald-400 mr-3"></i> Catat Penjualan</h2>
+                
+                <!-- TOGGLE MODE JUALAN -->
+                <div class="grid grid-cols-2 gap-4 mb-8">
+                    <button onclick="toggleJualMode('kg')" id="btnModeKg" class="p-4 rounded-xl text-lg font-bold border-2 border-emerald-500 text-emerald-400 transition cursor-pointer">Jual Bumbu (Kg/Ons)</button>
+                    <button onclick="toggleJualMode('pcs')" id="btnModePcs" class="p-4 rounded-xl text-lg font-bold border-2 border-gray-700 text-gray-500 transition cursor-pointer">Jual Barang (Pcs/Btl)</button>
+                </div>
+
+                <!-- FORM KG -->
+                <div id="formKg" class="bg-[#0f1629] p-6 sm:p-10 rounded-3xl container-full border border-emerald-500/20 card-glow-emerald mb-8">
                     <div class="grid grid-cols-2 gap-6 mb-6">
                         <div><label class="block text-lg font-bold mb-2 text-emerald-400">Tanggal Jual</label><input type="date" id="jualTgl" class="w-full"></div>
                         <div><label class="block text-lg font-bold mb-2 text-emerald-400">Nama Bumbu</label><select id="jualNama" class="w-full"><option value="">-- Pilih Bumbu --</option></select></div>
@@ -451,14 +457,11 @@
                         <div><label class="block text-lg font-bold mb-2 text-emerald-400">Total Dibayar (Rp)</label><input type="text" id="jualTotal" readonly class="w-full"></div>
                         <div style="display: flex; align-items: flex-end;"><div class="text-gray-400 text-sm p-2">*Total = (Harga/Kg x Jumlah) - Potongan.</div></div>
                     </div>
-                    <button onclick="simpanJual()" class="w-full bg-gradient-to-r from-emerald-500 to-teal-600 text-white p-4 rounded-xl text-xl font-bold hover:from-emerald-400 hover:to-teal-500 transition transform hover:scale-105 shadow-lg active:scale-95 cursor-pointer"><i class="fas fa-receipt mr-2"></i> Simpan Penjualan</button>
+                    <button onclick="simpanJual()" class="w-full bg-gradient-to-r from-emerald-500 to-teal-600 text-white p-4 rounded-xl text-xl font-bold hover:from-emerald-400 hover:to-teal-500 transition transform hover:scale-105 shadow-lg active:scale-95 cursor-pointer"><i class="fas fa-receipt mr-2"></i> Simpan Penjualan Bumbu</button>
                 </div>
-            </div>
 
-            <!-- CATAT PENJUALAN PCS / BOTOL -->
-            <div id="page-catatJualPcs" class="page-content hidden">
-                <h2 class="text-4xl font-extrabold mb-8 text-white mt-12 sm:mt-0"><i class="fas fa-prescription-bottle text-emerald-400 mr-3"></i> Catat Penjualan (Pcs / Botol)</h2>
-                <div class="bg-[#0f1629] p-6 sm:p-10 rounded-3xl container-full border border-emerald-500/20 card-glow-emerald">
+                <!-- FORM PCS -->
+                <div id="formPcs" class="hidden bg-[#0f1629] p-6 sm:p-10 rounded-3xl container-full border border-emerald-500/20 card-glow-emerald mb-8">
                     <div class="grid grid-cols-2 gap-6 mb-6">
                         <div><label class="block text-lg font-bold mb-2 text-emerald-400">Tanggal Jual</label><input type="date" id="pcsTgl" class="w-full"></div>
                         <div><label class="block text-lg font-bold mb-2 text-emerald-400">Nama Barang (Kecap/Saos/Dll)</label><select id="pcsNama" class="w-full"><option value="">-- Pilih Barang --</option></select></div>
@@ -479,7 +482,7 @@
                         <div><label class="block text-lg font-bold mb-2 text-emerald-400">Total Dibayar (Rp)</label><input type="text" id="pcsTotal" readonly class="w-full"></div>
                         <div style="display: flex; align-items: flex-end;"><div class="text-gray-400 text-sm p-2">*Total = (Harga x Jumlah) - Potongan.</div></div>
                     </div>
-                    <button onclick="simpanJualPcs()" class="w-full bg-gradient-to-r from-emerald-500 to-teal-600 text-white p-4 rounded-xl text-xl font-bold hover:from-emerald-400 hover:to-teal-500 transition transform hover:scale-105 shadow-lg active:scale-95 cursor-pointer"><i class="fas fa-receipt mr-2"></i> Simpan Penjualan</button>
+                    <button onclick="simpanJualPcs()" class="w-full bg-gradient-to-r from-emerald-500 to-teal-600 text-white p-4 rounded-xl text-xl font-bold hover:from-emerald-400 hover:to-teal-500 transition transform hover:scale-105 shadow-lg active:scale-95 cursor-pointer"><i class="fas fa-receipt mr-2"></i> Simpan Penjualan Barang</button>
                 </div>
             </div>
 
@@ -745,6 +748,25 @@
         document.getElementById('pcsTotal').value = Number(total).toLocaleString('id-ID');
     }
 
+    // ===== TOGGLE MODE JUALAN =====
+    function toggleJualMode(mode) {
+        if (mode === 'kg') {
+            document.getElementById('formKg').classList.remove('hidden');
+            document.getElementById('formPcs').classList.add('hidden');
+            document.getElementById('btnModeKg').classList.remove('border-gray-700', 'text-gray-500');
+            document.getElementById('btnModeKg').classList.add('border-emerald-500', 'text-emerald-400');
+            document.getElementById('btnModePcs').classList.remove('border-emerald-500', 'text-emerald-400');
+            document.getElementById('btnModePcs').classList.add('border-gray-700', 'text-gray-500');
+        } else {
+            document.getElementById('formKg').classList.add('hidden');
+            document.getElementById('formPcs').classList.remove('hidden');
+            document.getElementById('btnModePcs').classList.remove('border-gray-700', 'text-gray-500');
+            document.getElementById('btnModePcs').classList.add('border-emerald-500', 'text-emerald-400');
+            document.getElementById('btnModeKg').classList.remove('border-emerald-500', 'text-emerald-400');
+            document.getElementById('btnModeKg').classList.add('border-gray-700', 'text-gray-500');
+        }
+    }
+
     function showLoginError(pesan) { 
         var el = document.getElementById('loginError'); 
         el.innerText = pesan; 
@@ -836,7 +858,7 @@
         }
         var bottomNavBtns = document.querySelectorAll('.bottom-nav button'); 
         bottomNavBtns.forEach(function(btn) { btn.classList.remove('active'); });
-        var navMap = { 'dashboard': 0, 'rekap': 1, 'catatJual': 2, 'catatModal': 3, 'stok': 4, 'laporan': 5, 'daftarHarga': 6, 'tambahBarang': 7, 'catatJualPcs': 8 };
+        var navMap = { 'dashboard': 0, 'rekap': 1, 'catatJual': 2, 'catatModal': 3, 'stok': 4, 'laporan': 5, 'daftarHarga': 6, 'tambahBarang': 7 };
         if (navMap[page] !== undefined && bottomNavBtns[navMap[page]]) { 
             bottomNavBtns[navMap[page]].classList.add('active'); 
         }
@@ -847,6 +869,7 @@
         if (page === 'laporan') loadLaporan();
         if (page === 'daftarHarga') loadDaftarHarga();
         if (page === 'tambahBarang') loadDaftarBarang();
+        if (page === 'catatJual') toggleJualMode('kg');
         document.getElementById('appBackground').scrollTop = 0;
     }
 
