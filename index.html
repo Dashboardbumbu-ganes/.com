@@ -223,6 +223,10 @@
             box-sizing: border-box !important;
             text-align: center;
         }
+        .table-input[disabled] {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
 
         /* ===== SCROLLBAR ===== */
         ::-webkit-scrollbar { width: 8px; height: 8px; }
@@ -424,21 +428,21 @@
                 </div>
             </div>
 
-            <!-- CATAT PENJUALAN (1 MENU DENGAN TOGGLE MODE) -->
+            <!-- CATAT PENJUALAN (AUTO SWITCH MODE) -->
             <div id="page-catatJual" class="page-content hidden">
                 <h2 class="text-4xl font-extrabold mb-8 text-white mt-12 sm:mt-0"><i class="fas fa-cash-register text-emerald-400 mr-3"></i> Catat Penjualan</h2>
                 
-                <!-- TOGGLE MODE JUALAN -->
+                <!-- TOGGLE MODE INDICATOR -->
                 <div class="grid grid-cols-2 gap-4 mb-8">
-                    <button onclick="toggleJualMode('kg')" id="btnModeKg" class="p-4 rounded-xl text-lg font-bold border-2 border-emerald-500 text-emerald-400 transition cursor-pointer">Jual Bumbu (Kg/Ons)</button>
-                    <button onclick="toggleJualMode('pcs')" id="btnModePcs" class="p-4 rounded-xl text-lg font-bold border-2 border-gray-700 text-gray-500 transition cursor-pointer">Jual Barang (Pcs/Btl)</button>
+                    <button type="button" id="btnModeKg" class="p-4 rounded-xl text-lg font-bold border-2 border-emerald-500 text-emerald-400 transition">Mode: Bumbu (Kg/Ons)</button>
+                    <button type="button" id="btnModePcs" class="p-4 rounded-xl text-lg font-bold border-2 border-gray-700 text-gray-500 transition">Mode: Barang (Pcs/Btl)</button>
                 </div>
 
                 <!-- FORM KG -->
                 <div id="formKg" class="bg-[#0f1629] p-6 sm:p-10 rounded-3xl container-full border border-emerald-500/20 card-glow-emerald mb-8">
                     <div class="grid grid-cols-2 gap-6 mb-6">
                         <div><label class="block text-lg font-bold mb-2 text-emerald-400">Tanggal Jual</label><input type="date" id="jualTgl" class="w-full"></div>
-                        <div><label class="block text-lg font-bold mb-2 text-emerald-400">Nama Bumbu</label><select id="jualNama" class="w-full"><option value="">-- Pilih Bumbu --</option></select></div>
+                        <div><label class="block text-lg font-bold mb-2 text-emerald-400">Nama Bumbu</label><select id="jualNama" class="w-full" onchange="autoSwitchJualMode(this.value)"><option value="">-- Pilih Bumbu --</option></select></div>
                     </div>
                     <div class="grid grid-cols-3 gap-6 mb-6">
                         <div>
@@ -464,7 +468,7 @@
                 <div id="formPcs" class="hidden bg-[#0f1629] p-6 sm:p-10 rounded-3xl container-full border border-emerald-500/20 card-glow-emerald mb-8">
                     <div class="grid grid-cols-2 gap-6 mb-6">
                         <div><label class="block text-lg font-bold mb-2 text-emerald-400">Tanggal Jual</label><input type="date" id="pcsTgl" class="w-full"></div>
-                        <div><label class="block text-lg font-bold mb-2 text-emerald-400">Nama Barang (Kecap/Saos/Dll)</label><select id="pcsNama" class="w-full"><option value="">-- Pilih Barang --</option></select></div>
+                        <div><label class="block text-lg font-bold mb-2 text-emerald-400">Nama Barang (Kecap/Saos/Dll)</label><select id="pcsNama" class="w-full" onchange="autoSwitchJualMode(this.value)"><option value="">-- Pilih Barang --</option></select></div>
                     </div>
                     <div class="grid grid-cols-3 gap-6 mb-6">
                         <div>
@@ -489,9 +493,9 @@
             <!-- DAFTAR HARGA JUAL -->
             <div id="page-daftarHarga" class="page-content hidden">
                 <h2 class="text-4xl font-extrabold mb-2 text-white mt-12 sm:mt-0"><i class="fas fa-tags text-amber-400 mr-3"></i> Daftar Harga & Perhitungan</h2>
-                <p class="text-gray-400 mb-8 text-lg">Modal/Pcs otomatis dari pembelian terakhir. Isi harga jual dan klik simpan. Saat ada transaksi, lihat daftar ini untuk acuan harga & diskon.</p>
+                <p class="text-gray-400 mb-8 text-lg">Klik "Edit" untuk mengubah harga, lalu klik "Simpan". Klik "Hapus" untuk menghapus data.</p>
                 <div class="bg-[#0f1629] p-6 sm:p-8 rounded-3xl container-full border border-amber-500/20 card-glow-amber overflow-x-auto">
-                    <table class="dark-table" style="width:100%; min-width: 1100px;">
+                    <table class="dark-table" style="width:100%; min-width: 1500px;">
                         <thead>
                             <tr>
                                 <th>Nama Bumbu</th>
@@ -501,8 +505,14 @@
                                 <th>Harga ½ Kg</th>
                                 <th>Harga 1 Kg</th>
                                 <th>Harga 2 Kg</th>
+                                <th>Harga 3 Kg</th>
+                                <th>Harga 4 Kg</th>
                                 <th>Harga 5 Kg</th>
-                                <th>Harga 6Kg Keatas</th>
+                                <th>Harga 6 Kg</th>
+                                <th>Harga 7 Kg</th>
+                                <th>Harga 8 Kg</th>
+                                <th>Harga 9 Kg</th>
+                                <th>Harga 10 Kg</th>
                                 <th>Harga Pcs/Btl</th>
                                 <th>Aksi</th>
                             </tr>
@@ -652,13 +662,9 @@
             {t: "½ Kg", v: 0.5}, 
             {t: "¾ Kg", v: 0.75},
             {t: "1 Kg", v: 1}, 
-            {t: "1,5 Kg", v: 1.5}, 
             {t: "2 Kg", v: 2}, 
-            {t: "2,5 Kg", v: 2.5},
             {t: "3 Kg", v: 3}, 
-            {t: "3,5 Kg", v: 3.5}, 
             {t: "4 Kg", v: 4}, 
-            {t: "4,5 Kg", v: 4.5}, 
             {t: "5 Kg", v: 5},
             {t: "6 Kg", v: 6}, 
             {t: "7 Kg", v: 7}, 
@@ -712,6 +718,7 @@
     }
     
     function parseNominal(el) { 
+        if (typeof el === 'string') return parseFloat(el.replace(/[^0-9]/g, '')) || 0;
         return parseFloat(el.value.replace(/[^0-9]/g, '')) || 0; 
     }
 
@@ -748,7 +755,17 @@
         document.getElementById('pcsTotal').value = Number(total).toLocaleString('id-ID');
     }
 
-    // ===== TOGGLE MODE JUALAN =====
+    // ===== AUTO SWITCH MODE JUALAN =====
+    function autoSwitchJualMode(nama) {
+        var lowerNama = nama.toLowerCase();
+        if (lowerNama.includes('kecap') || lowerNama.includes('saos') || lowerNama.includes('saus') || lowerNama.includes('garam') || lowerNama.includes('botol') || lowerNama.includes('btl') || lowerNama.includes('pcs')) {
+            toggleJualMode('pcs');
+            if (document.getElementById('pcsNama')) document.getElementById('pcsNama').value = nama;
+        } else {
+            toggleJualMode('kg');
+        }
+    }
+
     function toggleJualMode(mode) {
         if (mode === 'kg') {
             document.getElementById('formKg').classList.remove('hidden');
@@ -1085,7 +1102,6 @@
             document.getElementById('pcsPotong').value = '0'; 
             document.getElementById('pcsTotal').value = '';
             refreshActivePage();
-            alert('Penjualan Pcs/Botol dicatat!');
         } catch (err) { alert('Gagal menyimpan: ' + err.message); }
     }
 
@@ -1155,9 +1171,15 @@
                             halfKg: hargaData[i][3] || '',
                             kg1: hargaData[i][4] || '', 
                             kg2: hargaData[i][5] || '', 
-                            kg5: hargaData[i][6] || '',
-                            above6: hargaData[i][7] || '', 
-                            pcs: hargaData[i][8] || ''
+                            kg3: hargaData[i][6] || '',
+                            kg4: hargaData[i][7] || '', 
+                            kg5: hargaData[i][8] || '', 
+                            kg6: hargaData[i][9] || '',
+                            kg7: hargaData[i][10] || '', 
+                            kg8: hargaData[i][11] || '', 
+                            kg9: hargaData[i][12] || '',
+                            kg10: hargaData[i][13] || '', 
+                            pcs: hargaData[i][14] || ''
                         };
                     }
                 }
@@ -1168,29 +1190,29 @@
             for (var b = 0; b < DAFTAR_BUMBU.length; b++) {
                 var namaB = DAFTAR_BUMBU[b]; 
                 var mPerKg = modalMap[namaB] || 0;
-                var savedHalfOns = (hargaMap[namaB] && hargaMap[namaB].halfOns) ? hargaMap[namaB].halfOns : '';
-                var savedOns = (hargaMap[namaB] && hargaMap[namaB].ons) ? hargaMap[namaB].ons : '';
-                var savedHalfKg = (hargaMap[namaB] && hargaMap[namaB].halfKg) ? hargaMap[namaB].halfKg : '';
-                var savedKg1 = (hargaMap[namaB] && hargaMap[namaB].kg1) ? hargaMap[namaB].kg1 : '';
-                var savedKg2 = (hargaMap[namaB] && hargaMap[namaB].kg2) ? hargaMap[namaB].kg2 : '';
-                var savedKg5 = (hargaMap[namaB] && hargaMap[namaB].kg5) ? hargaMap[namaB].kg5 : '';
-                var savedAbove6 = (hargaMap[namaB] && hargaMap[namaB].above6) ? hargaMap[namaB].above6 : '';
-                var savedPcs = (hargaMap[namaB] && hargaMap[namaB].pcs) ? hargaMap[namaB].pcs : '';
-
+                var hMap = hargaMap[namaB] || {};
+                
                 html += '<tr>' +
                     '<td class="left-align"><b>' + namaB + '</b></td>' +
                     '<td style="color:#f43f5e; font-weight:bold;">' + formatRp(mPerKg) + '</td>' +
-                    '<td><input type="text" inputmode="numeric" id="harga_halfOns_' + b + '" value="' + savedHalfOns + '" placeholder="0" oninput="formatNominal(this)" class="table-input"></td>' +
-                    '<td><input type="text" inputmode="numeric" id="harga_ons_' + b + '" value="' + savedOns + '" placeholder="0" oninput="formatNominal(this)" class="table-input"></td>' +
-                    '<td><input type="text" inputmode="numeric" id="harga_halfKg_' + b + '" value="' + savedHalfKg + '" placeholder="0" oninput="formatNominal(this)" class="table-input"></td>' +
-                    '<td><input type="text" inputmode="numeric" id="harga_1kg_' + b + '" value="' + savedKg1 + '" placeholder="0" oninput="formatNominal(this)" class="table-input"></td>' +
-                    '<td><input type="text" inputmode="numeric" id="harga_2kg_' + b + '" value="' + savedKg2 + '" placeholder="0" oninput="formatNominal(this)" class="table-input"></td>' +
-                    '<td><input type="text" inputmode="numeric" id="harga_5kg_' + b + '" value="' + savedKg5 + '" placeholder="0" oninput="formatNominal(this)" class="table-input"></td>' +
-                    '<td><input type="text" inputmode="numeric" id="harga_above6_' + b + '" value="' + savedAbove6 + '" placeholder="0" oninput="formatNominal(this)" class="table-input"></td>' +
-                    '<td><input type="text" inputmode="numeric" id="harga_pcs_' + b + '" value="' + savedPcs + '" placeholder="0" oninput="formatNominal(this)" class="table-input"></td>' +
-                    '<td><div class="flex gap-2 justify-center">' +
-                        '<button onclick="simpanSatuHarga(' + b + ', \'' + namaB.replace(/'/g, "\\'") + '\')" class="bg-blue-600 hover:bg-blue-500 text-white p-2 rounded-lg text-sm cursor-pointer w-full">Simpan</button>' +
-                        '<button onclick="hapusHarga(\'' + namaB.replace(/'/g, "\\'") + '\')" class="bg-red-600 hover:bg-red-500 text-white p-2 rounded-lg text-sm cursor-pointer w-full">Hapus</button>' +
+                    '<td><input type="text" inputmode="numeric" id="harga_halfOns_' + b + '" value="' + (hMap.halfOns || '') + '" placeholder="0" oninput="formatNominal(this)" class="table-input" disabled></td>' +
+                    '<td><input type="text" inputmode="numeric" id="harga_ons_' + b + '" value="' + (hMap.ons || '') + '" placeholder="0" oninput="formatNominal(this)" class="table-input" disabled></td>' +
+                    '<td><input type="text" inputmode="numeric" id="harga_halfKg_' + b + '" value="' + (hMap.halfKg || '') + '" placeholder="0" oninput="formatNominal(this)" class="table-input" disabled></td>' +
+                    '<td><input type="text" inputmode="numeric" id="harga_1kg_' + b + '" value="' + (hMap.kg1 || '') + '" placeholder="0" oninput="formatNominal(this)" class="table-input" disabled></td>' +
+                    '<td><input type="text" inputmode="numeric" id="harga_2kg_' + b + '" value="' + (hMap.kg2 || '') + '" placeholder="0" oninput="formatNominal(this)" class="table-input" disabled></td>' +
+                    '<td><input type="text" inputmode="numeric" id="harga_3kg_' + b + '" value="' + (hMap.kg3 || '') + '" placeholder="0" oninput="formatNominal(this)" class="table-input" disabled></td>' +
+                    '<td><input type="text" inputmode="numeric" id="harga_4kg_' + b + '" value="' + (hMap.kg4 || '') + '" placeholder="0" oninput="formatNominal(this)" class="table-input" disabled></td>' +
+                    '<td><input type="text" inputmode="numeric" id="harga_5kg_' + b + '" value="' + (hMap.kg5 || '') + '" placeholder="0" oninput="formatNominal(this)" class="table-input" disabled></td>' +
+                    '<td><input type="text" inputmode="numeric" id="harga_6kg_' + b + '" value="' + (hMap.kg6 || '') + '" placeholder="0" oninput="formatNominal(this)" class="table-input" disabled></td>' +
+                    '<td><input type="text" inputmode="numeric" id="harga_7kg_' + b + '" value="' + (hMap.kg7 || '') + '" placeholder="0" oninput="formatNominal(this)" class="table-input" disabled></td>' +
+                    '<td><input type="text" inputmode="numeric" id="harga_8kg_' + b + '" value="' + (hMap.kg8 || '') + '" placeholder="0" oninput="formatNominal(this)" class="table-input" disabled></td>' +
+                    '<td><input type="text" inputmode="numeric" id="harga_9kg_' + b + '" value="' + (hMap.kg9 || '') + '" placeholder="0" oninput="formatNominal(this)" class="table-input" disabled></td>' +
+                    '<td><input type="text" inputmode="numeric" id="harga_10kg_' + b + '" value="' + (hMap.kg10 || '') + '" placeholder="0" oninput="formatNominal(this)" class="table-input" disabled></td>' +
+                    '<td><input type="text" inputmode="numeric" id="harga_pcs_' + b + '" value="' + (hMap.pcs || '') + '" placeholder="0" oninput="formatNominal(this)" class="table-input" disabled></td>' +
+                    '<td><div class="flex gap-1 justify-center">' +
+                        '<button onclick="editHarga(this)" class="bg-yellow-600 hover:bg-yellow-500 text-white p-2 rounded-lg text-xs cursor-pointer flex-1">Edit</button>' +
+                        '<button onclick="simpanSatuHarga(' + b + ', \'' + namaB.replace(/'/g, "\\'") + '\', this)" class="bg-blue-600 hover:bg-blue-500 text-white p-2 rounded-lg text-xs cursor-pointer flex-1">Simpan</button>' +
+                        '<button onclick="hapusHarga(\'' + namaB.replace(/'/g, "\\'") + '\')" class="bg-red-600 hover:bg-red-500 text-white p-2 rounded-lg text-xs cursor-pointer flex-1">Hapus</button>' +
                     '</div></td>' +
                     '</tr>';
             }
@@ -1198,19 +1220,31 @@
         } catch (err) { console.error('Error loadDaftarHarga:', err); }
     }
 
-    async function simpanSatuHarga(index, nama) {
-        var halfOns = parseNominal(document.getElementById('harga_halfOns_' + index));
-        var ons = parseNominal(document.getElementById('harga_ons_' + index));
-        var halfKg = parseNominal(document.getElementById('harga_halfKg_' + index));
-        var kg1 = parseNominal(document.getElementById('harga_1kg_' + index));
-        var kg2 = parseNominal(document.getElementById('harga_2kg_' + index));
-        var kg5 = parseNominal(document.getElementById('harga_5kg_' + index));
-        var above6 = parseNominal(document.getElementById('harga_above6_' + index));
-        var pcs = parseNominal(document.getElementById('harga_pcs_' + index));
+    function editHarga(btn) {
+        var row = btn.parentNode.parentNode;
+        var inputs = row.querySelectorAll('input.table-input');
+        inputs.forEach(function(input) {
+            input.disabled = false;
+            input.focus();
+        });
+    }
+
+    async function simpanSatuHarga(index, nama, btn) {
+        var data = [nama];
+        var fields = ['halfOns', 'ons', 'halfKg', '1kg', '2kg', '3kg', '4kg', '5kg', '6kg', '7kg', '8kg', '9kg', '10kg', 'pcs'];
+        for (var i = 0; i < fields.length; i++) {
+            data.push(parseNominal(document.getElementById('harga_' + fields[i] + '_' + index)));
+        }
         try {
-            await apiPost('Harga', [nama, halfOns, ons, halfKg, kg1, kg2, kg5, above6, pcs]);
-            alert('Harga untuk ' + nama + ' disimpan!');
-        } catch (err) { alert('Gagal menyimpan: ' + err.message); }
+            await apiPost('Harga', data);
+            if (btn) {
+                var row = btn.parentNode.parentNode;
+                var inputs = row.querySelectorAll('input.table-input');
+                inputs.forEach(function(input) { input.disabled = true; });
+            }
+        } catch (err) { 
+            alert('Gagal menyimpan: ' + err.message); 
+        }
     }
 
     // ================= LOAD DASHBOARD =================
