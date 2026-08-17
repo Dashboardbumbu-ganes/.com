@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-    <title>Dashboard Bumbu Kering</title>
+    <title>Dashboard Bumbu Ganes</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         body {
@@ -14,6 +14,27 @@
             background-color: #0a0e1a;
             -webkit-tap-highlight-color: transparent;
             margin: 0;
+        }
+
+        /* ===== BACKGROUND LUAR (GANTI URL INI NANTI) ===== */
+        .app-bg {
+            background-image: url('URL_BACKGROUND_LUAR_KAMU_NANTI.jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            background-repeat: no-repeat;
+            position: relative;
+        }
+        .app-bg::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(10,14,26,0.85) 0%, rgba(15,22,41,0.92) 100%);
+            pointer-events: none;
+        }
+        .app-bg > * {
+            position: relative;
+            z-index: 1;
         }
 
         /* ===== PARTIKEL LATAR ===== */
@@ -49,10 +70,38 @@
         }
 
         @keyframes neonText {
-            0%, 100% { text-shadow: 0 0 8px #00f0ff, 0 0 18px #00f0ff66; }
-            50% { text-shadow: 0 0 8px #a855f7, 0 0 18px #a855f766; }
+            0%, 100% { text-shadow: 0 0 8px #00f0ff, 0 0 18px #00f0ff66, 0 0 28px #00f0ff44; }
+            50% { text-shadow: 0 0 8px #a855f7, 0 0 18px #a855f766, 0 0 28px #a855f744; }
         }
         .neon-text { animation: neonText 3s ease-in-out infinite; }
+
+        /* ===== NAMA BUMBU GANES - TEXT CANTIK HIDUP ===== */
+        @keyframes textHidup {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        .bumbu-ganes-text {
+            font-family: 'Playfair Display', serif;
+            background: linear-gradient(90deg, #00f0ff, #a855f7, #f43f5e, #10b981, #f59e0b, #00f0ff);
+            background-size: 300% 300%;
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: textHidup 6s ease infinite;
+            text-shadow: 0 0 30px rgba(0,240,255,0.3);
+            letter-spacing: 1px;
+        }
+        .bumbu-ganes-text-login {
+            font-family: 'Playfair Display', serif;
+            background: linear-gradient(90deg, #00f0ff, #a855f7, #f43f5e, #10b981, #f59e0b, #00f0ff);
+            background-size: 300% 300%;
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: textHidup 6s ease infinite;
+            letter-spacing: 1px;
+        }
 
         @keyframes blinkText { 0%, 100% { opacity: 1; } 50% { opacity: 0.12; } }
         .blink-login { animation: blinkText 1.2s ease-in-out infinite; }
@@ -60,7 +109,7 @@
 
         @keyframes glowCyan { 0%, 100% { box-shadow: 0 0 12px #00f0ff55, 0 0 35px #00f0ff22; } 50% { box-shadow: 0 0 22px #00f0ff99, 0 0 55px #00f0ff44; } }
         @keyframes glowPurple { 0%, 100% { box-shadow: 0 0 12px #a855f755, 0 0 35px #a855f722; } 50% { box-shadow: 0 0 22px #a855f799, 0 0 55px #a855f744; } }
-        @keyframes glowRose { 0%, 100% { box-shadow: 0 0 12px #f43f5e55, 0 0 35px #f43f5e22; } 50% { box-shadow: 0 0 22px #f43f5e99, 0 0 55px!#f43f5e44; } }
+        @keyframes glowRose { 0%, 100% { box-shadow: 0 0 12px #f43f5e55, 0 0 35px #f43f5e22; } 50% { box-shadow: 0 0 22px #f43f5e99, 0 0 55px #f43f5e44; } }
         @keyframes glowEmerald { 0%, 100% { box-shadow: 0 0 12px #10b98155, 0 0 35px #10b98122; } 50% { box-shadow: 0 0 22px #10b98199, 0 0 55px #10b98144; } }
         @keyframes glowAmber { 0%, 100% { box-shadow: 0 0 12px #f59e0b55, 0 0 35px #f59e0b22; } 50% { box-shadow: 0 0 22px #f59e0b99, 0 0 55px #f59e0b44; } }
         .card-glow-cyan { animation: glowCyan 3s infinite alternate; }
@@ -75,13 +124,17 @@
         @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
         .page-transition { animation: fadeIn 0.4s ease-out; }
 
-        /* ===== MARQUEE DI DALAM DASHBOARD ===== */
+        /* ===== MARQUEE DI DALAM DASHBOARD - LEBIH LAMBAT ===== */
         @keyframes marqueeRun {
             0% { transform: translateX(100%); }
             100% { transform: translateX(-100%); }
         }
         .marquee-banner { overflow: hidden; white-space: nowrap; }
-        .marquee-run { display: inline-block; animation: marqueeRun 14s linear infinite; padding-left: 100%; }
+        .marquee-run {
+            display: inline-block;
+            animation: marqueeRun 30s linear infinite;
+            padding-left: 100%;
+        }
 
         /* ===== SIDEBAR ===== */
         .sidebar-item.active {
@@ -96,7 +149,7 @@
             color: #c4b5fd;
         }
 
-        /* ===== FORM ELEMENTS DARK ===== */
+        /* ===== FORM ELEMENTS DARK - TANGGAL DI TERANGIN ===== */
         select,
         input[type="text"],
         input[type="number"],
@@ -110,6 +163,17 @@
             font-size: 16px;
             outline: none;
             transition: all 0.3s;
+        }
+        input[type="date"] {
+            background: #2a3142 !important;
+            color: #ffffff !important;
+            border: 2px solid #475569 !important;
+            font-weight: 600;
+        }
+        input[type="date"]::-webkit-calendar-picker-indicator {
+            filter: invert(1) brightness(1.5);
+            cursor: pointer;
+            opacity: 0.9;
         }
         select:focus,
         input:focus {
@@ -128,16 +192,53 @@
         ::-webkit-scrollbar-thumb { background: #334155; border-radius: 10px; }
         ::-webkit-scrollbar-thumb:hover { background: #00f0ff; }
 
-        /* ===== DARK TABLE ===== */
-        .dark-table { width: 100%; border-collapse: collapse; }
+        /* ===== DARK TABLE - RAPI & SEJAJAR ===== */
+        .dark-table { width: 100%; border-collapse: collapse; table-layout: fixed; }
         .dark-table thead tr { background: #1e1b4b; }
-        .dark-table th { padding: 14px 18px; text-align: left; color: #00f0ff; font-weight: 700; border-bottom: 2px solid #00f0ff44; font-size: 15px; }
+        .dark-table th { padding: 14px 18px; text-align: left; color: #00f0ff; font-weight: 700; border-bottom: 2px solid #00f0ff44; font-size: 15px; white-space: nowrap; }
         .dark-table tbody tr { border-bottom: 1px solid #1e293b; transition: all 0.2s; }
         .dark-table tbody tr:hover { background: #1e1b4b66; }
-        .dark-table td { padding: 12px 18px; color: #e2e8f0; font-size: 14px; }
+        .dark-table td { padding: 12px 18px; color: #e2e8f0; font-size: 14px; vertical-align: middle; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-        /* ===== MOBILE ===== */
+        /* ===== MOBILE SIDEBAR BAWAH ===== */
         #sidebar { transition: transform 0.3s ease; }
+        .bottom-nav {
+            display: none;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: #0f1629;
+            border-top: 2px solid #00f0ff33;
+            z-index: 60;
+            box-shadow: 0 -4px 25px #00000088;
+            padding: 8px 4px;
+            justify-content: space-around;
+            align-items: center;
+        }
+        .bottom-nav button {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 8px 4px;
+            color: #64748b;
+            font-size: 10px;
+            font-weight: 600;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s;
+            border-radius: 10px;
+            margin: 0 2px;
+        }
+        .bottom-nav button i { font-size: 18px; margin-bottom: 4px; }
+        .bottom-nav button.active {
+            color: #00f0ff;
+            background: #1e1b4b;
+            box-shadow: 0 0 10px #00f0ff33;
+        }
         @media (max-width: 768px) {
             #sidebar {
                 position: fixed;
@@ -157,7 +258,8 @@
             }
             #sidebarOverlay.open { display: block; }
             #hamburgerBtn { display: block !important; }
-            #appBackground { padding: 1rem !important; }
+            #appBackground { padding: 1rem !important; padding-bottom: 100px !important; }
+            .bottom-nav { display: flex; }
             #page-dashboard .grid-cols-3 { grid-template-columns: 1fr !important; gap: 1rem !important; }
             #page-dashboard .grid-cols-4 { grid-template-columns: 1fr 1fr !important; gap: 1rem !important; }
             #page-catatModal .max-w-3xl,
@@ -182,6 +284,8 @@
             h2 { font-size: 1.5rem !important; }
             #salesChart { height: 200px !important; }
             #modalChart { height: 200px !important; }
+            .bumbu-ganes-text { font-size: 1.5rem !important; }
+            .bumbu-ganes-text-login { font-size: 1.8rem !important; }
         }
         #hamburgerBtn { display: none; }
     </style>
@@ -196,7 +300,8 @@
         <div class="bg-[#0f1629] p-6 sm:p-10 rounded-3xl w-full max-w-[400px] text-center neon-border">
             <div class="mb-6">
                 <h1 class="text-xl sm:text-2xl font-extrabold text-white mb-1 tracking-wide blink-login whitespace-nowrap">⭐Silahkan Login⭐</h1>
-                <p class="text-gray-500 text-sm mt-1">BumbuKu - Manajemen Bumbu Kering</p>
+                <p class="bumbu-ganes-text-login text-2xl mt-2">Bumbu Ganes</p>
+                <p class="text-gray-500 text-xs mt-1">Manajemen Bumbu Kering & Basah</p>
             </div>
             <div class="text-left mb-4">
                 <label class="block text-sm font-semibold text-cyan-400 mb-1">👤 Username</label>
@@ -219,7 +324,7 @@
         <!-- SIDEBAR -->
         <div id="sidebar" class="w-72 bg-[#0f1629] border-r border-gray-800 flex flex-col justify-between p-6 shadow-2xl" style="box-shadow:4px 0 25px #00000088;">
             <div>
-                <h1 class="text-2xl font-extrabold text-cyan-400 mb-10 flex items-center neon-text"><i class="fas fa-pepper-hot text-amber-400 mr-3"></i>BumbuKu</h1>
+                <h1 class="text-2xl font-extrabold mb-10 flex items-center bumbu-ganes-text"><i class="fas fa-pepper-hot text-amber-400 mr-3" style="-webkit-text-fill-color: #f59e0b;"></i><span class="bumbu-ganes-text">Bumbu Ganes</span></h1>
                 <ul class="space-y-2">
                     <li onclick="showPage('dashboard',this)" class="sidebar-item active cursor-pointer p-4 rounded-xl text-lg font-semibold flex items-center transition"><i class="fas fa-chart-pie w-8 text-xl"></i> Dashboard</li>
                     <li onclick="showPage('rekap',this)" class="sidebar-item cursor-pointer p-4 rounded-xl text-lg font-semibold flex items-center transition text-gray-400"><i class="fas fa-clipboard-list w-8 text-xl"></i> Rekap Hari Ini</li>
@@ -234,8 +339,18 @@
             </div>
         </div>
 
+        <!-- BOTTOM NAV MOBILE -->
+        <div class="bottom-nav" id="bottomNav">
+            <button onclick="showPage('dashboard',this)" class="active"><i class="fas fa-chart-pie"></i>Dashboard</button>
+            <button onclick="showPage('rekap',this)"><i class="fas fa-clipboard-list"></i>Rekap</button>
+            <button onclick="showPage('catatJual',this)"><i class="fas fa-cash-register"></i>Jual</button>
+            <button onclick="showPage('catatModal',this)"><i class="fas fa-truck-loading"></i>Modal</button>
+            <button onclick="showPage('stok',this)"><i class="fas fa-boxes-stacked"></i>Stok</button>
+            <button onclick="showPage('laporan',this)"><i class="fas fa-file-invoice-dollar"></i>Laporan</button>
+        </div>
+
         <!-- KONTEN -->
-        <div id="appBackground" class="flex-1 overflow-y-auto p-6 sm:p-10 bg-[#0a0e1a] relative">
+        <div id="appBackground" class="flex-1 overflow-y-auto p-6 sm:p-10 app-bg relative">
 
             <button id="hamburgerBtn" onclick="toggleSidebar(true)" class="absolute top-4 left-4 z-30 bg-gradient-to-r from-cyan-500 to-purple-600 text-white p-3 rounded-xl shadow-lg cursor-pointer"><i class="fas fa-bars text-xl"></i></button>
 
@@ -243,7 +358,7 @@
             <div id="page-dashboard" class="page-content page-transition">
                 <!-- MARQUEE BERJALAN DI DALAM DASHBOARD -->
                 <div class="marquee-banner bg-gradient-to-r from-purple-900/40 via-cyan-900/40 to-purple-900/40 border border-cyan-500/20 rounded-2xl p-3 mb-6 card-glow-purple">
-                    <span class="marquee-run text-cyan-300 font-bold text-lg">✨ Semoga Usahamu Laris Manis & Berkah Selalu! ✨ 🌶️ BumbuKu - Rempah Pilihan Berkualitas 🌶️ ✨ Semoga Usahamu Laris Manis & Berkah Selalu! ✨</span>
+                    <span class="marquee-run text-cyan-300 font-bold text-lg">✨ SELAMAT DATANG DI BUMBU GANES ✨ • 🌶️ BUMBU BASAH & REMPAH KERING TERLENGKAP 🌶️ • SEMOGA HARI INI PESANAN RAMAI • LARIS MANIS • REZEKI MELIMPAH • USAHA SEMAKIN MAJU DAN BERKAH 🙏</span>
                 </div>
                 <h2 class="text-4xl font-extrabold mb-2 text-white mt-12 sm:mt-0 neon-text"><i class="fas fa-chart-pie text-cyan-400 mr-3"></i>Ringkasan Hari Ini</h2>
                 <p class="text-gray-400 mb-8 text-lg">Data pemasukan dan pengeluaran hari ini secara realtime.</p>
@@ -284,15 +399,11 @@
                 </div>
             </div>
 
-            <!-- REKAP HARI INI -->
+            <!-- REKAP HARI INI - HANYA PENJUALAN -->
             <div id="page-rekap" class="page-content hidden">
-                <h2 class="text-4xl font-extrabold mb-2 text-white mt-12 sm:mt-0 neon-text"><i class="fas fa-clipboard-list text-emerald-400 mr-3"></i>Rekap Hari Ini</h2>
-                <p class="text-gray-400 mb-8 text-lg">Pencatatan pembelian & penjualan rempah hari ini saja.</p>
+                <h2 class="text-4xl font-extrabold mb-2 text-white mt-12 sm:mt-0 neon-text"><i class="fas fa-clipboard-list text-emerald-400 mr-3"></i>Rekap Penjualan Hari Ini</h2>
+                <p class="text-gray-400 mb-8 text-lg">Pencatatan penjualan rempah hari ini saja.</p>
                 <div class="max-w-4xl">
-                    <div class="bg-[#0f1629] p-8 rounded-3xl border border-cyan-500/20 card-glow-cyan mb-8 overflow-x-auto">
-                        <h3 class="text-xl font-extrabold mb-4 text-cyan-300"><i class="fas fa-truck-loading mr-2"></i>Pembelian Modal Hari Ini</h3>
-                        <table class="dark-table"><thead><tr><th>Tanggal</th><th>Bumbu</th><th>Beli (Kg)</th><th>Harga Total</th></tr></thead><tbody id="rekapModal"></tbody></table>
-                    </div>
                     <div class="bg-[#0f1629] p-8 rounded-3xl border border-emerald-500/20 card-glow-emerald overflow-x-auto">
                         <h3 class="text-xl font-extrabold mb-4 text-emerald-300"><i class="fas fa-cash-register mr-2"></i>Penjualan Hari Ini</h3>
                         <table class="dark-table"><thead><tr><th>Tanggal</th><th>Bumbu</th><th>Jual (Kg)</th><th>Total Bayar</th><th>Untung</th></tr></thead><tbody id="rekapJual"></tbody></table>
@@ -310,7 +421,17 @@
                     </div>
                     <div class="grid grid-cols-2 gap-6 mb-8">
                         <div><label class="block text-lg font-bold mb-2 text-cyan-400">Nama Bumbu</label><select id="modalNama" class="w-full"><option value="">-- Pilih Bumbu --</option></select></div>
-                        <div><label class="block text-lg font-bold mb-2 text-cyan-400">Jumlah Beli (Kg)</label><input type="number" id="modalKg" step="any" placeholder="0.5 / 1 / 1.5" class="w-full"></div>
+                        <div>
+                            <label class="block text-lg font-bold mb-2 text-cyan-400">Jumlah Beli</label>
+                            <select id="modalKgPilihan" class="w-full mb-2" onchange="setJumlah(this, 'modalKg')">
+                                <option value="">-- Pilih Berat --</option>
+                                <option value="1">1 Kg</option>
+                                <option value="0.5">Setengah Kg</option>
+                                <option value="0.05">Setengah Ons</option>
+                                <option value="lainnya">Lainnya</option>
+                            </select>
+                            <input type="number" id="modalKg" step="any" placeholder="0.5 / 1 / 1.5" class="w-full" style="display:none;">
+                        </div>
                     </div>
                     <button onclick="simpanModal()" class="w-full bg-gradient-to-r from-cyan-500 to-blue-600 text-white p-4 rounded-xl text-xl font-bold hover:from-cyan-400 hover:to-blue-500 transition transform hover:scale-105 shadow-lg active:scale-95 cursor-pointer"><i class="fas fa-save mr-2"></i> Simpan Modal</button>
                 </div>
@@ -325,7 +446,17 @@
                         <div><label class="block text-lg font-bold mb-2 text-emerald-400">Nama Bumbu</label><select id="jualNama" class="w-full"><option value="">-- Pilih Bumbu --</option></select></div>
                     </div>
                     <div class="grid grid-cols-3 gap-6 mb-6">
-                        <div><label class="block text-lg font-bold mb-2 text-emerald-400">Jumlah Jual (Kg)</label><input type="number" id="jualKg" step="any" placeholder="0.25 / 0.5 / 1" class="w-full"></div>
+                        <div>
+                            <label class="block text-lg font-bold mb-2 text-emerald-400">Jumlah Jual</label>
+                            <select id="jualKgPilihan" class="w-full mb-2" onchange="setJumlah(this, 'jualKg')">
+                                <option value="">-- Pilih Berat --</option>
+                                <option value="1">1 Kg</option>
+                                <option value="0.5">Setengah Kg</option>
+                                <option value="0.05">Setengah Ons</option>
+                                <option value="lainnya">Lainnya</option>
+                            </select>
+                            <input type="number" id="jualKg" step="any" placeholder="0.25 / 0.5 / 1" class="w-full" style="display:none;">
+                        </div>
                         <div><label class="block text-lg font-bold mb-2 text-emerald-400">Harga Jual Normal (Rp)</label><input type="text" inputmode="numeric" id="jualHarga" placeholder="150.000" oninput="formatNominal(this)" class="w-full"></div>
                         <div><label class="block text-lg font-bold mb-2 text-rose-400">Potongan / Kurang (Rp)</label><input type="text" inputmode="numeric" id="jualPotong" value="0" placeholder="5.000" oninput="formatNominal(this)" class="w-full" style="border-color:#f43f5e44 !important;"></div>
                     </div>
@@ -366,6 +497,15 @@
     var API_URL = 'https://script.google.com/macros/s/AKfycbzDmMJFAxEbSc-66g16wdn6lIW3BCNJeqZaYsI8R6LpBieAoTdt49S3yYu3HQQvmluBUg/exec';
     var salesChartInstance = null;
     var modalChartInstance = null;
+
+    // ================= CACHE UNTUK ANTI LAG =================
+    var dataCache = {
+        Penjualan: null,
+        Modal: null,
+        Stok: null,
+        lastUpdate: 0
+    };
+    var CACHE_DURATION = 30000; // 30 detik
 
     // ================= KREDENSIAL LOGIN (EDIT DI SINI) =================
     var VALID_USERS = [
@@ -449,6 +589,22 @@
     }
     function parseNominal(el) {
         return parseFloat(el.value.replace(/[^0-9]/g, '')) || 0;
+    }
+
+    // ====== SET JUMLAH DARI DROPDOWN ======
+    function setJumlah(selectEl, inputId) {
+        var input = document.getElementById(inputId);
+        if (selectEl.value === 'lainnya') {
+            input.style.display = 'block';
+            input.value = '';
+            input.focus();
+        } else if (selectEl.value === '') {
+            input.style.display = 'none';
+            input.value = '';
+        } else {
+            input.style.display = 'none';
+            input.value = selectEl.value;
+        }
     }
 
     function showLoginError(pesan) {
@@ -548,6 +704,17 @@
             element.classList.remove('text-gray-400');
         }
 
+        // Update bottom nav active
+        var bottomNavBtns = document.querySelectorAll('.bottom-nav button');
+        bottomNavBtns.forEach(function(btn) { btn.classList.remove('active'); });
+        var navMap = {
+            'dashboard': 0, 'rekap': 1, 'catatJual': 2,
+            'catatModal': 3, 'stok': 4, 'laporan': 5
+        };
+        if (navMap[page] !== undefined && bottomNavBtns[navMap[page]]) {
+            bottomNavBtns[navMap[page]].classList.add('active');
+        }
+
         if (window.innerWidth <= 768) toggleSidebar(false);
 
         if (page === 'dashboard') loadDashboard();
@@ -561,6 +728,13 @@
     // ================= API JSONP =================
     function apiGet(sheet) {
         return new Promise(function(resolve, reject) {
+            // Pakai cache untuk anti lag
+            var now = Date.now();
+            if (dataCache[sheet] && (now - dataCache.lastUpdate < CACHE_DURATION)) {
+                resolve(dataCache[sheet]);
+                return;
+            }
+
             var cbName = '_jcb_' + Date.now() + '_' + Math.floor(Math.random() * 999999);
             var script = document.createElement('script');
             var done = false;
@@ -570,6 +744,9 @@
                 done = true;
                 delete window[cbName];
                 if (script.parentNode) script.parentNode.removeChild(script);
+                // Simpan ke cache
+                dataCache[sheet] = data;
+                dataCache.lastUpdate = Date.now();
                 resolve(data);
             };
 
@@ -594,6 +771,10 @@
     }
 
     function apiPost(sheet, data) {
+        // Invalidate cache setelah write
+        dataCache[sheet] = null;
+        dataCache.lastUpdate = 0;
+
         return new Promise(function(resolve, reject) {
             var cbName = '_jcb_' + Date.now() + '_' + Math.floor(Math.random() * 999999);
             var script = document.createElement('script');
@@ -681,6 +862,8 @@
         document.getElementById('username').value = '';
         document.getElementById('password').value = '';
         toggleSidebar(false);
+        // Reset cache saat logout
+        dataCache = { Penjualan: null, Modal: null, Stok: null, lastUpdate: 0 };
         setTimeout(function() { document.getElementById('username').focus(); }, 100);
     }
 
@@ -699,6 +882,8 @@
             alert('Modal berhasil dicatat & stok otomatis bertambah!');
             document.getElementById('modalNama').value = '';
             document.getElementById('modalKg').value = '';
+            document.getElementById('modalKgPilihan').value = '';
+            document.getElementById('modalKg').style.display = 'none';
             document.getElementById('modalHarga').value = '';
         } catch (err) {
             alert('Gagal menyimpan: ' + err.message);
@@ -732,9 +917,11 @@
             var untung = totalBayar - (hargaModalPerKg * kg);
 
             await apiPost('Penjualan', [tgl, nama, kg, hargaJual, potongan, totalBayar, untung]);
-            alert('Penjualan dicatat! Stok otomatis berkurang.');
+            alert('Penjualan dicatat! Langsung masuk ke rekapan penjualan hari ini. Stok otomatis berkurang.');
             document.getElementById('jualNama').value = '';
             document.getElementById('jualKg').value = '';
+            document.getElementById('jualKgPilihan').value = '';
+            document.getElementById('jualKg').style.display = 'none';
             document.getElementById('jualHarga').value = '';
             document.getElementById('jualPotong').value = '0';
         } catch (err) {
@@ -742,7 +929,7 @@
         }
     }
 
-    // ================= LOAD DASHBOARD =================
+    // ================= LOAD DASHBOARD - DIOPTIMASI ANTI LAG =================
     async function loadDashboard() {
         try {
             var jualData = await apiGet('Penjualan');
@@ -797,14 +984,15 @@
             // ===== SISA STOK DI DASHBOARD =====
             var tbodyDash = document.getElementById('tabelStokDash');
             if (tbodyDash && stokData) {
-                tbodyDash.innerHTML = '';
+                var htmlDash = '';
                 for (var i = 1; i < stokData.length; i++) {
                     if (!stokData[i]) continue;
                     var kgVal = parseFloat(stokData[i][1]);
-                    var warnaStok = kgVal <= 2 ? 'style="color:#f43f5e;"' : '';
-                    var warning = kgVal <= 2 ? ' !!' : '';
-                    tbodyDash.innerHTML += '<tr><td>' + stokData[i][0] + '</td><td ' + warnaStok + '>' + stokData[i][1] + ' Kg' + warning + '</td></tr>';
+                    var warnaStok = kgVal <= 2 ? 'style="color:#f43f5e;font-weight:bold;"' : '';
+                    var warning = kgVal <= 2 ? ' ⚠️' : '';
+                    htmlDash += '<tr><td>' + stokData[i][0] + '</td><td ' + warnaStok + '>' + stokData[i][1] + ' Kg' + warning + '</td></tr>';
                 }
+                tbodyDash.innerHTML = htmlDash;
             }
 
             // ===== GRAFIK 1: PENJUALAN PER BULAN =====
@@ -856,6 +1044,7 @@
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
+                    animation: { duration: 400 },
                     plugins: {
                         legend: { labels: { color: '#94a3b8', font: { size: 13 } } },
                         tooltip: {
@@ -911,6 +1100,7 @@
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
+                    animation: { duration: 400 },
                     plugins: {
                         legend: { labels: { color: '#94a3b8', font: { size: 13 } } },
                         tooltip: {
@@ -933,40 +1123,53 @@
                 }
             });
         } catch (err) {
-            console.error('Dashboard error:', err);
+            console.error('Error loadDashboard:', err);
         }
     }
 
-    // ================= LOAD REKAP HARI INI =================
+    // ================= LOAD REKAP HARI INI - HANYA PENJUALAN =================
     async function loadRekap() {
         try {
-            var today = getToday();
-            var modalData = await apiGet('Modal');
             var jualData = await apiGet('Penjualan');
-            var tbM = document.getElementById('rekapModal');
-            var tbJ = document.getElementById('rekapJual');
-            tbM.innerHTML = '';
-            tbJ.innerHTML = '';
-            if (modalData) {
-                for (var i = 1; i < modalData.length; i++) {
-                    if (!modalData[i]) continue;
-                    if (modalData[i][0] == today) {
-                        tbM.innerHTML += '<tr><td>' + modalData[i][0] + '</td><td>' + modalData[i][1] + '</td><td>' + modalData[i][2] + '</td><td>' + formatRp(modalData[i][3]) + '</td></tr>';
-                    }
+            if (!jualData) return;
+
+            var today = getToday();
+            var tbody = document.getElementById('rekapJual');
+            if (!tbody) return;
+
+            var html = '';
+            var totalJual = 0, totalUntung = 0, adaData = false;
+
+            for (var i = 1; i < jualData.length; i++) {
+                if (!jualData[i]) continue;
+                if (jualData[i][0] == today) {
+                    adaData = true;
+                    var totalBayar = Number(jualData[i][5]);
+                    var untung = Number(jualData[i][6]);
+                    totalJual += totalBayar;
+                    totalUntung += untung;
+                    html += '<tr>' +
+                        '<td>' + jualData[i][0] + '</td>' +
+                        '<td>' + jualData[i][1] + '</td>' +
+                        '<td>' + jualData[i][2] + ' Kg</td>' +
+                        '<td>' + formatRp(totalBayar) + '</td>' +
+                        '<td style="color:#10b981;font-weight:bold;">' + formatRp(untung) + '</td>' +
+                        '</tr>';
                 }
             }
-            if (jualData) {
-                for (var i = 1; i < jualData.length; i++) {
-                    if (!jualData[i]) continue;
-                    if (jualData[i][0] == today) {
-                        tbJ.innerHTML += '<tr><td>' + jualData[i][0] + '</td><td>' + jualData[i][1] + '</td><td>' + jualData[i][2] + '</td><td>' + formatRp(jualData[i][5]) + '</td><td style="color:#10b981;font-weight:700;">' + formatRp(jualData[i][6]) + '</td></tr>';
-                    }
-                }
+
+            if (!adaData) {
+                html = '<tr><td colspan="5" style="text-align:center;padding:30px;color:#64748b;">Belum ada penjualan hari ini.</td></tr>';
+            } else {
+                html += '<tr style="background:#1e1b4b;font-weight:bold;border-top:2px solid #10b98144;">' +
+                    '<td colspan="3" style="color:#10b981;text-align:right;">TOTAL HARI INI</td>' +
+                    '<td style="color:#00f0ff;">' + formatRp(totalJual) + '</td>' +
+                    '<td style="color:#10b981;">' + formatRp(totalUntung) + '</td>' +
+                    '</tr>';
             }
-            if (tbM.innerHTML === '') tbM.innerHTML = '<tr><td colspan="4" style="text-align:center;color:#64748b;">Belum ada pembelian hari ini</td></tr>';
-            if (tbJ.innerHTML === '') tbJ.innerHTML = '<tr><td colspan="5" style="text-align:center;color:#64748b;">Belum ada penjualan hari ini</td></tr>';
+            tbody.innerHTML = html;
         } catch (err) {
-            console.error('Rekap error:', err);
+            console.error('Error loadRekap:', err);
         }
     }
 
@@ -976,16 +1179,18 @@
             var stokData = await apiGet('Stok');
             if (!stokData) return;
             var tbody = document.getElementById('tabelStok');
-            tbody.innerHTML = '';
+            if (!tbody) return;
+            var html = '';
             for (var i = 1; i < stokData.length; i++) {
                 if (!stokData[i]) continue;
                 var kgVal = parseFloat(stokData[i][1]);
-                var warnaStok = kgVal <= 2 ? 'style="color:#f43f5e;"' : '';
-                var warning = kgVal <= 2 ? ' !!' : '';
-                tbody.innerHTML += '<tr><td>' + stokData[i][0] + '</td><td ' + warnaStok + '>' + stokData[i][1] + ' Kg' + warning + '</td></tr>';
+                var warnaStok = kgVal <= 2 ? 'style="color:#f43f5e;font-weight:bold;"' : '';
+                var warning = kgVal <= 2 ? ' ⚠️' : '';
+                html += '<tr><td>' + stokData[i][0] + '</td><td ' + warnaStok + '>' + stokData[i][1] + ' Kg' + warning + '</td></tr>';
             }
+            tbody.innerHTML = html;
         } catch (err) {
-            console.error('Stok error:', err);
+            console.error('Error loadStok:', err);
         }
     }
 
@@ -994,32 +1199,49 @@
         try {
             var bulan = document.getElementById('filterBulan').value;
             var tahun = document.getElementById('filterTahun').value;
-            var prefix = tahun + '-' + bulan;
+            var filterStr = tahun + '-' + bulan;
+
             var jualData = await apiGet('Penjualan');
             var modalData = await apiGet('Modal');
             if (!jualData || !modalData) return;
 
             var totalPemasukan = 0, totalModal = 0, totalUntung = 0;
-            var tbody = document.getElementById('tabelLaporan');
-            tbody.innerHTML = '';
+            var html = '';
 
             for (var i = 1; i < jualData.length; i++) {
                 if (!jualData[i]) continue;
-                if (String(jualData[i][0]).substring(0, 7) == prefix) {
+                if (String(jualData[i][0]).substring(0, 7) == filterStr) {
                     totalPemasukan += Number(jualData[i][5]);
                     totalUntung += Number(jualData[i][6]);
-                    tbody.innerHTML += '<tr><td>' + jualData[i][0] + '</td><td>' + jualData[i][1] + '</td><td>' + jualData[i][2] + '</td><td>' + formatRp(jualData[i][5]) + '</td><td style="color:#10b981;font-weight:700;">' + formatRp(jualData[i][6]) + '</td></tr>';
+                    html += '<tr>' +
+                        '<td>' + jualData[i][0] + '</td>' +
+                        '<td>' + jualData[i][1] + '</td>' +
+                        '<td>' + jualData[i][2] + ' Kg</td>' +
+                        '<td>' + formatRp(jualData[i][5]) + '</td>' +
+                        '<td style="color:#10b981;">' + formatRp(jualData[i][6]) + '</td>' +
+                        '</tr>';
                 }
             }
+
             for (var i = 1; i < modalData.length; i++) {
-                if (modalData[i] && String(modalData[i][0]).substring(0, 7) == prefix) totalModal += Number(modalData[i][3]);
+                if (!modalData[i]) continue;
+                if (String(modalData[i][0]).substring(0, 7) == filterStr) {
+                    totalModal += Number(modalData[i][3]);
+                }
             }
 
             document.getElementById('lPemasukan').innerText = formatRp(totalPemasukan);
             document.getElementById('lModal').innerText = formatRp(totalModal);
             document.getElementById('lUntung').innerText = formatRp(totalUntung);
+
+            var tbody = document.getElementById('tabelLaporan');
+            if (!tbody) return;
+            if (html === '') {
+                html = '<tr><td colspan="5" style="text-align:center;padding:30px;color:#64748b;">Belum ada data bulan ini.</td></tr>';
+            }
+            tbody.innerHTML = html;
         } catch (err) {
-            console.error('Laporan error:', err);
+            console.error('Error loadLaporan:', err);
         }
     }
     </script>
