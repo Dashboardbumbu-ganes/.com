@@ -54,74 +54,27 @@
         }
 
         /* ===== PARTIKEL LATAR ===== */
-        .bg-particles {
-            position: fixed;
-            inset: 0;
-            z-index: 0;
-            pointer-events: none;
-            overflow: hidden;
-        }
-        .bg-particles span {
-            position: absolute;
-            display: block;
-            border-radius: 50%;
-            opacity: 0;
-            animation: particleFloat linear infinite;
-        }
+        .bg-particles { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
+        .bg-particles span { position: absolute; display: block; border-radius: 50%; opacity: 0; animation: particleFloat linear infinite; }
         @keyframes particleFloat {
             0% { opacity: 0; transform: translateY(100vh) scale(0); }
-            10% { opacity: 0.6; }
-            90% { opacity: 0.6; }
+            10% { opacity: 0.6; } 90% { opacity: 0.6; }
             100% { opacity: 0; transform: translateY(-10vh) scale(1); }
         }
 
         /* ===== NEON & LAMPU ===== */
-        @keyframes neonPulse {
-            0%, 100% { box-shadow: 0 0 12px #00f0ff, 0 0 30px #00f0ff, 0 0 60px #00f0ff33, inset 0 0 15px #00f0ff11; }
-            50% { box-shadow: 0 0 12px #a855f7, 0 0 30px #a855f7, 0 0 60px #a855f733, inset 0 0 15px #a855f711; }
-        }
-        .neon-border {
-            animation: neonPulse 3s infinite alternate;
-            border: 2px solid rgba(0,240,255,0.15);
-        }
-
-        @keyframes neonText {
-            0%, 100% { text-shadow: 0 0 8px #00f0ff, 0 0 18px #00f0ff66, 0 0 28px #00f0ff44; }
-            50% { text-shadow: 0 0 8px #a855f7, 0 0 18px #a855f766, 0 0 28px #a855f744; }
-        }
+        @keyframes neonPulse { 0%, 100% { box-shadow: 0 0 12px #00f0ff, 0 0 30px #00f0ff, 0 0 60px #00f0ff33, inset 0 0 15px #00f0ff11; } 50% { box-shadow: 0 0 12px #a855f7, 0 0 30px #a855f7, 0 0 60px #a855f733, inset 0 0 15px #a855f711; } }
+        .neon-border { animation: neonPulse 3s infinite alternate; border: 2px solid rgba(0,240,255,0.15); }
+        @keyframes neonText { 0%, 100% { text-shadow: 0 0 8px #00f0ff, 0 0 18px #00f0ff66, 0 0 28px #00f0ff44; } 50% { text-shadow: 0 0 8px #a855f7, 0 0 18px #a855f766, 0 0 28px #a855f744; } }
         .neon-text { animation: neonText 3s ease-in-out infinite; }
 
-        /* ===== NAMA BUMBU GANES - TEXT CANTIK HIDUP ===== */
-        @keyframes textHidup {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-        .bumbu-ganes-text {
-            font-family: 'Playfair Display', serif;
-            background: linear-gradient(90deg, #00f0ff, #a855f7, #f43f5e, #10b981, #f59e0b, #00f0ff);
-            background-size: 300% 300%;
-            -webkit-background-clip: text;
-            background-clip: text;
-            -webkit-text-fill-color: transparent;
-            animation: textHidup 6s ease infinite;
-            text-shadow: 0 0 30px rgba(0,240,255,0.3);
-            letter-spacing: 1px;
-        }
-        .bumbu-ganes-text-login {
-            font-family: 'Playfair Display', serif;
-            background: linear-gradient(90deg, #00f0ff, #a855f7, #f43f5e, #10b981, #f59e0b, #00f0ff);
-            background-size: 300% 300%;
-            -webkit-background-clip: text;
-            background-clip: text;
-            -webkit-text-fill-color: transparent;
-            animation: textHidup 6s ease infinite;
-            letter-spacing: 1px;
-        }
+        /* ===== TEXT CANTIK HIDUP ===== */
+        @keyframes textHidup { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+        .bumbu-ganes-text { font-family: 'Playfair Display', serif; background: linear-gradient(90deg, #00f0ff, #a855f7, #f43f5e, #10b981, #f59e0b, #00f0ff); background-size: 300% 300%; -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; animation: textHidup 6s ease infinite; text-shadow: 0 0 30px rgba(0,240,255,0.3); letter-spacing: 1px; }
+        .bumbu-ganes-text-login { font-family: 'Playfair Display', serif; background: linear-gradient(90deg, #00f0ff, #a855f7, #f43f5e, #10b981, #f59e0b, #00f0ff); background-size: 300% 300%; -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; animation: textHidup 6s ease infinite; letter-spacing: 1px; }
 
         @keyframes blinkText { 0%, 100% { opacity: 1; } 50% { opacity: 0.12; } }
         .blink-login { animation: blinkText 1.2s ease-in-out infinite; }
-        .blink-dot { animation: blinkText 1.5s ease-in-out infinite; }
 
         @keyframes glowCyan { 0%, 100% { box-shadow: 0 0 12px #00f0ff55, 0 0 35px #00f0ff22; } 50% { box-shadow: 0 0 22px #00f0ff99, 0 0 55px #00f0ff44; } }
         @keyframes glowPurple { 0%, 100% { box-shadow: 0 0 12px #a855f755, 0 0 35px #a855f722; } 50% { box-shadow: 0 0 22px #a855f799, 0 0 55px #a855f744; } }
@@ -136,97 +89,28 @@
 
         @keyframes floatCard { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
         .float-card { animation: floatCard 4s ease-in-out infinite; }
-
         @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
         .page-transition { animation: fadeIn 0.4s ease-out; }
 
-        /* ===== MARQUEE DIPERBAIKI - BERJALAN LANCAR ===== */
-        .marquee-banner { 
-            overflow: hidden; 
-            white-space: nowrap; 
-            position: relative;
-            width: 100%;
-        }
-        .marquee-run {
-            display: inline-block;
-            padding-left: 100%;
-            animation: marqueeRun 30s linear infinite;
-            will-change: transform;
-        }
-        @keyframes marqueeRun {
-            0% { transform: translate(0, 0); }
-            100% { transform: translate(-100%, 0); }
-        }
+        /* ===== MARQUEE ===== */
+        .marquee-banner { overflow: hidden; white-space: nowrap; position: relative; width: 100%; }
+        .marquee-run { display: inline-block; padding-left: 100%; animation: marqueeRun 30s linear infinite; will-change: transform; }
+        @keyframes marqueeRun { 0% { transform: translate(0, 0); } 100% { transform: translate(-100%, 0); } }
 
         /* ===== SIDEBAR ===== */
-        .sidebar-item.active {
-            background: linear-gradient(135deg, #1e1b4b, #312e81);
-            border-left: 5px solid #00f0ff;
-            color: #00f0ff;
-            font-weight: 800;
-            box-shadow: 0 0 12px #00f0ff33;
-        }
-        .sidebar-item:not(.active):hover {
-            background: #1a1a2e;
-            color: #c4b5fd;
-        }
+        .sidebar-item.active { background: linear-gradient(135deg, #1e1b4b, #312e81); border-left: 5px solid #00f0ff; color: #00f0ff; font-weight: 800; box-shadow: 0 0 12px #00f0ff33; }
+        .sidebar-item:not(.active):hover { background: #1a1a2e; color: #c4b5fd; }
 
-        /* ===== FORM ELEMENTS DARK ===== */
-        select,
-        input[type="text"],
-        input[type="number"],
-        input[type="date"],
-        input[type="password"] {
-            background: #1a1a2e !important;
-            border: 2px solid #334155 !important;
-            color: #f1f5f9 !important;
-            border-radius: 12px;
-            padding: 14px 16px;
-            font-size: 18px;
-            outline: none;
-            transition: all 0.3s;
-            width: 100%;
-            box-sizing: border-box;
-            font-weight: 600;
+        /* ===== FORM ELEMENTS ===== */
+        select, input[type="text"], input[type="number"], input[type="date"], input[type="password"] {
+            background: #1a1a2e !important; border: 2px solid #334155 !important; color: #f1f5f9 !important; border-radius: 12px; padding: 14px 16px; font-size: 18px; outline: none; transition: all 0.3s; width: 100%; box-sizing: border-box; font-weight: 600;
         }
-        input[type="date"] {
-            background: #2a3142 !important;
-            color: #ffffff !important;
-            border: 2px solid #475569 !important;
-        }
-        input[type="date"]::-webkit-calendar-picker-indicator {
-            filter: invert(1) brightness(1.5);
-            cursor: pointer;
-            opacity: 0.9;
-        }
-        select:focus,
-        input:focus {
-            border-color: #00f0ff !important;
-            box-shadow: 0 0 12px #00f0ff33 !important;
-        }
-        select option {
-            background: #1a1a2e !important;
-            color: #f1f5f9 !important;
-            padding: 8px;
-        }
-        input[readonly] {
-            background: #111827 !important;
-            color: #10b981 !important;
-            font-weight: 800;
-            cursor: not-allowed;
-        }
-        .table-input {
-            padding: 10px !important;
-            font-size: 16px !important;
-            width: 100% !important;
-            border-radius: 8px !important;
-            box-sizing: border-box !important;
-            text-align: center;
-        }
-        .table-input[disabled] {
-            opacity: 0.7;
-            cursor: not-allowed;
-        }
+        input[type="date"] { background: #2a3142 !important; color: #ffffff !important; border: 2px solid #475569 !important; }
+        input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(1) brightness(1.5); cursor: pointer; opacity: 0.9; }
+        select:focus, input:focus { border-color: #00f0ff !important; box-shadow: 0 0 12px #00f0ff33 !important; }
+        select option { background: #1a1a2e !important; color: #f1f5f9 !important; padding: 8px; }
+        input[readonly] { background: #111827 !important; color: #10b981 !important; font-weight: 800; cursor: not-allowed; }
+        .table-input { padding: 10px !important; font-size: 16px !important; width: 110px !important; border-radius: 8px !important; box-sizing: border-box !important; text-align: center; }
 
         /* ===== SCROLLBAR ===== */
         ::-webkit-scrollbar { width: 8px; height: 8px; }
@@ -248,16 +132,8 @@
 
         /* ===== MOBILE SIDEBAR BAWAH ===== */
         #sidebar { transition: transform 0.3s ease; }
-        .bottom-nav {
-            display: none; position: fixed; bottom: 0; left: 0; right: 0; background: #0f1629;
-            border-top: 2px solid #00f0ff33; z-index: 60; box-shadow: 0 -4px 25px #00000088;
-            padding: 8px 4px; justify-content: space-around; align-items: center;
-        }
-        .bottom-nav button {
-            flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
-            padding: 8px 4px; color: #64748b; font-size: 11px; font-weight: 600; background: transparent;
-            border: none; cursor: pointer; transition: all 0.2s; border-radius: 10px; margin: 0 2px;
-        }
+        .bottom-nav { display: none; position: fixed; bottom: 0; left: 0; right: 0; background: #0f1629; border-top: 2px solid #00f0ff33; z-index: 60; box-shadow: 0 -4px 25px #00000088; padding: 8px 4px; justify-content: space-around; align-items: center; }
+        .bottom-nav button { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 8px 4px; color: #64748b; font-size: 11px; font-weight: 600; background: transparent; border: none; cursor: pointer; transition: all 0.2s; border-radius: 10px; margin: 0 2px; }
         .bottom-nav button i { font-size: 20px; margin-bottom: 4px; }
         .bottom-nav button.active { color: #00f0ff; background: #1e1b4b; box-shadow: 0 0 10px #00f0ff33; }
         
@@ -275,7 +151,7 @@
             #page-laporan .flex.gap-4 { flex-direction: column; align-items: stretch; }
             #page-stok table, #page-laporan table, #page-rekap table, #page-daftarHarga table { font-size: 14px; }
             #page-stok th, #page-stok td, #page-laporan th, #page-laporan td, #page-rekap th, #page-rekap td, #page-daftarHarga th, #page-daftarHarga td { padding: 8px !important; }
-            .table-input { font-size: 14px !important; padding: 6px !important; }
+            .table-input { font-size: 14px !important; padding: 6px !important; width: 80px !important; }
             h2 { font-size: 1.8rem !important; }
             #salesChart { height: 200px !important; }
             #modalChart { height: 200px !important; }
@@ -493,9 +369,9 @@
             <!-- DAFTAR HARGA JUAL -->
             <div id="page-daftarHarga" class="page-content hidden">
                 <h2 class="text-4xl font-extrabold mb-2 text-white mt-12 sm:mt-0"><i class="fas fa-tags text-amber-400 mr-3"></i> Daftar Harga & Perhitungan</h2>
-                <p class="text-gray-400 mb-8 text-lg">Klik "Edit" untuk mengubah harga, lalu klik "Simpan". Klik "Hapus" untuk menghapus data.</p>
+                <p class="text-gray-400 mb-8 text-lg">Ketik harga langsung di kolom, lalu klik tombol "Simpan". Klik "Hapus" untuk menghapus data.</p>
                 <div class="bg-[#0f1629] p-6 sm:p-8 rounded-3xl container-full border border-amber-500/20 card-glow-amber overflow-x-auto">
-                    <table class="dark-table" style="width:100%; min-width: 1500px;">
+                    <table class="dark-table" style="width:100%; min-width: 1800px;">
                         <thead>
                             <tr>
                                 <th>Nama Bumbu</th>
@@ -719,6 +595,7 @@
     
     function parseNominal(el) { 
         if (typeof el === 'string') return parseFloat(el.replace(/[^0-9]/g, '')) || 0;
+        if (!el || !el.value) return 0;
         return parseFloat(el.value.replace(/[^0-9]/g, '')) || 0; 
     }
 
@@ -1018,7 +895,7 @@
         setTimeout(function() { if (uField) uField.focus(); }, 100);
     }
 
-    // ================= SIMPAN & HAPUS DATA (TANPA POPUP BERULANG) =================
+    // ================= SIMPAN & HAPUS DATA =================
     async function simpanModal() {
         var tgl = document.getElementById('modalTgl').value; 
         var nama = document.getElementById('modalNama').value.trim();
@@ -1149,6 +1026,7 @@
             var modalData = await apiGet('Modal'); 
             var hargaData = null;
             try { hargaData = await apiGet('Harga'); } catch (e) {}
+            
             var modalMap = {};
             if (modalData && Array.isArray(modalData)) {
                 for (var i = 1; i < modalData.length; i++) {
@@ -1160,59 +1038,44 @@
                     }
                 }
             }
+            
             var hargaMap = {};
             if (hargaData && Array.isArray(hargaData)) {
                 for (var i = 1; i < hargaData.length; i++) {
                     if (hargaData[i] && hargaData[i][0]) {
                         var n = String(hargaData[i][0]).trim();
-                        hargaMap[n] = {
-                            halfOns: hargaData[i][1] || '', 
-                            ons: hargaData[i][2] || '', 
-                            halfKg: hargaData[i][3] || '',
-                            kg1: hargaData[i][4] || '', 
-                            kg2: hargaData[i][5] || '', 
-                            kg3: hargaData[i][6] || '',
-                            kg4: hargaData[i][7] || '', 
-                            kg5: hargaData[i][8] || '', 
-                            kg6: hargaData[i][9] || '',
-                            kg7: hargaData[i][10] || '', 
-                            kg8: hargaData[i][11] || '', 
-                            kg9: hargaData[i][12] || '',
-                            kg10: hargaData[i][13] || '', 
-                            pcs: hargaData[i][14] || ''
-                        };
+                        hargaMap[n] = hargaData[i]; // Simpan seluruh array
                     }
                 }
             }
+            
             var tbody = document.getElementById('tabelDaftarHarga'); 
             if (!tbody) return; 
             var html = '';
+            var fields = ['halfOns', 'ons', 'halfKg', 'kg1', 'kg2', 'kg3', 'kg4', 'kg5', 'kg6', 'kg7', 'kg8', 'kg9', 'kg10', 'pcs'];
+            // Index di Sheet Harga:
+            // 0: NamaBumbu
+            // 1: halfOns, 2: ons, 3: halfKg
+            // 4: kg1, 5: kg2, 6: kg3, 7: kg4, 8: kg5, 9: kg6, 10: kg7, 11: kg8, 12: kg9, 13: kg10
+            // 14: pcs
+            
             for (var b = 0; b < DAFTAR_BUMBU.length; b++) {
                 var namaB = DAFTAR_BUMBU[b]; 
                 var mPerKg = modalMap[namaB] || 0;
-                var hMap = hargaMap[namaB] || {};
+                var hMap = hargaMap[namaB] || [];
                 
                 html += '<tr>' +
                     '<td class="left-align"><b>' + namaB + '</b></td>' +
-                    '<td style="color:#f43f5e; font-weight:bold;">' + formatRp(mPerKg) + '</td>' +
-                    '<td><input type="text" inputmode="numeric" id="harga_halfOns_' + b + '" value="' + (hMap.halfOns || '') + '" placeholder="0" oninput="formatNominal(this)" class="table-input" disabled></td>' +
-                    '<td><input type="text" inputmode="numeric" id="harga_ons_' + b + '" value="' + (hMap.ons || '') + '" placeholder="0" oninput="formatNominal(this)" class="table-input" disabled></td>' +
-                    '<td><input type="text" inputmode="numeric" id="harga_halfKg_' + b + '" value="' + (hMap.halfKg || '') + '" placeholder="0" oninput="formatNominal(this)" class="table-input" disabled></td>' +
-                    '<td><input type="text" inputmode="numeric" id="harga_1kg_' + b + '" value="' + (hMap.kg1 || '') + '" placeholder="0" oninput="formatNominal(this)" class="table-input" disabled></td>' +
-                    '<td><input type="text" inputmode="numeric" id="harga_2kg_' + b + '" value="' + (hMap.kg2 || '') + '" placeholder="0" oninput="formatNominal(this)" class="table-input" disabled></td>' +
-                    '<td><input type="text" inputmode="numeric" id="harga_3kg_' + b + '" value="' + (hMap.kg3 || '') + '" placeholder="0" oninput="formatNominal(this)" class="table-input" disabled></td>' +
-                    '<td><input type="text" inputmode="numeric" id="harga_4kg_' + b + '" value="' + (hMap.kg4 || '') + '" placeholder="0" oninput="formatNominal(this)" class="table-input" disabled></td>' +
-                    '<td><input type="text" inputmode="numeric" id="harga_5kg_' + b + '" value="' + (hMap.kg5 || '') + '" placeholder="0" oninput="formatNominal(this)" class="table-input" disabled></td>' +
-                    '<td><input type="text" inputmode="numeric" id="harga_6kg_' + b + '" value="' + (hMap.kg6 || '') + '" placeholder="0" oninput="formatNominal(this)" class="table-input" disabled></td>' +
-                    '<td><input type="text" inputmode="numeric" id="harga_7kg_' + b + '" value="' + (hMap.kg7 || '') + '" placeholder="0" oninput="formatNominal(this)" class="table-input" disabled></td>' +
-                    '<td><input type="text" inputmode="numeric" id="harga_8kg_' + b + '" value="' + (hMap.kg8 || '') + '" placeholder="0" oninput="formatNominal(this)" class="table-input" disabled></td>' +
-                    '<td><input type="text" inputmode="numeric" id="harga_9kg_' + b + '" value="' + (hMap.kg9 || '') + '" placeholder="0" oninput="formatNominal(this)" class="table-input" disabled></td>' +
-                    '<td><input type="text" inputmode="numeric" id="harga_10kg_' + b + '" value="' + (hMap.kg10 || '') + '" placeholder="0" oninput="formatNominal(this)" class="table-input" disabled></td>' +
-                    '<td><input type="text" inputmode="numeric" id="harga_pcs_' + b + '" value="' + (hMap.pcs || '') + '" placeholder="0" oninput="formatNominal(this)" class="table-input" disabled></td>' +
-                    '<td><div class="flex gap-1 justify-center">' +
-                        '<button onclick="editHarga(this)" class="bg-yellow-600 hover:bg-yellow-500 text-white p-2 rounded-lg text-xs cursor-pointer flex-1">Edit</button>' +
-                        '<button onclick="simpanSatuHarga(' + b + ', \'' + namaB.replace(/'/g, "\\'") + '\', this)" class="bg-blue-600 hover:bg-blue-500 text-white p-2 rounded-lg text-xs cursor-pointer flex-1">Simpan</button>' +
-                        '<button onclick="hapusHarga(\'' + namaB.replace(/'/g, "\\'") + '\')" class="bg-red-600 hover:bg-red-500 text-white p-2 rounded-lg text-xs cursor-pointer flex-1">Hapus</button>' +
+                    '<td style="color:#f43f5e; font-weight:bold;">' + formatRp(mPerKg) + '</td>';
+                    
+                for (var f = 0; f < fields.length; f++) {
+                    var val = hMap[f + 1] || ''; // Ambil dari index 1 sampai 14
+                    html += '<td><input type="text" inputmode="numeric" id="harga_' + fields[f] + '_' + b + '" value="' + val + '" placeholder="0" oninput="formatNominal(this)" class="table-input"></td>';
+                }
+                
+                html += '<td><div class="flex gap-2 justify-center">' +
+                    '<button onclick="simpanSatuHarga(' + b + ', \'' + namaB.replace(/'/g, "\\'") + '\')" class="bg-blue-600 hover:bg-blue-500 text-white p-2 rounded-lg text-xs cursor-pointer w-full">Simpan</button>' +
+                    '<button onclick="hapusHarga(\'' + namaB.replace(/'/g, "\\'") + '\')" class="bg-red-600 hover:bg-red-500 text-white p-2 rounded-lg text-xs cursor-pointer w-full">Hapus</button>' +
                     '</div></td>' +
                     '</tr>';
             }
@@ -1220,28 +1083,15 @@
         } catch (err) { console.error('Error loadDaftarHarga:', err); }
     }
 
-    function editHarga(btn) {
-        var row = btn.parentNode.parentNode;
-        var inputs = row.querySelectorAll('input.table-input');
-        inputs.forEach(function(input) {
-            input.disabled = false;
-            input.focus();
-        });
-    }
-
-    async function simpanSatuHarga(index, nama, btn) {
+    async function simpanSatuHarga(index, nama) {
         var data = [nama];
-        var fields = ['halfOns', 'ons', 'halfKg', '1kg', '2kg', '3kg', '4kg', '5kg', '6kg', '7kg', '8kg', '9kg', '10kg', 'pcs'];
+        var fields = ['halfOns', 'ons', 'halfKg', 'kg1', 'kg2', 'kg3', 'kg4', 'kg5', 'kg6', 'kg7', 'kg8', 'kg9', 'kg10', 'pcs'];
         for (var i = 0; i < fields.length; i++) {
             data.push(parseNominal(document.getElementById('harga_' + fields[i] + '_' + index)));
         }
         try {
             await apiPost('Harga', data);
-            if (btn) {
-                var row = btn.parentNode.parentNode;
-                var inputs = row.querySelectorAll('input.table-input');
-                inputs.forEach(function(input) { input.disabled = true; });
-            }
+            alert('Harga untuk ' + nama + ' disimpan!');
         } catch (err) { 
             alert('Gagal menyimpan: ' + err.message); 
         }
