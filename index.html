@@ -204,8 +204,9 @@
         .table-input {
             padding: 12px !important;
             font-size: 18px !important;
-            width: 160px !important;
+            width: 100% !important;
             border-radius: 10px !important;
+            box-sizing: border-box !important;
         }
 
         /* ===== SCROLLBAR ===== */
@@ -221,6 +222,9 @@
         .dark-table tbody tr { border-bottom: 1px solid #1e293b; transition: all 0.2s; }
         .dark-table tbody tr:hover { background: #1e1b4b66; }
         .dark-table td { padding: 14px 20px; color: #e2e8f0; font-size: 17px; vertical-align: middle; white-space: nowrap; font-weight: 500; }
+
+        /* ===== CONTAINER FULL WIDTH ===== */
+        .container-full { width: 100% !important; max-width: 100% !important; }
 
         /* ===== MOBILE SIDEBAR BAWAH ===== */
         #sidebar { transition: transform 0.3s ease; }
@@ -284,10 +288,6 @@
             .bottom-nav { display: flex; }
             #page-dashboard .grid-cols-3 { grid-template-columns: 1fr !important; gap: 1rem !important; }
             #page-dashboard .grid-cols-4 { grid-template-columns: 1fr 1fr !important; gap: 1rem !important; }
-            #page-catatModal .max-w-3xl,
-            #page-catatJual .max-w-3xl,
-            #page-daftarHarga .max-w-6xl,
-            #page-rekap .max-w-4xl { max-width: 100% !important; }
             #page-catatModal .grid-cols-2,
             #page-catatJual .grid-cols-2,
             #page-catatJual .grid-cols-3,
@@ -307,12 +307,14 @@
             #page-rekap td,
             #page-daftarHarga th,
             #page-daftarHarga td { padding: 10px !important; }
-            .table-input { width: 100px !important; font-size: 14px !important; padding: 8px !important; }
+            .table-input { font-size: 14px !important; padding: 8px !important; }
             h2 { font-size: 1.8rem !important; }
             #salesChart { height: 200px !important; }
             #modalChart { height: 200px !important; }
             .bumbu-ganes-text { font-size: 1.5rem !important; }
             .bumbu-ganes-text-login { font-size: 1.8rem !important; }
+            /* Mobile tetap scroll horizontal untuk daftar harga karena kolomnya banyak */
+            #page-daftarHarga .overflow-x-auto { overflow-x: auto; }
         }
         #hamburgerBtn { display: none; }
     </style>
@@ -359,7 +361,7 @@
                     <li onclick="showPage('catatJual',this)" class="sidebar-item cursor-pointer p-4 rounded-xl text-lg font-semibold flex items-center transition text-gray-400"><i class="fas fa-cash-register w-8 text-xl"></i> Catat Penjualan</li>
                     <li onclick="showPage('daftarHarga',this)" class="sidebar-item cursor-pointer p-4 rounded-xl text-lg font-semibold flex items-center transition text-gray-400"><i class="fas fa-tags w-8 text-xl"></i> Daftar Harga Jual</li>
                     <li onclick="showPage('stok',this)" class="sidebar-item cursor-pointer p-4 rounded-xl text-lg font-semibold flex items-center transition text-gray-400"><i class="fas fa-boxes-stacked w-8 text-xl"></i> Stok Bumbu</li>
-                    <li onclick="showPage('laporan',this)" class="sidebar-item cursor-pointer p-4 rounded-xl text-lg font-semibold flex items-center transition text-gray-400"><i class="fas fa-file-invoice-dollar w-8 text-xl"></i> Laporan Bulanan</li>
+                    <li onclick="showPage('laporan',this)" class="sidebar-item cursor-pointer p-4 rounded-xl text-lg font-semibold flex items-center transition text-gray-400"><i class="fas fa-file-invoice-dollar w-8 text-xl"></i> Kas Keuangan</li>
                 </ul>
             </div>
             <div>
@@ -373,7 +375,7 @@
             <button onclick="showPage('catatJual',this)"><i class="fas fa-cash-register"></i>Jual</button>
             <button onclick="showPage('daftarHarga',this)"><i class="fas fa-tags"></i>Harga</button>
             <button onclick="showPage('stok',this)"><i class="fas fa-boxes-stacked"></i>Stok</button>
-            <button onclick="showPage('laporan',this)"><i class="fas fa-file-invoice-dollar"></i>Lapor</button>
+            <button onclick="showPage('laporan',this)"><i class="fas fa-file-invoice-dollar"></i>Kas</button>
         </div>
 
         <!-- KONTEN -->
@@ -387,6 +389,13 @@
                 <div class="marquee-banner bg-gradient-to-r from-purple-900/40 via-cyan-900/40 to-purple-900/40 border border-cyan-500/20 rounded-2xl p-3 mb-6 card-glow-purple">
                     <span class="marquee-run text-cyan-300 font-bold text-lg">✨ SELAMAT DATANG DI BUMBU GANES ✨ • 🌶️ BUMBU BASAH & REMPAH KERING TERLENGKAP 🌶️ • SEMOGA HARI INI PESANAN RAMAI • LARIS MANIS • REZEKI MELIMPAH • USAHA SEMAKIN MAJU DAN BERKAH 🙏</span>
                 </div>
+
+                <!-- PERINGATAN STOK MENIPIS -->
+                <div id="alertStok" class="hidden mb-6 p-5 rounded-2xl border-2 border-red-500 bg-red-900/20 card-glow-rose">
+                    <h3 class="text-xl font-extrabold mb-3 text-red-400"><i class="fas fa-exclamation-triangle mr-2"></i>PERINGATAN STOK MENIPIS!</h3>
+                    <div id="alertStokIsi" class="text-red-300 text-base font-semibold flex flex-col gap-1"></div>
+                </div>
+
                 <h2 class="text-4xl font-extrabold mb-2 text-white mt-12 sm:mt-0 neon-text"><i class="fas fa-chart-pie text-cyan-400 mr-3"></i>Ringkasan Hari Ini</h2>
                 <p class="text-gray-400 mb-8 text-lg">Data pemasukan dan pengeluaran hari ini secara realtime.</p>
                 <div class="grid grid-cols-3 gap-6 mb-8">
@@ -420,17 +429,13 @@
                     <h3 class="text-2xl font-extrabold mb-6 text-rose-300"><i class="fas fa-chart-bar text-rose-400 mr-2"></i> Modal Per Bulan</h3>
                     <div style="position:relative;height:280px;"><canvas id="modalChart"></canvas></div>
                 </div>
-                <div class="bg-[#0f1629] p-8 rounded-3xl border border-amber-500/20 card-glow-amber overflow-x-auto">
-                    <h3 class="text-2xl font-extrabold mb-6 text-amber-300"><i class="fas fa-boxes-stacked text-amber-400 mr-2"></i> Sisa Stok Bumbu</h3>
-                    <table class="dark-table"><thead><tr><th><i class="fas fa-pepper-hot mr-2"></i>Nama Bumbu</th><th><i class="fas fa-weight-hanging mr-2"></i>Sisa Stok (Kg)</th></tr></thead><tbody id="tabelStokDash"></tbody></table>
-                </div>
             </div>
 
             <!-- REKAP HARI INI - HANYA PENJUALAN -->
             <div id="page-rekap" class="page-content hidden">
                 <h2 class="text-4xl font-extrabold mb-2 text-white mt-12 sm:mt-0 neon-text"><i class="fas fa-clipboard-list text-emerald-400 mr-3"></i>Rekap Penjualan Hari Ini</h2>
                 <p class="text-gray-400 mb-8 text-lg">Pencatatan penjualan rempah hari ini saja.</p>
-                <div class="max-w-4xl">
+                <div class="container-full">
                     <div class="bg-[#0f1629] p-8 rounded-3xl border border-emerald-500/20 card-glow-emerald overflow-x-auto">
                         <h3 class="text-xl font-extrabold mb-4 text-emerald-300"><i class="fas fa-cash-register mr-2"></i>Penjualan Hari Ini</h3>
                         <table class="dark-table"><thead><tr><th>Tanggal</th><th>Bumbu</th><th>Jual (Kg)</th><th>Total Bayar</th><th>Untung</th></tr></thead><tbody id="rekapJual"></tbody></table>
@@ -438,13 +443,13 @@
                 </div>
             </div>
 
-            <!-- CATAT MODAL (DISEDERHANAKAN) -->
+            <!-- CATAT MODAL -->
             <div id="page-catatModal" class="page-content hidden">
                 <h2 class="text-4xl font-extrabold mb-8 text-white mt-12 sm:mt-0"><i class="fas fa-truck-loading text-cyan-400 mr-3"></i> Catat Belanja Modal</h2>
-                <div class="bg-[#0f1629] p-6 sm:p-10 rounded-3xl max-w-3xl border border-cyan-500/20 card-glow-cyan">
+                <div class="bg-[#0f1629] p-6 sm:p-10 rounded-3xl container-full border border-cyan-500/20 card-glow-cyan">
                     <div class="grid grid-cols-2 gap-6 mb-6">
                         <div><label class="block text-lg font-bold mb-2 text-cyan-400">Tanggal Belanja</label><input type="date" id="modalTgl" class="w-full"></div>
-                        <div><label class="block text-lg font-bold mb-2 text-cyan-400">Nama Bumbu / Barang</label><input type="text" id="modalNama" list="daftarBumbuList" class="w-full" placeholder="Ketik atau pilih bumbu"></div>
+                        <div><label class="block text-lg font-bold mb-2 text-cyan-400">Nama Bumbu / Barang</label><select id="modalNama" class="w-full"><option value="">-- Pilih Bumbu --</option></select></div>
                     </div>
                     <div class="grid grid-cols-2 gap-6 mb-8">
                         <div>
@@ -458,10 +463,10 @@
                 </div>
             </div>
 
-            <!-- CATAT PENJUALAN (LENGKAP DENGAN POTONGAN) -->
+            <!-- CATAT PENJUALAN -->
             <div id="page-catatJual" class="page-content hidden">
                 <h2 class="text-4xl font-extrabold mb-8 text-white mt-12 sm:mt-0"><i class="fas fa-cash-register text-emerald-400 mr-3"></i> Catat Penjualan</h2>
-                <div class="bg-[#0f1629] p-6 sm:p-10 rounded-3xl max-w-3xl border border-emerald-500/20 card-glow-emerald">
+                <div class="bg-[#0f1629] p-6 sm:p-10 rounded-3xl container-full border border-emerald-500/20 card-glow-emerald">
                     <div class="grid grid-cols-2 gap-6 mb-6">
                         <div><label class="block text-lg font-bold mb-2 text-emerald-400">Tanggal Jual</label><input type="date" id="jualTgl" class="w-full"></div>
                         <div><label class="block text-lg font-bold mb-2 text-emerald-400">Nama Bumbu</label><select id="jualNama" class="w-full"><option value="">-- Pilih Bumbu --</option></select></div>
@@ -483,12 +488,12 @@
                 </div>
             </div>
 
-            <!-- DAFTAR HARGA JUAL (BARU) -->
+            <!-- DAFTAR HARGA JUAL -->
             <div id="page-daftarHarga" class="page-content hidden">
                 <h2 class="text-4xl font-extrabold mb-2 text-white mt-12 sm:mt-0"><i class="fas fa-tags text-amber-400 mr-3"></i> Daftar Harga & Perhitungan</h2>
                 <p class="text-gray-400 mb-8 text-lg">Modal/Kg otomatis dari pembelian terakhir. Isi harga jual dan klik simpan. Saat ada transaksi, lihat daftar ini untuk acuan harga & diskon.</p>
-                <div class="bg-[#0f1629] p-6 sm:p-8 rounded-3xl max-w-6xl border border-amber-500/20 card-glow-amber overflow-x-auto">
-                    <table class="dark-table">
+                <div class="bg-[#0f1629] p-6 sm:p-8 rounded-3xl container-full border border-amber-500/20 card-glow-amber overflow-x-auto">
+                    <table class="dark-table" style="width:100%; min-width: 800px;">
                         <thead>
                             <tr>
                                 <th>Nama Bumbu</th>
@@ -509,18 +514,27 @@
             <!-- STOK -->
             <div id="page-stok" class="page-content hidden">
                 <h2 class="text-4xl font-extrabold mb-8 text-white mt-12 sm:mt-0"><i class="fas fa-boxes-stacked text-amber-400 mr-3"></i> Sisa Stok Bumbu</h2>
-                <div class="bg-[#0f1629] p-8 rounded-3xl border border-amber-500/20 card-glow-amber overflow-x-auto">
+                <div class="bg-[#0f1629] p-8 rounded-3xl container-full border border-amber-500/20 card-glow-amber overflow-x-auto">
                     <table class="dark-table"><thead><tr><th><i class="fas fa-pepper-hot mr-2"></i>Nama Bumbu</th><th><i class="fas fa-weight-hanging mr-2"></i>Sisa Stok (Kg)</th></tr></thead><tbody id="tabelStok"></tbody></table>
                 </div>
             </div>
 
-            <!-- LAPORAN -->
+            <!-- LAPORAN / KAS KEUNGAN -->
             <div id="page-laporan" class="page-content hidden">
-                <h2 class="text-4xl font-extrabold mb-8 text-white mt-12 sm:mt-0"><i class="fas fa-file-invoice-dollar text-purple-400 mr-3"></i> Laporan Bulanan</h2>
+                <h2 class="text-4xl font-extrabold mb-8 text-white mt-12 sm:mt-0"><i class="fas fa-file-invoice-dollar text-purple-400 mr-3"></i> Kas Keuangan</h2>
                 <div class="flex gap-4 mb-8 items-center">
                     <select id="filterBulan" class="p-3 text-lg font-bold" onchange="loadLaporan()"><option value="01">Januari</option><option value="02">Februari</option><option value="03">Maret</option><option value="04">April</option><option value="05">Mei</option><option value="06">Juni</option><option value="07">Juli</option><option value="08">Agustus</option><option value="09">September</option><option value="10">Oktober</option><option value="11">November</option><option value="12">Desember</option></select>
                     <select id="filterTahun" class="p-3 text-lg font-bold" onchange="loadLaporan()"></select>
                 </div>
+
+                <div class="bg-[#0f1629] p-6 rounded-3xl border border-cyan-500/20 overflow-x-auto mb-8 card-glow-cyan">
+                    <h3 class="text-xl font-extrabold mb-4 text-cyan-300"><i class="fas fa-calendar-day mr-2"></i>Rekap Harian (Crosscheck Pendapatan)</h3>
+                    <table class="dark-table">
+                        <thead><tr><th>Tanggal</th><th>Total Jualan</th><th>Total Untung</th></tr></thead>
+                        <tbody id="tabelLaporanHarian"></tbody>
+                    </table>
+                </div>
+
                 <div class="grid grid-cols-3 gap-6 mb-10">
                     <div class="bg-[#0f1629] p-6 rounded-3xl border-l-4 border-cyan-500 card-glow-cyan"><p class="text-lg text-gray-400 font-bold">Total Pemasukan</p><h3 id="lPemasukan" class="text-3xl font-extrabold mt-2 text-cyan-400">Rp 0</h3></div>
                     <div class="bg-[#0f1629] p-6 rounded-3xl border-l-4 border-rose-500 card-glow-rose"><p class="text-lg text-gray-400 font-bold">Total Modal</p><h3 id="lModal" class="text-3xl font-extrabold mt-2 text-rose-400">Rp 0</h3></div>
@@ -533,9 +547,6 @@
             </div>
         </div>
     </div>
-
-    <!-- DATALIST UNTUK MODAL BISA DIKETIK -->
-    <datalist id="daftarBumbuList"></datalist>
 
     <script>
     // ================= KONFIGURASI =================
@@ -553,7 +564,7 @@
     };
     var CACHE_DURATION = 30000; // 30 detik
 
-    // ================= KREDENSIAL LOGIN (EDIT DI SINI) =================
+    // ================= KREDENSIAL LOGIN =================
     var VALID_USERS = [
         { username: 'admin', password: 'admin123' }
     ];
@@ -588,25 +599,15 @@
     // ====== ISI DROPDOWN BUMBU & BERAT ======
     function populateDropdowns() {
         var selects = [document.getElementById('modalNama'), document.getElementById('jualNama')];
-        var dataList = document.getElementById('daftarBumbuList');
-        
-        if (dataList) {
-            dataList.innerHTML = '';
-            for (var b = 0; b < DAFTAR_BUMBU.length; b++) {
-                var opt = document.createElement('option');
-                opt.value = DAFTAR_BUMBU[b];
-                dataList.appendChild(opt);
-            }
-        }
-
-        var selJual = document.getElementById('jualNama');
-        if (selJual) {
-            while (selJual.options.length > 1) selJual.remove(1);
+        for (var s = 0; s < selects.length; s++) {
+            var sel = selects[s];
+            if (!sel) continue;
+            while (sel.options.length > 1) sel.remove(1);
             for (var b = 0; b < DAFTAR_BUMBU.length; b++) {
                 var opt = document.createElement('option');
                 opt.value = DAFTAR_BUMBU[b];
                 opt.textContent = DAFTAR_BUMBU[b];
-                selJual.appendChild(opt);
+                sel.appendChild(opt);
             }
         }
         populateBerat();
@@ -740,6 +741,18 @@
             document.getElementById('filterBulan').value = String(new Date().getMonth() + 1).padStart(2, '0');
         }
 
+        // CEK LOCAL STORAGE UNTUK AUTO LOGIN (ANTI F5)
+        if (localStorage.getItem('bumbu_ganes_login') === 'true') {
+            masukDashboard();
+        } else {
+            document.getElementById('loginPage').style.display = 'flex';
+            document.getElementById('mainApp').style.display = 'none';
+            setTimeout(function() {
+                var userField = document.getElementById('username');
+                if (userField) userField.focus();
+            }, 200);
+        }
+
         // PASANG EVENT LISTENER LOGIN
         var btnLogin = document.getElementById('btnLogin');
         if (btnLogin) {
@@ -762,15 +775,6 @@
                 if (e.key === 'Enter') { e.preventDefault(); document.getElementById('password').focus(); }
             });
         }
-
-        // PASTIKAN halaman login tampil & main app tersembunyi
-        document.getElementById('loginPage').style.display = 'flex';
-        document.getElementById('mainApp').style.display = 'none';
-
-        // Fokus ke username
-        setTimeout(function() {
-            if (userField) userField.focus();
-        }, 200);
 
         console.log('App loaded. Login: admin / admin123');
     };
@@ -899,16 +903,12 @@
         });
     }
 
-    // ================= LOGIN =================
+    // ================= LOGIN (DENGAN LOCAL STORAGE) =================
     function doLogin() {
         var uField = document.getElementById('username');
         var pField = document.getElementById('password');
         var u = uField ? uField.value.trim().toLowerCase() : '';
         var p = pField ? pField.value.trim() : '';
-
-        console.log('--- LOGIN DEBUG ---');
-        console.log('Username: "' + u + '"');
-        console.log('Password: "' + p + '"');
 
         if (!u || !p) {
             showLoginError('Lengkapi username dan password!');
@@ -924,15 +924,9 @@
         }
 
         if (loginBerhasil) {
-            console.log('LOGIN BERHASIL');
-            document.getElementById('loginPage').style.display = 'none';
-            document.getElementById('mainApp').style.display = 'flex';
-            document.getElementById('username').value = '';
-            document.getElementById('password').value = '';
-            hideLoginError();
-            loadDashboard();
+            localStorage.setItem('bumbu_ganes_login', 'true');
+            masukDashboard();
         } else {
-            console.log('LOGIN GAGAL');
             showLoginError('Username atau password salah!');
         }
     }
@@ -940,22 +934,27 @@
     function masukDashboard() {
         document.getElementById('loginPage').style.display = 'none';
         document.getElementById('mainApp').style.display = 'flex';
-        document.getElementById('username').value = '';
-        document.getElementById('password').value = '';
+        var uField = document.getElementById('username');
+        var pField = document.getElementById('password');
+        if (uField) uField.value = '';
+        if (pField) pField.value = '';
         hideLoginError();
         loadDashboard();
     }
 
     function logout() {
+        localStorage.removeItem('bumbu_ganes_login');
         document.getElementById('mainApp').style.display = 'none';
         document.getElementById('loginPage').style.display = 'flex';
         hideLoginError();
-        document.getElementById('username').value = '';
-        document.getElementById('password').value = '';
+        var uField = document.getElementById('username');
+        var pField = document.getElementById('password');
+        if (uField) uField.value = '';
+        if (pField) pField.value = '';
         toggleSidebar(false);
         // Reset cache saat logout
         dataCache = { Penjualan: null, Modal: null, Stok: null, Harga: null, lastUpdate: 0 };
-        setTimeout(function() { document.getElementById('username').focus(); }, 100);
+        setTimeout(function() { if (uField) uField.focus(); }, 100);
     }
 
     // ================= SIMPAN MODAL =================
@@ -1163,18 +1162,24 @@
             document.getElementById('dJumlahModal').innerText = jmlModal;
             document.getElementById('dMargin').innerText = margin + '%';
 
-            // ===== SISA STOK DI DASHBOARD =====
-            var tbodyDash = document.getElementById('tabelStokDash');
-            if (tbodyDash && stokData) {
-                var htmlDash = '';
+            // ===== ALERT STOK MENIPIS =====
+            var alertBox = document.getElementById('alertStok');
+            var alertContent = document.getElementById('alertStokIsi');
+            var lowStockList = [];
+            if (stokData) {
                 for (var i = 1; i < stokData.length; i++) {
                     if (!stokData[i]) continue;
                     var kgVal = parseFloat(stokData[i][1]);
-                    var warnaStok = kgVal <= 2 ? 'style="color:#f43f5e;font-weight:bold;"' : '';
-                    var warning = kgVal <= 2 ? ' ⚠️' : '';
-                    htmlDash += '<tr><td>' + stokData[i][0] + '</td><td ' + warnaStok + '>' + stokData[i][1] + ' Kg' + warning + '</td></tr>';
+                    if (!isNaN(kgVal) && kgVal <= 2) {
+                        lowStockList.push(stokData[i][0] + " (Sisa: " + stokData[i][1] + " Kg)");
+                    }
                 }
-                tbodyDash.innerHTML = htmlDash;
+            }
+            if (lowStockList.length > 0) {
+                alertContent.innerHTML = "⚠️ Sisa stok dibawah 2Kg:<br> - " + lowStockList.join("<br> - ");
+                alertBox.classList.remove('hidden');
+            } else {
+                alertBox.classList.add('hidden');
             }
 
             // ===== GRAFIK 1: PENJUALAN PER BULAN =====
@@ -1204,21 +1209,21 @@
                         {
                             label: 'Penjualan',
                             data: penjualanPerBulan,
-                            backgroundColor: 'rgba(0,240,255,0.7)',
+                            backgroundColor: 'rgba(0,240,255,0.5)',
                             borderColor: '#00f0ff',
                             borderWidth: 2,
-                            borderRadius: 6,
-                            barPercentage: 0.5,
+                            borderRadius: 8,
+                            barPercentage: 0.6,
                             categoryPercentage: 0.7
                         },
                         {
                             label: 'Untung',
                             data: untungPerBulan,
-                            backgroundColor: 'rgba(16,185,129,0.7)',
+                            backgroundColor: 'rgba(16,185,129,0.5)',
                             borderColor: '#10b981',
                             borderWidth: 2,
-                            borderRadius: 6,
-                            barPercentage: 0.5,
+                            borderRadius: 8,
+                            barPercentage: 0.6,
                             categoryPercentage: 0.7
                         }
                     ]
@@ -1226,24 +1231,29 @@
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    animation: { duration: 400 },
+                    animation: { duration: 600 },
                     plugins: {
-                        legend: { labels: { color: '#94a3b8', font: { size: 13 } } },
+                        legend: { labels: { color: '#94a3b8', font: { size: 14, weight: 'bold' } } },
                         tooltip: {
                             callbacks: {
                                 label: function(ctx) { return ctx.dataset.label + ': ' + formatRp(ctx.raw); }
-                            }
+                            },
+                            backgroundColor: '#0f1629',
+                            titleColor: '#00f0ff',
+                            bodyColor: '#f1f5f9',
+                            borderColor: '#334155',
+                            borderWidth: 1
                         }
                     },
                     scales: {
                         x: {
-                            ticks: { color: '#94a3b8', font: { size: 13, weight: 'bold' } },
-                            grid: { color: '#1e293b' }
+                            ticks: { color: '#94a3b8', font: { size: 14, weight: 'bold' } },
+                            grid: { display: false }
                         },
                         y: {
                             beginAtZero: true,
                             ticks: { color: '#64748b', callback: function(v) { return formatRp(v); } },
-                            grid: { color: '#1e293b' }
+                            grid: { color: '#1e293b55' }
                         }
                     }
                 }
@@ -1271,35 +1281,40 @@
                     datasets: [{
                         label: 'Modal',
                         data: modalPerBulan,
-                        backgroundColor: 'rgba(244,63,94,0.7)',
+                        backgroundColor: 'rgba(244,63,94,0.5)',
                         borderColor: '#f43f5e',
                         borderWidth: 2,
-                        borderRadius: 6,
-                        barPercentage: 0.5,
+                        borderRadius: 8,
+                        barPercentage: 0.6,
                         categoryPercentage: 0.7
                     }]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    animation: { duration: 400 },
+                    animation: { duration: 600 },
                     plugins: {
-                        legend: { labels: { color: '#94a3b8', font: { size: 13 } } },
+                        legend: { labels: { color: '#94a3b8', font: { size: 14, weight: 'bold' } } },
                         tooltip: {
                             callbacks: {
                                 label: function(ctx) { return ctx.dataset.label + ': ' + formatRp(ctx.raw); }
-                            }
+                            },
+                            backgroundColor: '#0f1629',
+                            titleColor: '#f43f5e',
+                            bodyColor: '#f1f5f9',
+                            borderColor: '#334155',
+                            borderWidth: 1
                         }
                     },
                     scales: {
                         x: {
-                            ticks: { color: '#94a3b8', font: { size: 13, weight: 'bold' } },
-                            grid: { color: '#1e293b' }
+                            ticks: { color: '#94a3b8', font: { size: 14, weight: 'bold' } },
+                            grid: { display: false }
                         },
                         y: {
                             beginAtZero: true,
                             ticks: { color: '#64748b', callback: function(v) { return formatRp(v); } },
-                            grid: { color: '#1e293b' }
+                            grid: { color: '#1e293b55' }
                         }
                     }
                 }
@@ -1309,7 +1324,7 @@
         }
     }
 
-    // ================= LOAD REKAP HARI INI - HANYA PENJUALAN =================
+    // ================= LOAD REKAP HARI INI =================
     async function loadRekap() {
         try {
             var jualData = await apiGet('Penjualan');
@@ -1376,7 +1391,7 @@
         }
     }
 
-    // ================= LOAD LAPORAN =================
+    // ================= LOAD LAPORAN / KAS KEUNGAN =================
     async function loadLaporan() {
         try {
             var bulan = document.getElementById('filterBulan').value;
@@ -1389,18 +1404,30 @@
 
             var totalPemasukan = 0, totalModal = 0, totalUntung = 0;
             var html = '';
+            var dailyMap = {};
 
             for (var i = 1; i < jualData.length; i++) {
                 if (!jualData[i]) continue;
                 if (String(jualData[i][0]).substring(0, 7) == filterStr) {
-                    totalPemasukan += Number(jualData[i][5]);
-                    totalUntung += Number(jualData[i][6]);
+                    var tglJual = jualData[i][0];
+                    var jualTotal = Number(jualData[i][5]);
+                    var untungTotal = Number(jualData[i][6]);
+                    
+                    totalPemasukan += jualTotal;
+                    totalUntung += untungTotal;
+
+                    if (!dailyMap[tglJual]) {
+                        dailyMap[tglJual] = { jual: 0, untung: 0 };
+                    }
+                    dailyMap[tglJual].jual += jualTotal;
+                    dailyMap[tglJual].untung += untungTotal;
+
                     html += '<tr>' +
-                        '<td>' + jualData[i][0] + '</td>' +
+                        '<td>' + tglJual + '</td>' +
                         '<td>' + jualData[i][1] + '</td>' +
                         '<td>' + jualData[i][2] + ' Kg</td>' +
-                        '<td>' + formatRp(jualData[i][5]) + '</td>' +
-                        '<td style="color:#10b981;">' + formatRp(jualData[i][6]) + '</td>' +
+                        '<td>' + formatRp(jualTotal) + '</td>' +
+                        '<td style="color:#10b981;">' + formatRp(untungTotal) + '</td>' +
                         '</tr>';
                 }
             }
@@ -1416,6 +1443,24 @@
             document.getElementById('lModal').innerText = formatRp(totalModal);
             document.getElementById('lUntung').innerText = formatRp(totalUntung);
 
+            // Render Daily Table (Crosscheck)
+            var dailyTbody = document.getElementById('tabelLaporanHarian');
+            var htmlDaily = '';
+            var dates = Object.keys(dailyMap).sort();
+            for (var d = 0; d < dates.length; d++) {
+                var dt = dates[d];
+                htmlDaily += '<tr>' +
+                    '<td>' + dt + '</td>' +
+                    '<td style="color:#00f0ff;font-weight:bold;">' + formatRp(dailyMap[dt].jual) + '</td>' +
+                    '<td style="color:#10b981;font-weight:bold;">' + formatRp(dailyMap[dt].untung) + '</td>' +
+                    '</tr>';
+            }
+            if (htmlDaily === '') {
+                htmlDaily = '<tr><td colspan="3" style="text-align:center;padding:30px;color:#64748b;">Belum ada data harian bulan ini.</td></tr>';
+            }
+            dailyTbody.innerHTML = htmlDaily;
+
+            // Render Monthly Detail Table
             var tbody = document.getElementById('tabelLaporan');
             if (!tbody) return;
             if (html === '') {
