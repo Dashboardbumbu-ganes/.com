@@ -55,6 +55,14 @@
         @keyframes fadeIn { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
         .page-transition { animation: fadeIn 0.4s ease-out; }
 
+        /* ===== TEKS BERJALAN (MARQUEE) ===== */
+        @keyframes marqueeScroll {
+            0% { transform: translateX(100%); }
+            100% { transform: translateX(-100%); }
+        }
+        .marquee-wrap { overflow:hidden; white-space:nowrap; }
+        .marquee-text { display:inline-block; animation: marqueeScroll 6s linear infinite; }
+
         /* ===== SIDEBAR ===== */
         .sidebar-item.active { background: linear-gradient(135deg,#1e1b4b,#312e81); border-left: 5px solid #00f0ff; color: #00f0ff; font-weight: 800; box-shadow: 0 0 12px #00f0ff33; }
         .sidebar-item:not(.active):hover { background: #1a1a2e; color: #c4b5fd; }
@@ -121,6 +129,7 @@
             #page-stok th, #page-stok td, #page-laporan th, #page-laporan td { padding: 8px !important; }
             h2 { font-size: 1.5rem !important; }
             #salesChart { height: 200px !important; }
+            #modalChart { height: 200px !important; }
         }
         #hamburgerBtn { display: none; }
     </style>
@@ -134,21 +143,19 @@
     <div id="loginPage" style="position: fixed; inset: 0; background: #0a0e1a; display: flex; align-items: center; justify-content: center; z-index: 9999; padding: 1rem;">
         <div class="bg-[#0f1629] p-6 sm:p-10 rounded-3xl w-full max-w-[400px] text-center neon-border">
             <div class="mb-6">
-                <i class="fas fa-pepper-hot text-4xl text-amber-400 mb-3 block"></i>
                 <h1 class="text-2xl sm:text-3xl font-extrabold text-white mb-1 tracking-wide blink-login">⭐ Silahkan Login ⭐</h1>
                 <p class="text-gray-500 text-sm">BumbuKu - Manajemen Bumbu Kering</p>
             </div>
             <div class="text-left mb-4">
-                <label class="block text-sm font-semibold text-cyan-400 mb-1">Username</label>
+                <label class="block text-sm font-semibold text-cyan-400 mb-1">👤 Username</label>
                 <input type="text" id="username" placeholder="Ketik username..." autocomplete="off" autocapitalize="off" spellcheck="false" onkeydown="if(event.key==='Enter'){document.getElementById('password').focus();}" class="w-full">
             </div>
             <div class="text-left mb-6">
-                <label class="block text-sm font-semibold text-cyan-400 mb-1">Password</label>
+                <label class="block text-sm font-semibold text-cyan-400 mb-1">🔑 Password</label>
                 <input type="password" id="password" placeholder="Ketik password..." autocomplete="off" onkeydown="if(event.key==='Enter'){doLogin();}" class="w-full">
             </div>
             <button id="btnLogin" onclick="doLogin()" class="w-full bg-gradient-to-r from-cyan-500 to-purple-600 text-white p-3.5 rounded-xl text-lg font-bold hover:from-cyan-400 hover:to-purple-500 transition transform hover:scale-105 shadow-lg active:scale-95 cursor-pointer">Masuk <i class="fas fa-arrow-right ml-2"></i></button>
             <p id="loginError" class="text-red-400 mt-3 font-semibold text-sm hidden"></p>
-            <p class="text-gray-600 mt-3 text-xs">Hint: admin / admin123</p>
         </div>
     </div>
 
@@ -162,7 +169,10 @@
             <div>
                 <h1 class="text-2xl font-extrabold text-cyan-400 mb-10 flex items-center neon-text"><i class="fas fa-pepper-hot text-amber-400 mr-3"></i>BumbuKu</h1>
                 <ul class="space-y-2">
-                    <li onclick="showPage('dashboard',this)" class="sidebar-item active cursor-pointer p-4 rounded-xl text-lg font-semibold flex items-center transition"><i class="fas fa-chart-pie w-8 text-xl"></i> Dashboard</li>
+                    <li onclick="showPage('dashboard',this)" class="sidebar-item active cursor-pointer p-4 rounded-xl text-lg font-semibold flex items-center transition">
+                        <i class="fas fa-chart-pie w-8 text-xl"></i>
+                        <div class="marquee-wrap flex-1"><span class="marquee-text">Dashboard</span></div>
+                    </li>
                     <li onclick="showPage('catatModal',this)" class="sidebar-item cursor-pointer p-4 rounded-xl text-lg font-semibold flex items-center transition text-gray-400"><i class="fas fa-truck-loading w-8 text-xl"></i> Catat Modal</li>
                     <li onclick="showPage('catatJual',this)" class="sidebar-item cursor-pointer p-4 rounded-xl text-lg font-semibold flex items-center transition text-gray-400"><i class="fas fa-cash-register w-8 text-xl"></i> Catat Penjualan</li>
                     <li onclick="showPage('stok',this)" class="sidebar-item cursor-pointer p-4 rounded-xl text-lg font-semibold flex items-center transition text-gray-400"><i class="fas fa-boxes-stacked w-8 text-xl"></i> Stok Bumbu</li>
@@ -226,16 +236,34 @@
                     </div>
                 </div>
 
-                <!-- GRAFIK SEMUA BULAN (TIDAK pilih bulan) -->
+                <!-- GRAFIK PENJUALAN PER BULAN -->
                 <div class="bg-[#0f1629] p-8 rounded-3xl border border-purple-500/20 card-glow-purple mb-8">
-                    <h3 class="text-2xl font-extrabold mb-6 text-purple-300"><i class="fas fa-chart-area text-purple-400 mr-2"></i> Grafik Penjualan Semua Bulan</h3>
-                    <canvas id="salesChart" height="100"></canvas>
+                    <h3 class="text-2xl font-extrabold mb-6 text-purple-300"><i class="fas fa-chart-area text-purple-400 mr-2"></i> Penjualan Per Bulan</h3>
+                    <div style="position:relative;height:280px;">
+                        <canvas id="salesChart"></canvas>
+                    </div>
                 </div>
 
-                <!-- GRAFIK MODAL SEMUA BULAN -->
-                <div class="bg-[#0f1629] p-8 rounded-3xl border border-rose-500/20 card-glow-rose">
-                    <h3 class="text-2xl font-extrabold mb-6 text-rose-300"><i class="fas fa-chart-bar text-rose-400 mr-2"></i> Grafik Modal Semua Bulan</h3>
-                    <canvas id="modalChart" height="100"></canvas>
+                <!-- GRAFIK MODAL PER BULAN -->
+                <div class="bg-[#0f1629] p-8 rounded-3xl border border-rose-500/20 card-glow-rose mb-8">
+                    <h3 class="text-2xl font-extrabold mb-6 text-rose-300"><i class="fas fa-chart-bar text-rose-400 mr-2"></i> Modal Per Bulan</h3>
+                    <div style="position:relative;height:280px;">
+                        <canvas id="modalChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- SISA STOK DI DASHBOARD -->
+                <div class="bg-[#0f1629] p-8 rounded-3xl border border-amber-500/20 card-glow-amber overflow-x-auto">
+                    <h3 class="text-2xl font-extrabold mb-6 text-amber-300"><i class="fas fa-boxes-stacked text-amber-400 mr-2"></i> Sisa Stok Bumbu</h3>
+                    <table class="dark-table">
+                        <thead>
+                            <tr>
+                                <th><i class="fas fa-pepper-hot mr-2"></i>Nama Bumbu</th>
+                                <th><i class="fas fa-weight-hanging mr-2"></i>Sisa Stok (Kg)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabelStokDash"></tbody>
+                    </table>
                 </div>
             </div>
 
@@ -477,7 +505,7 @@
             document.getElementById('filterBulan').value = String(new Date().getMonth() + 1).padStart(2, '0');
         }
 
-        // PASANG EVENT LISTENER LOGIN (lebih aman dari inline onclick)
+        // PASANG EVENT LISTENER LOGIN
         var btnLogin = document.getElementById('btnLogin');
         if(btnLogin) {
             btnLogin.addEventListener('click', function(e) {
@@ -607,7 +635,7 @@
         });
     }
 
-    // ================= LOGIN (DIPERBAIKI TOTAL) =================
+    // ================= LOGIN =================
     function doLogin() {
         var uField = document.getElementById('username');
         var pField = document.getElementById('password');
@@ -636,8 +664,7 @@
             masukDashboard();
         } else {
             console.log('❌ LOGIN GAGAL! Username/password tidak cocok');
-            console.log('Hint: username="admin", password="admin123"');
-            showLoginError('❌ Username atau password salah! (Gunakan: admin / admin123)');
+            showLoginError('❌ Username atau password salah!');
         }
     }
 
@@ -720,11 +747,12 @@
         }
     }
 
-    // ================= LOAD DASHBOARD (GRAFIK SEMUA BULAN + KAS) =================
+    // ================= LOAD DASHBOARD (GRAFIK PER BULAN + STOK) =================
     async function loadDashboard() {
         try {
             var jualData = await apiGet('Penjualan');
             var modalData = await apiGet('Modal');
+            var stokData = await apiGet('Stok');
             if (!jualData || !modalData) return;
 
             var today = getToday();
@@ -768,7 +796,20 @@
             document.getElementById('dJumlahModal').innerText = jmlModal;
             document.getElementById('dMargin').innerText = margin + '%';
 
-            // ===== GRAFIK 1: PENJUALAN PER BULAN (SEMUA BULAN TAHUN INI) =====
+            // ===== SISA STOK DI DASHBOARD =====
+            var tbodyDash = document.getElementById('tabelStokDash');
+            if(tbodyDash && stokData) {
+                tbodyDash.innerHTML = '';
+                for(var i=1; i < stokData.length; i++) {
+                    if (!stokData[i]) continue;
+                    var kgVal = parseFloat(stokData[i][1]);
+                    var warnaStok = kgVal <= 2 ? 'style="color:#f43f5e;"' : '';
+                    var warning = kgVal <= 2 ? ' ⚠️' : '';
+                    tbodyDash.innerHTML += '<tr><td>'+stokData[i][0]+'</td><td '+warnaStok+'>'+stokData[i][1]+' Kg'+warning+'</td></tr>';
+                }
+            }
+
+            // ===== GRAFIK 1: PENJUALAN PER BULAN =====
             var namaBulan = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Ags','Sep','Okt','Nov','Des'];
             var tahunChart = new Date().getFullYear();
             var penjualanPerBulan = [0,0,0,0,0,0,0,0,0,0,0,0];
@@ -793,20 +834,24 @@
                     labels: namaBulan,
                     datasets: [
                         {
-                            label: 'Penjualan (Rp)',
+                            label: 'Penjualan',
                             data: penjualanPerBulan,
-                            backgroundColor: 'rgba(0,240,255,0.6)',
+                            backgroundColor: 'rgba(0,240,255,0.7)',
                             borderColor: '#00f0ff',
                             borderWidth: 2,
-                            borderRadius: 8
+                            borderRadius: 6,
+                            barPercentage: 0.5,
+                            categoryPercentage: 0.7
                         },
                         {
-                            label: 'Untung (Rp)',
+                            label: 'Untung',
                             data: untungPerBulan,
-                            backgroundColor: 'rgba(16,185,129,0.6)',
+                            backgroundColor: 'rgba(16,185,129,0.7)',
                             borderColor: '#10b981',
                             borderWidth: 2,
-                            borderRadius: 8
+                            borderRadius: 6,
+                            barPercentage: 0.5,
+                            categoryPercentage: 0.7
                         }
                     ]
                 },
@@ -823,7 +868,7 @@
                     },
                     scales: {
                         x: {
-                            ticks: { color: '#64748b' },
+                            ticks: { color: '#94a3b8', font: { size: 13, weight: 'bold' } },
                             grid: { color: '#1e293b' }
                         },
                         y: {
@@ -835,7 +880,7 @@
                 }
             });
 
-            // ===== GRAFIK 2: MODAL PER BULAN (SEMUA BULAN TAHUN INI) =====
+            // ===== GRAFIK 2: MODAL PER BULAN =====
             var modalPerBulan = [0,0,0,0,0,0,0,0,0,0,0,0];
 
             for(var i=1; i < modalData.length; i++) {
@@ -855,12 +900,14 @@
                 data: {
                     labels: namaBulan,
                     datasets: [{
-                        label: 'Modal (Rp)',
+                        label: 'Modal',
                         data: modalPerBulan,
-                        backgroundColor: 'rgba(244,63,94,0.6)',
+                        backgroundColor: 'rgba(244,63,94,0.7)',
                         borderColor: '#f43f5e',
                         borderWidth: 2,
-                        borderRadius: 8
+                        borderRadius: 6,
+                        barPercentage: 0.5,
+                        categoryPercentage: 0.7
                     }]
                 },
                 options: {
@@ -876,7 +923,7 @@
                     },
                     scales: {
                         x: {
-                            ticks: { color: '#64748b' },
+                            ticks: { color: '#94a3b8', font: { size: 13, weight: 'bold' } },
                             grid: { color: '#1e293b' }
                         },
                         y: {
