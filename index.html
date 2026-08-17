@@ -121,7 +121,6 @@
 
         @keyframes blinkText { 0%, 100% { opacity: 1; } 50% { opacity: 0.12; } }
         .blink-login { animation: blinkText 1.2s ease-in-out infinite; }
-        .blink-dot { animation: blinkText 1.5s ease-in-out infinite; }
 
         @keyframes glowCyan { 0%, 100% { box-shadow: 0 0 12px #00f0ff55, 0 0 35px #00f0ff22; } 50% { box-shadow: 0 0 22px #00f0ff99, 0 0 55px #00f0ff44; } }
         @keyframes glowPurple { 0%, 100% { box-shadow: 0 0 12px #a855f755, 0 0 35px #a855f722; } 50% { box-shadow: 0 0 22px #a855f799, 0 0 55px #a855f744; } }
@@ -171,7 +170,7 @@
             color: #c4b5fd;
         }
 
-        /* ===== FORM ELEMENTS DARK - TANGGAL DI TERANGIN ===== */
+        /* ===== FORM ELEMENTS DARK ===== */
         select,
         input[type="text"],
         input[type="number"],
@@ -416,17 +415,17 @@
                     <div class="bg-[#0f1629] p-8 rounded-3xl card-glow-cyan border border-cyan-500/20 transition transform hover:-translate-y-2 float-card">
                         <p class="text-lg text-cyan-400 font-bold"><i class="fas fa-arrow-down mr-2"></i> Pemasukan</p>
                         <h3 id="dPemasukan" class="text-4xl font-extrabold mt-3 text-cyan-300">Rp 0</h3>
-                        <div class="mt-3 flex gap-1"><span class="w-2 h-2 rounded-full bg-cyan-400 blink-dot"></span><span class="w-2 h-2 rounded-full bg-cyan-400 blink-dot" style="animation-delay:0.3s;"></span><span class="w-2 h-2 rounded-full bg-cyan-400 blink-dot" style="animation-delay:0.6s;"></span></div>
+                        <div class="mt-3 text-xs text-gray-500 flex items-center"><span class="w-2 h-2 rounded-full bg-green-500 mr-2 animate-pulse"></span> Realtime Sync</div>
                     </div>
                     <div class="bg-[#0f1629] p-8 rounded-3xl card-glow-rose border border-rose-500/20 transition transform hover:-translate-y-2 float-card" style="animation-delay:0.5s;">
                         <p class="text-lg text-rose-400 font-bold"><i class="fas fa-arrow-up mr-2"></i> Pengeluaran Modal</p>
                         <h3 id="dPengeluaran" class="text-4xl font-extrabold mt-3 text-rose-300">Rp 0</h3>
-                        <div class="mt-3 flex gap-1"><span class="w-2 h-2 rounded-full bg-rose-400 blink-dot"></span><span class="w-2 h-2 rounded-full bg-rose-400 blink-dot" style="animation-delay:0.3s;"></span><span class="w-2 h-2 rounded-full bg-rose-400 blink-dot" style="animation-delay:0.6s;"></span></div>
+                        <div class="mt-3 text-xs text-gray-500 flex items-center"><span class="w-2 h-2 rounded-full bg-green-500 mr-2 animate-pulse"></span> Realtime Sync</div>
                     </div>
                     <div class="bg-[#0f1629] p-8 rounded-3xl card-glow-emerald border border-emerald-500/20 transition transform hover:-translate-y-2 float-card" style="animation-delay:1s;">
                         <p class="text-lg text-emerald-400 font-bold"><i class="fas fa-coins mr-2"></i> Untung Bersih</p>
                         <h3 id="dUntung" class="text-4xl font-extrabold mt-3 text-emerald-300">Rp 0</h3>
-                        <div class="mt-3 flex gap-1"><span class="w-2 h-2 rounded-full bg-emerald-400 blink-dot"></span><span class="w-2 h-2 rounded-full bg-emerald-400 blink-dot" style="animation-delay:0.3s;"></span><span class="w-2 h-2 rounded-full bg-emerald-400 blink-dot" style="animation-delay:0.6s;"></span></div>
+                        <div class="mt-3 text-xs text-gray-500 flex items-center"><span class="w-2 h-2 rounded-full bg-green-500 mr-2 animate-pulse"></span> Realtime Sync</div>
                     </div>
                 </div>
                 <div class="grid grid-cols-4 gap-6 mb-10">
@@ -543,7 +542,7 @@
                 </div>
                 <div class="bg-[#0f1629] p-8 rounded-3xl container-full border border-gray-700">
                     <h3 class="text-xl font-extrabold mb-4 text-white">Daftar Barang Tersimpan</h3>
-                    <div id="daftarBarangList" class="grid grid-cols-2 md:grid-cols-4 gap-4 text-white"></div>
+                    <div id="daftarBarangList" class="grid grid-cols-1 md:grid-cols-3 gap-4 text-white"></div>
                 </div>
             </div>
 
@@ -582,16 +581,11 @@
     var salesChartInstance = null;
     var modalChartInstance = null;
 
-    // ================= CACHE =================
-    var dataCache = {
-        Penjualan: null,
-        Modal: null,
-        Stok: null,
-        Harga: null,
-        Bumbu: null,
-        lastUpdate: 0
-    };
-    var CACHE_DURATION = 30000; 
+    // ================= CACHE (DIBERSIHKAN SETIKA ADA PERUBAHAN) =================
+    var dataCache = { Penjualan: null, Modal: null, Stok: null, Harga: null, Bumbu: null, lastUpdate: 0 };
+    function clearCache() {
+        dataCache = { Penjualan: null, Modal: null, Stok: null, Harga: null, Bumbu: null, lastUpdate: 0 };
+    }
 
     // ================= KREDENSIAL LOGIN =================
     var VALID_USERS = [
@@ -630,7 +624,6 @@
     async function populateDropdowns() {
         DAFTAR_BUMBU = DAFTAR_BUMBU_DEFAULT.slice();
 
-        // Fetch dynamic items dari Sheet Bumbu
         try {
             var bumbuData = await apiGet('Bumbu');
             if (bumbuData && Array.isArray(bumbuData)) {
@@ -854,10 +847,21 @@
         document.getElementById('appBackground').scrollTop = 0;
     }
 
+    // ================= AUTO REFRESH HALAMAN AKTIF =================
+    function refreshActivePage() {
+        clearCache();
+        if (!document.getElementById('page-dashboard').classList.contains('hidden')) loadDashboard();
+        if (!document.getElementById('page-rekap').classList.contains('hidden')) loadRekap();
+        if (!document.getElementById('page-stok').classList.contains('hidden')) loadStok();
+        if (!document.getElementById('page-laporan').classList.contains('hidden')) loadLaporan();
+        if (!document.getElementById('page-daftarHarga').classList.contains('hidden')) loadDaftarHarga();
+        if (!document.getElementById('page-tambahBarang').classList.contains('hidden')) loadDaftarBarang();
+    }
+
     function apiGet(sheet) {
         return new Promise(function(resolve, reject) {
             var now = Date.now();
-            if (dataCache[sheet] && (now - dataCache.lastUpdate < CACHE_DURATION)) {
+            if (dataCache[sheet] && (now - dataCache.lastUpdate < 30000)) {
                 resolve(dataCache[sheet]);
                 return;
             }
@@ -896,10 +900,7 @@
         });
     }
 
-    function apiPost(sheet, data) {
-        dataCache[sheet] = null;
-        dataCache.lastUpdate = 0;
-
+    function apiPost(sheet, data, actionType = 'write') {
         return new Promise(function(resolve, reject) {
             var cbName = '_jcb_' + Date.now() + '_' + Math.floor(Math.random() * 999999);
             var script = document.createElement('script');
@@ -913,7 +914,7 @@
                 resolve(resp);
             };
 
-            script.src = API_URL + '?sheet=' + sheet + '&action=write&data=' + encodeURIComponent(JSON.stringify(data)) + '&callback=' + cbName;
+            script.src = API_URL + '?sheet=' + sheet + '&action=' + actionType + '&data=' + encodeURIComponent(JSON.stringify(data)) + '&callback=' + cbName;
             script.onerror = function() {
                 if (done) return;
                 done = true;
@@ -983,10 +984,11 @@
         if (uField) uField.value = '';
         if (pField) pField.value = '';
         toggleSidebar(false);
-        dataCache = { Penjualan: null, Modal: null, Stok: null, Harga: null, Bumbu: null, lastUpdate: 0 };
+        clearCache();
         setTimeout(function() { if (uField) uField.focus(); }, 100);
     }
 
+    // ================= SIMPAN & HAPUS DATA =================
     async function simpanModal() {
         var tgl = document.getElementById('modalTgl').value;
         var nama = document.getElementById('modalNama').value.trim();
@@ -1004,6 +1006,7 @@
             document.getElementById('modalKgPilihan').value = '';
             document.getElementById('modalKg').style.display = 'none';
             document.getElementById('modalHarga').value = '';
+            refreshActivePage(); // Langsung update dashboard
         } catch (err) {
             alert('Gagal menyimpan: ' + err.message);
         }
@@ -1036,7 +1039,7 @@
             var untung = totalBayar - (hargaModalPerKg * kg);
 
             await apiPost('Penjualan', [tgl, nama, kg, hargaJual, potongan, totalBayar, untung]);
-            alert('Penjualan dicatat! Langsung masuk ke rekapan penjualan hari ini. Stok otomatis berkurang.');
+            alert('Penjualan dicatat! Langsung masuk ke rekapan. Stok otomatis berkurang.');
             document.getElementById('jualNama').value = '';
             document.getElementById('jualKg').value = '';
             document.getElementById('jualKgPilihan').value = '';
@@ -1044,6 +1047,7 @@
             document.getElementById('jualHarga').value = '';
             document.getElementById('jualPotong').value = '0';
             document.getElementById('jualTotal').value = '';
+            refreshActivePage(); // Langsung update dashboard
         } catch (err) {
             alert('Gagal menyimpan: ' + err.message);
         }
@@ -1064,12 +1068,38 @@
         }
     }
 
+    async function hapusBarang(nama) {
+        if (!confirm('Yakin hapus "' + nama + '" dari daftar?')) return;
+        try {
+            await apiPost('Bumbu', [nama], 'delete');
+            alert('Barang dihapus!');
+            await populateDropdowns(); 
+            loadDaftarBarang();
+        } catch (err) {
+            alert('Gagal menghapus: ' + err.message);
+        }
+    }
+
+    async function hapusHarga(nama) {
+        if (!confirm('Yakin hapus data harga untuk "' + nama + '"?')) return;
+        try {
+            await apiPost('Harga', [nama], 'delete');
+            alert('Data harga dihapus!');
+            loadDaftarHarga();
+        } catch (err) {
+            alert('Gagal menghapus: ' + err.message);
+        }
+    }
+
     async function loadDaftarBarang() {
         var container = document.getElementById('daftarBarangList');
         if (!container) return;
         var html = '';
         for (var i = 0; i < DAFTAR_BUMBU.length; i++) {
-            html += '<div class="bg-gray-800 p-3 rounded-xl text-sm flex items-center"><i class="fas fa-pepper-hot text-amber-400 mr-2"></i> ' + DAFTAR_BUMBU[i] + '</div>';
+            html += '<div class="bg-gray-800 p-3 rounded-xl text-sm flex items-center justify-between">' +
+                    '<span class="flex items-center"><i class="fas fa-pepper-hot text-amber-400 mr-2"></i> ' + DAFTAR_BUMBU[i] + '</span>' +
+                    '<button onclick="hapusBarang(\'' + DAFTAR_BUMBU[i].replace(/'/g, "\\'") + '\')" class="text-red-400 hover:text-red-300 cursor-pointer ml-2"><i class="fas fa-trash"></i></button>' +
+                    '</div>';
         }
         container.innerHTML = html;
     }
@@ -1132,7 +1162,10 @@
                     '<td><input type="text" inputmode="numeric" id="harga_1kg_' + b + '" value="' + savedKg1 + '" placeholder="Rp 0" oninput="formatNominal(this)" class="table-input"></td>' +
                     '<td><input type="text" inputmode="numeric" id="harga_2kg_' + b + '" value="' + savedKg2 + '" placeholder="Rp 0" oninput="formatNominal(this)" class="table-input"></td>' +
                     '<td><input type="text" inputmode="numeric" id="harga_5kg_' + b + '" value="' + savedKg5 + '" placeholder="Rp 0" oninput="formatNominal(this)" class="table-input"></td>' +
-                    '<td><button onclick="simpanSatuHarga(' + b + ', \'' + namaB.replace(/'/g, "\\'") + '\')" class="bg-blue-600 hover:bg-blue-500 text-white p-3 rounded-lg text-base cursor-pointer"><i class="fas fa-save"></i></button></td>' +
+                    '<td><div class="flex gap-2">' +
+                        '<button onclick="simpanSatuHarga(' + b + ', \'' + namaB.replace(/'/g, "\\'") + '\')" class="bg-blue-600 hover:bg-blue-500 text-white p-3 rounded-lg text-base cursor-pointer"><i class="fas fa-save"></i></button>' +
+                        '<button onclick="hapusHarga(\'' + namaB.replace(/'/g, "\\'") + '\')" class="bg-red-600 hover:bg-red-500 text-white p-3 rounded-lg text-base cursor-pointer"><i class="fas fa-trash"></i></button>' +
+                    '</div></td>' +
                     '</tr>';
             }
             tbody.innerHTML = html;
@@ -1151,12 +1184,12 @@
         try {
             await apiPost('Harga', [nama, ons, half, kg1, kg2, kg5]);
             alert('Harga jual untuk ' + nama + ' disimpan!');
-            dataCache['Harga'] = null;
         } catch (err) {
             alert('Gagal menyimpan: ' + err.message);
         }
     }
 
+    // ================= LOAD DASHBOARD =================
     async function loadDashboard() {
         try {
             var jualData = await apiGet('Penjualan');
@@ -1273,7 +1306,7 @@
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    animation: { duration: 600 },
+                    animation: { duration: 400 },
                     plugins: {
                         legend: { labels: { color: '#94a3b8', font: { size: 14, weight: 'bold' } } },
                         tooltip: {
@@ -1333,7 +1366,7 @@
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    animation: { duration: 600 },
+                    animation: { duration: 400 },
                     plugins: {
                         legend: { labels: { color: '#94a3b8', font: { size: 14, weight: 'bold' } } },
                         tooltip: {
