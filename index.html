@@ -14,6 +14,7 @@
             background-color: #0a0e1a;
             -webkit-tap-highlight-color: transparent;
             margin: 0;
+            overflow-x: hidden;
         }
 
         /* ===== BACKGROUND LUAR (GANTI URL INI NANTI) ===== */
@@ -124,16 +125,22 @@
         @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
         .page-transition { animation: fadeIn 0.4s ease-out; }
 
-        /* ===== MARQUEE DI DALAM DASHBOARD - LEBIH LAMBAT ===== */
-        @keyframes marqueeRun {
-            0% { transform: translateX(100%); }
-            100% { transform: translateX(-100%); }
+        /* ===== MARQUEE DIPERBAIKI - BERJALAN LANCAR ===== */
+        .marquee-banner { 
+            overflow: hidden; 
+            white-space: nowrap; 
+            position: relative;
+            width: 100%;
         }
-        .marquee-banner { overflow: hidden; white-space: nowrap; }
         .marquee-run {
             display: inline-block;
-            animation: marqueeRun 30s linear infinite;
             padding-left: 100%;
+            animation: marqueeRun 30s linear infinite;
+            will-change: transform;
+        }
+        @keyframes marqueeRun {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(-100%, 0); }
         }
 
         /* ===== SIDEBAR ===== */
@@ -163,6 +170,8 @@
             font-size: 16px;
             outline: none;
             transition: all 0.3s;
+            width: 100%;
+            box-sizing: border-box;
         }
         input[type="date"] {
             background: #2a3142 !important;
@@ -185,6 +194,12 @@
             color: #f1f5f9 !important;
             padding: 8px;
         }
+        input[readonly] {
+            background: #111827 !important;
+            color: #10b981 !important;
+            font-weight: 800;
+            cursor: not-allowed;
+        }
 
         /* ===== SCROLLBAR ===== */
         ::-webkit-scrollbar { width: 8px; height: 8px; }
@@ -193,12 +208,12 @@
         ::-webkit-scrollbar-thumb:hover { background: #00f0ff; }
 
         /* ===== DARK TABLE - RAPI & SEJAJAR ===== */
-        .dark-table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+        .dark-table { width: 100%; border-collapse: collapse; table-layout: auto; }
         .dark-table thead tr { background: #1e1b4b; }
         .dark-table th { padding: 14px 18px; text-align: left; color: #00f0ff; font-weight: 700; border-bottom: 2px solid #00f0ff44; font-size: 15px; white-space: nowrap; }
         .dark-table tbody tr { border-bottom: 1px solid #1e293b; transition: all 0.2s; }
         .dark-table tbody tr:hover { background: #1e1b4b66; }
-        .dark-table td { padding: 12px 18px; color: #e2e8f0; font-size: 14px; vertical-align: middle; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .dark-table td { padding: 12px 18px; color: #e2e8f0; font-size: 14px; vertical-align: middle; white-space: nowrap; }
 
         /* ===== MOBILE SIDEBAR BAWAH ===== */
         #sidebar { transition: transform 0.3s ease; }
@@ -267,10 +282,10 @@
             #page-rekap .max-w-4xl { max-width: 100% !important; }
             #page-catatModal .grid-cols-2,
             #page-catatJual .grid-cols-2,
-            #page-catatJual .grid-cols-3 {
+            #page-catatJual .grid-cols-3,
+            #page-laporan .grid-cols-3 {
                 grid-template-columns: 1fr !important;
             }
-            #page-laporan .grid-cols-3 { grid-template-columns: 1fr !important; gap: 1rem !important; }
             #page-laporan .flex.gap-4 { flex-direction: column; align-items: stretch; }
             #page-stok table,
             #page-laporan table,
@@ -417,21 +432,19 @@
                 <div class="bg-[#0f1629] p-6 sm:p-10 rounded-3xl max-w-3xl border border-cyan-500/20 card-glow-cyan">
                     <div class="grid grid-cols-2 gap-6 mb-6">
                         <div><label class="block text-lg font-bold mb-2 text-cyan-400">Tanggal Belanja</label><input type="date" id="modalTgl" class="w-full"></div>
-                        <div><label class="block text-lg font-bold mb-2 text-cyan-400">Total Harga Modal (Rp)</label><input type="text" inputmode="numeric" id="modalHarga" placeholder="500.000" oninput="formatNominal(this)" class="w-full"></div>
-                    </div>
-                    <div class="grid grid-cols-2 gap-6 mb-8">
                         <div><label class="block text-lg font-bold mb-2 text-cyan-400">Nama Bumbu</label><select id="modalNama" class="w-full"><option value="">-- Pilih Bumbu --</option></select></div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-6 mb-6">
                         <div>
                             <label class="block text-lg font-bold mb-2 text-cyan-400">Jumlah Beli</label>
-                            <select id="modalKgPilihan" class="w-full mb-2" onchange="setJumlah(this, 'modalKg')">
-                                <option value="">-- Pilih Berat --</option>
-                                <option value="1">1 Kg</option>
-                                <option value="0.5">Setengah Kg</option>
-                                <option value="0.05">Setengah Ons</option>
-                                <option value="lainnya">Lainnya</option>
-                            </select>
-                            <input type="number" id="modalKg" step="any" placeholder="0.5 / 1 / 1.5" class="w-full" style="display:none;">
+                            <select id="modalKgPilihan" class="w-full mb-2" onchange="setJumlah(this, 'modalKg'); hitungModal();"></select>
+                            <input type="number" id="modalKg" step="any" placeholder="0.5 / 1 / 1.5" class="w-full" style="display:none;" oninput="hitungModal()">
                         </div>
+                        <div><label class="block text-lg font-bold mb-2 text-cyan-400">Harga Normal (Rp)</label><input type="text" inputmode="numeric" id="modalHarga" placeholder="500.000" oninput="formatNominal(this); hitungModal()" class="w-full"></div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-6 mb-8">
+                        <div><label class="block text-lg font-bold mb-2 text-rose-400">Potongan / Diskon (Rp)</label><input type="text" inputmode="numeric" id="modalPotong" value="0" placeholder="5.000" oninput="formatNominal(this); hitungModal()" class="w-full" style="border-color:#f43f5e44 !important;"></div>
+                        <div><label class="block text-lg font-bold mb-2 text-cyan-400">Total Dibayar (Rp)</label><input type="text" id="modalTotal" readonly class="w-full"></div>
                     </div>
                     <button onclick="simpanModal()" class="w-full bg-gradient-to-r from-cyan-500 to-blue-600 text-white p-4 rounded-xl text-xl font-bold hover:from-cyan-400 hover:to-blue-500 transition transform hover:scale-105 shadow-lg active:scale-95 cursor-pointer"><i class="fas fa-save mr-2"></i> Simpan Modal</button>
                 </div>
@@ -448,17 +461,15 @@
                     <div class="grid grid-cols-3 gap-6 mb-6">
                         <div>
                             <label class="block text-lg font-bold mb-2 text-emerald-400">Jumlah Jual</label>
-                            <select id="jualKgPilihan" class="w-full mb-2" onchange="setJumlah(this, 'jualKg')">
-                                <option value="">-- Pilih Berat --</option>
-                                <option value="1">1 Kg</option>
-                                <option value="0.5">Setengah Kg</option>
-                                <option value="0.05">Setengah Ons</option>
-                                <option value="lainnya">Lainnya</option>
-                            </select>
-                            <input type="number" id="jualKg" step="any" placeholder="0.25 / 0.5 / 1" class="w-full" style="display:none;">
+                            <select id="jualKgPilihan" class="w-full mb-2" onchange="setJumlah(this, 'jualKg'); hitungJual();"></select>
+                            <input type="number" id="jualKg" step="any" placeholder="0.25 / 0.5 / 1" class="w-full" style="display:none;" oninput="hitungJual()">
                         </div>
-                        <div><label class="block text-lg font-bold mb-2 text-emerald-400">Harga Jual Normal (Rp)</label><input type="text" inputmode="numeric" id="jualHarga" placeholder="150.000" oninput="formatNominal(this)" class="w-full"></div>
-                        <div><label class="block text-lg font-bold mb-2 text-rose-400">Potongan / Kurang (Rp)</label><input type="text" inputmode="numeric" id="jualPotong" value="0" placeholder="5.000" oninput="formatNominal(this)" class="w-full" style="border-color:#f43f5e44 !important;"></div>
+                        <div><label class="block text-lg font-bold mb-2 text-emerald-400">Harga Jual Normal (Rp)</label><input type="text" inputmode="numeric" id="jualHarga" placeholder="150.000" oninput="formatNominal(this); hitungJual()" class="w-full"></div>
+                        <div><label class="block text-lg font-bold mb-2 text-rose-400">Potongan / Kurang (Rp)</label><input type="text" inputmode="numeric" id="jualPotong" value="0" placeholder="5.000" oninput="formatNominal(this); hitungJual()" class="w-full" style="border-color:#f43f5e44 !important;"></div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-6 mb-8">
+                        <div><label class="block text-lg font-bold mb-2 text-emerald-400">Total Dibayar (Rp)</label><input type="text" id="jualTotal" readonly class="w-full"></div>
+                        <div style="display: flex; align-items: flex-end;"><div class="text-gray-400 text-sm p-2">*Jika beli banyak, masukkan potongan harga untuk pelanggan.</div></div>
                     </div>
                     <button onclick="simpanJual()" class="w-full bg-gradient-to-r from-emerald-500 to-teal-600 text-white p-4 rounded-xl text-xl font-bold hover:from-emerald-400 hover:to-teal-500 transition transform hover:scale-105 shadow-lg active:scale-95 cursor-pointer"><i class="fas fa-receipt mr-2"></i> Simpan Penjualan</button>
                 </div>
@@ -539,7 +550,7 @@
         "Biji Bunga Matahari", "Flaxseed", "Chia Seed", "Bumbu Babas"
     ];
 
-    // ====== ISI DROPDOWN BUMBU ======
+    // ====== ISI DROPDOWN BUMBU & BERAT ======
     function populateDropdowns() {
         var selects = [document.getElementById('modalNama'), document.getElementById('jualNama')];
         for (var s = 0; s < selects.length; s++) {
@@ -553,6 +564,30 @@
                 sel.appendChild(opt);
             }
         }
+        populateBerat();
+    }
+
+    function populateBerat() {
+        var html = '<option value="">-- Pilih Berat --</option>';
+        var berat = [
+            {t: "¼ Ons", v: 0.025}, {t: "½ Ons", v: 0.05}, {t: "1 Ons", v: 0.1},
+            {t: "¼ Kg", v: 0.25}, {t: "½ Kg", v: 0.5}, {t: "¾ Kg", v: 0.75},
+            {t: "1 Kg", v: 1}, {t: "1,5 Kg", v: 1.5}, {t: "2 Kg", v: 2}, {t: "2,5 Kg", v: 2.5},
+            {t: "3 Kg", v: 3}, {t: "3,5 Kg", v: 3.5}, {t: "4 Kg", v: 4}, {t: "4,5 Kg", v: 4.5},
+            {t: "5 Kg", v: 5}
+        ];
+        for (var i = 6; i <= 100; i++) {
+            berat.push({t: i + " Kg", v: i});
+        }
+        for (var i = 0; i < berat.length; i++) {
+            html += '<option value="' + berat[i].v + '">' + berat[i].t + '</option>';
+        }
+        html += '<option value="lainnya">Lainnya</option>';
+
+        var sel1 = document.getElementById('modalKgPilihan');
+        var sel2 = document.getElementById('jualKgPilihan');
+        if (sel1) sel1.innerHTML = html;
+        if (sel2) sel2.innerHTML = html;
     }
 
     // ====== PARTIKEL LATAR ======
@@ -605,6 +640,23 @@
             input.style.display = 'none';
             input.value = selectEl.value;
         }
+    }
+
+    // ====== HITUNG TOTAL OTOMATIS (PENCATATAN JELAS) ======
+    function hitungModal() {
+        var harga = parseNominal(document.getElementById('modalHarga'));
+        var potong = parseNominal(document.getElementById('modalPotong')) || 0;
+        var total = harga - potong;
+        if (total < 0) total = 0;
+        document.getElementById('modalTotal').value = Number(total).toLocaleString('id-ID');
+    }
+    function hitungJual() {
+        var kg = parseFloat(document.getElementById('jualKg').value) || 0;
+        var harga = parseNominal(document.getElementById('jualHarga'));
+        var potong = parseNominal(document.getElementById('jualPotong')) || 0;
+        var total = (harga * kg) - potong;
+        if (total < 0) total = 0;
+        document.getElementById('jualTotal').value = Number(total).toLocaleString('id-ID');
     }
 
     function showLoginError(pesan) {
@@ -872,19 +924,21 @@
         var tgl = document.getElementById('modalTgl').value;
         var nama = document.getElementById('modalNama').value;
         var kg = parseFloat(document.getElementById('modalKg').value);
-        var harga = parseNominal(document.getElementById('modalHarga'));
+        var totalHarga = parseNominal(document.getElementById('modalTotal'));
 
-        if (!tgl || !nama || !kg || !harga) return alert('Lengkapi semua data modal!');
-        if (kg <= 0 || harga <= 0) return alert('Jumlah dan harga harus lebih dari 0!');
+        if (!tgl || !nama || !kg || !totalHarga) return alert('Lengkapi semua data modal!');
+        if (kg <= 0 || totalHarga <= 0) return alert('Jumlah dan total harga harus lebih dari 0!');
 
         try {
-            await apiPost('Modal', [tgl, nama, kg, harga]);
+            await apiPost('Modal', [tgl, nama, kg, totalHarga]);
             alert('Modal berhasil dicatat & stok otomatis bertambah!');
             document.getElementById('modalNama').value = '';
             document.getElementById('modalKg').value = '';
             document.getElementById('modalKgPilihan').value = '';
             document.getElementById('modalKg').style.display = 'none';
             document.getElementById('modalHarga').value = '';
+            document.getElementById('modalPotong').value = '0';
+            document.getElementById('modalTotal').value = '';
         } catch (err) {
             alert('Gagal menyimpan: ' + err.message);
         }
@@ -897,11 +951,10 @@
         var kg = parseFloat(document.getElementById('jualKg').value);
         var hargaJual = parseNominal(document.getElementById('jualHarga'));
         var potongan = parseNominal(document.getElementById('jualPotong')) || 0;
+        var totalBayar = parseNominal(document.getElementById('jualTotal'));
 
-        if (!tgl || !nama || !kg || !hargaJual) return alert('Lengkapi semua data penjualan!');
-        if (kg <= 0 || hargaJual <= 0) return alert('Jumlah dan harga harus lebih dari 0!');
-
-        var totalBayar = (hargaJual * kg) - potongan;
+        if (!tgl || !nama || !kg || !totalBayar) return alert('Lengkapi semua data penjualan!');
+        if (kg <= 0 || totalBayar <= 0) return alert('Jumlah dan total bayar harus lebih dari 0!');
 
         try {
             var modalData = await apiGet('Modal');
@@ -909,8 +962,10 @@
             if (modalData && Array.isArray(modalData)) {
                 for (var i = modalData.length - 1; i >= 1; i--) {
                     if (modalData[i] && String(modalData[i][1]).trim() === nama) {
-                        hargaModalPerKg = modalData[i][3] / modalData[i][2];
-                        break;
+                        if (parseFloat(modalData[i][2]) > 0) {
+                           hargaModalPerKg = modalData[i][3] / modalData[i][2];
+                           break;
+                        }
                     }
                 }
             }
@@ -924,6 +979,7 @@
             document.getElementById('jualKg').style.display = 'none';
             document.getElementById('jualHarga').value = '';
             document.getElementById('jualPotong').value = '0';
+            document.getElementById('jualTotal').value = '';
         } catch (err) {
             alert('Gagal menyimpan: ' + err.message);
         }
