@@ -4,6 +4,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
     <title>Dashboard Bumbu Ganes</title>
+    
+    <!-- CEK LOGIN AWAL UNTUK HINDARI KEDIPIFAN F5 -->
+    <script>
+        if (localStorage.getItem('bumbu_ganes_login') === 'true') {
+            document.documentElement.classList.add('logged-in');
+        }
+    </script>
+    <style>
+        #loginPage { display: flex; }
+        #mainApp { display: none; }
+        .logged-in #loginPage { display: none !important; }
+        .logged-in #mainApp { display: flex !important; }
+    </style>
+
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
@@ -215,13 +229,13 @@
         ::-webkit-scrollbar-thumb { background: #334155; border-radius: 10px; }
         ::-webkit-scrollbar-thumb:hover { background: #00f0ff; }
 
-        /* ===== DARK TABLE - FONT BESAR & JELAS ===== */
+        /* ===== DARK TABLE - TANPA TITIK 3 (WORD WRAP) ===== */
         .dark-table { width: 100%; border-collapse: collapse; table-layout: auto; }
         .dark-table thead tr { background: #1e1b4b; }
-        .dark-table th { padding: 16px 20px; text-align: left; color: #00f0ff; font-weight: 700; border-bottom: 2px solid #00f0ff44; font-size: 17px; white-space: nowrap; }
+        .dark-table th { padding: 16px 20px; text-align: left; color: #00f0ff; font-weight: 700; border-bottom: 2px solid #00f0ff44; font-size: 17px; white-space: normal; word-wrap: break-word; }
         .dark-table tbody tr { border-bottom: 1px solid #1e293b; transition: all 0.2s; }
         .dark-table tbody tr:hover { background: #1e1b4b66; }
-        .dark-table td { padding: 14px 20px; color: #e2e8f0; font-size: 17px; vertical-align: middle; white-space: nowrap; font-weight: 500; }
+        .dark-table td { padding: 14px 20px; color: #e2e8f0; font-size: 17px; vertical-align: middle; white-space: normal; word-wrap: break-word; word-break: break-word; font-weight: 500; }
 
         /* ===== CONTAINER FULL WIDTH ===== */
         .container-full { width: 100% !important; max-width: 100% !important; }
@@ -313,7 +327,6 @@
             #modalChart { height: 200px !important; }
             .bumbu-ganes-text { font-size: 1.5rem !important; }
             .bumbu-ganes-text-login { font-size: 1.8rem !important; }
-            /* Mobile tetap scroll horizontal untuk daftar harga karena kolomnya banyak */
             #page-daftarHarga .overflow-x-auto { overflow-x: auto; }
         }
         #hamburgerBtn { display: none; }
@@ -325,7 +338,7 @@
     <div class="bg-particles" id="particles"></div>
 
     <!-- ================= HALAMAN LOGIN ================= -->
-    <div id="loginPage" style="position: fixed; inset: 0; background: #0a0e1a; display: flex; align-items: center; justify-content: center; z-index: 9999; padding: 1rem;">
+    <div id="loginPage" style="position: fixed; inset: 0; background: #0a0e1a; align-items: center; justify-content: center; z-index: 9999; padding: 1rem;">
         <div class="bg-[#0f1629] p-6 sm:p-10 rounded-3xl w-full max-w-[400px] text-center neon-border">
             <div class="mb-6">
                 <h1 class="text-xl sm:text-2xl font-extrabold text-white mb-1 tracking-wide blink-login whitespace-nowrap">⭐Silahkan Login⭐</h1>
@@ -346,7 +359,7 @@
     </div>
 
     <!-- ================= MAIN APP ================= -->
-    <div id="mainApp" style="display: none; height: 100vh; overflow: hidden;" class="flex">
+    <div id="mainApp" style="height: 100vh; overflow: hidden;" class="flex">
 
         <div id="sidebarOverlay" onclick="toggleSidebar(false)"></div>
 
@@ -361,6 +374,7 @@
                     <li onclick="showPage('catatJual',this)" class="sidebar-item cursor-pointer p-4 rounded-xl text-lg font-semibold flex items-center transition text-gray-400"><i class="fas fa-cash-register w-8 text-xl"></i> Catat Penjualan</li>
                     <li onclick="showPage('daftarHarga',this)" class="sidebar-item cursor-pointer p-4 rounded-xl text-lg font-semibold flex items-center transition text-gray-400"><i class="fas fa-tags w-8 text-xl"></i> Daftar Harga Jual</li>
                     <li onclick="showPage('stok',this)" class="sidebar-item cursor-pointer p-4 rounded-xl text-lg font-semibold flex items-center transition text-gray-400"><i class="fas fa-boxes-stacked w-8 text-xl"></i> Stok Bumbu</li>
+                    <li onclick="showPage('tambahBarang',this)" class="sidebar-item cursor-pointer p-4 rounded-xl text-lg font-semibold flex items-center transition text-gray-400"><i class="fas fa-plus-circle w-8 text-xl"></i> Tambah Barang</li>
                     <li onclick="showPage('laporan',this)" class="sidebar-item cursor-pointer p-4 rounded-xl text-lg font-semibold flex items-center transition text-gray-400"><i class="fas fa-file-invoice-dollar w-8 text-xl"></i> Kas Keuangan</li>
                 </ul>
             </div>
@@ -431,7 +445,7 @@
                 </div>
             </div>
 
-            <!-- REKAP HARI INI - HANYA PENJUALAN -->
+            <!-- REKAP HARI INI -->
             <div id="page-rekap" class="page-content hidden">
                 <h2 class="text-4xl font-extrabold mb-2 text-white mt-12 sm:mt-0 neon-text"><i class="fas fa-clipboard-list text-emerald-400 mr-3"></i>Rekap Penjualan Hari Ini</h2>
                 <p class="text-gray-400 mb-8 text-lg">Pencatatan penjualan rempah hari ini saja.</p>
@@ -519,6 +533,20 @@
                 </div>
             </div>
 
+            <!-- TAMBAH BARANG -->
+            <div id="page-tambahBarang" class="page-content hidden">
+                <h2 class="text-4xl font-extrabold mb-8 text-white mt-12 sm:mt-0"><i class="fas fa-plus-circle text-green-400 mr-3"></i> Tambah Barang / Bumbu</h2>
+                <div class="bg-[#0f1629] p-6 sm:p-10 rounded-3xl container-full border border-emerald-500/20 card-glow-emerald mb-8">
+                    <label class="block text-lg font-bold mb-2 text-emerald-400">Nama Barang Baru</label>
+                    <input type="text" id="namaBarangBaru" placeholder="Contoh: Lada Hitam Super" class="w-full mb-6">
+                    <button onclick="simpanBarang()" class="w-full bg-gradient-to-r from-emerald-500 to-teal-600 text-white p-4 rounded-xl text-xl font-bold hover:from-emerald-400 hover:to-teal-500 transition transform hover:scale-105 shadow-lg active:scale-95 cursor-pointer"><i class="fas fa-save mr-2"></i> Simpan Barang</button>
+                </div>
+                <div class="bg-[#0f1629] p-8 rounded-3xl container-full border border-gray-700">
+                    <h3 class="text-xl font-extrabold mb-4 text-white">Daftar Barang Tersimpan</h3>
+                    <div id="daftarBarangList" class="grid grid-cols-2 md:grid-cols-4 gap-4 text-white"></div>
+                </div>
+            </div>
+
             <!-- LAPORAN / KAS KEUNGAN -->
             <div id="page-laporan" class="page-content hidden">
                 <h2 class="text-4xl font-extrabold mb-8 text-white mt-12 sm:mt-0"><i class="fas fa-file-invoice-dollar text-purple-400 mr-3"></i> Kas Keuangan</h2>
@@ -554,23 +582,24 @@
     var salesChartInstance = null;
     var modalChartInstance = null;
 
-    // ================= CACHE UNTUK ANTI LAG =================
+    // ================= CACHE =================
     var dataCache = {
         Penjualan: null,
         Modal: null,
         Stok: null,
         Harga: null,
+        Bumbu: null,
         lastUpdate: 0
     };
-    var CACHE_DURATION = 30000; // 30 detik
+    var CACHE_DURATION = 30000; 
 
     // ================= KREDENSIAL LOGIN =================
     var VALID_USERS = [
         { username: 'admin', password: 'admin123' }
     ];
 
-    // ================= DAFTAR 105 BUMBU (DROPDOWN) =================
-    var DAFTAR_BUMBU = [
+    // ================= DAFTAR BUMBU AWAL =================
+    var DAFTAR_BUMBU_DEFAULT = [
         "Lada Hitam", "Lada Putih", "Lada Hijau Kering", "Ketumbar", "Jintan Putih", "Jintan Hitam",
         "Jintan India", "Adas", "Ajwain", "Fenugreek / Kelabat", "Kalonji / Nigella",
         "Biji Mustard Kuning", "Biji Mustard Hitam", "Biji Seledri", "Biji Adas Manis",
@@ -595,9 +624,31 @@
         "Kacang Hijau", "Kacang Kedelai", "Kacang Merah", "Biji Labu",
         "Biji Bunga Matahari", "Flaxseed", "Chia Seed", "Bumbu Babas"
     ];
+    var DAFTAR_BUMBU = DAFTAR_BUMBU_DEFAULT.slice();
 
     // ====== ISI DROPDOWN BUMBU & BERAT ======
-    function populateDropdowns() {
+    async function populateDropdowns() {
+        DAFTAR_BUMBU = DAFTAR_BUMBU_DEFAULT.slice();
+
+        // Fetch dynamic items dari Sheet Bumbu
+        try {
+            var bumbuData = await apiGet('Bumbu');
+            if (bumbuData && Array.isArray(bumbuData)) {
+                for (var i = 1; i < bumbuData.length; i++) {
+                    if (bumbuData[i] && bumbuData[i][0]) {
+                        var nama = String(bumbuData[i][0]).trim();
+                        if (nama && !DAFTAR_BUMBU.includes(nama)) {
+                            DAFTAR_BUMBU.push(nama);
+                        }
+                    }
+                }
+            }
+        } catch (e) {
+            console.log('Sheet Bumbu belum ada atau error, pakai default.');
+        }
+
+        DAFTAR_BUMBU.sort();
+
         var selects = [document.getElementById('modalNama'), document.getElementById('jualNama')];
         for (var s = 0; s < selects.length; s++) {
             var sel = selects[s];
@@ -636,7 +687,6 @@
         if (sel2) sel2.innerHTML = html;
     }
 
-    // ====== PARTIKEL LATAR ======
     function createParticles() {
         var c = document.getElementById('particles');
         if (!c) return;
@@ -654,7 +704,6 @@
         }
     }
 
-    // ================= HELPER =================
     function formatRp(angka) {
         return 'Rp ' + Number(angka || 0).toLocaleString('id-ID');
     }
@@ -662,7 +711,6 @@
         return new Date().toISOString().split('T')[0];
     }
 
-    // ====== FORMAT NOMINAL PAKE KOMA ======
     function formatNominal(el) {
         var raw = el.value.replace(/[^0-9]/g, '');
         if (raw === '') { el.value = ''; return; }
@@ -672,7 +720,6 @@
         return parseFloat(el.value.replace(/[^0-9]/g, '')) || 0;
     }
 
-    // ====== SET JUMLAH DARI DROPDOWN ======
     function setJumlah(selectEl, inputId) {
         var input = document.getElementById(inputId);
         if (selectEl.value === 'lainnya') {
@@ -688,7 +735,6 @@
         }
     }
 
-    // ====== HITUNG TOTAL OTOMATIS UNTUK PENJUALAN ======
     function hitungJual() {
         var kg = parseFloat(document.getElementById('jualKg').value) || 0;
         var harga = parseNominal(document.getElementById('jualHarga'));
@@ -717,17 +763,15 @@
         else { sidebar.classList.remove('open'); overlay.classList.remove('open'); }
     }
 
-    window.onload = function() {
+    window.onload = async function() {
         createParticles();
-        populateDropdowns();
+        await populateDropdowns();
 
-        // Set tanggal default
         var mTgl = document.getElementById('modalTgl');
         if (mTgl) mTgl.value = getToday();
         var jTgl = document.getElementById('jualTgl');
         if (jTgl) jTgl.value = getToday();
 
-        // Set filter tahun (laporan)
         var yr = new Date().getFullYear();
         var yrSelect = document.getElementById('filterTahun');
         if (yrSelect) {
@@ -741,19 +785,6 @@
             document.getElementById('filterBulan').value = String(new Date().getMonth() + 1).padStart(2, '0');
         }
 
-        // CEK LOCAL STORAGE UNTUK AUTO LOGIN (ANTI F5)
-        if (localStorage.getItem('bumbu_ganes_login') === 'true') {
-            masukDashboard();
-        } else {
-            document.getElementById('loginPage').style.display = 'flex';
-            document.getElementById('mainApp').style.display = 'none';
-            setTimeout(function() {
-                var userField = document.getElementById('username');
-                if (userField) userField.focus();
-            }, 200);
-        }
-
-        // PASANG EVENT LISTENER LOGIN
         var btnLogin = document.getElementById('btnLogin');
         if (btnLogin) {
             btnLogin.addEventListener('click', function(e) {
@@ -776,10 +807,13 @@
             });
         }
 
-        console.log('App loaded. Login: admin / admin123');
+        if (localStorage.getItem('bumbu_ganes_login') === 'true') {
+            masukDashboard();
+        } else {
+            document.getElementById('username').focus();
+        }
     };
 
-    // ================= NAVIGATION =================
     function showPage(page, element) {
         document.querySelectorAll('.page-content').forEach(function(p) { p.classList.add('hidden'); });
         var target = document.getElementById('page-' + page);
@@ -798,12 +832,11 @@
             element.classList.remove('text-gray-400');
         }
 
-        // Update bottom nav active
         var bottomNavBtns = document.querySelectorAll('.bottom-nav button');
         bottomNavBtns.forEach(function(btn) { btn.classList.remove('active'); });
         var navMap = {
             'dashboard': 0, 'rekap': 1, 'catatJual': 2,
-            'catatModal': 3, 'stok': 4, 'laporan': 5, 'daftarHarga': 6
+            'catatModal': 3, 'stok': 4, 'laporan': 5, 'daftarHarga': 6, 'tambahBarang': 7
         };
         if (navMap[page] !== undefined && bottomNavBtns[navMap[page]]) {
             bottomNavBtns[navMap[page]].classList.add('active');
@@ -816,14 +849,13 @@
         if (page === 'stok') loadStok();
         if (page === 'laporan') loadLaporan();
         if (page === 'daftarHarga') loadDaftarHarga();
+        if (page === 'tambahBarang') loadDaftarBarang();
 
         document.getElementById('appBackground').scrollTop = 0;
     }
 
-    // ================= API JSONP =================
     function apiGet(sheet) {
         return new Promise(function(resolve, reject) {
-            // Pakai cache untuk anti lag
             var now = Date.now();
             if (dataCache[sheet] && (now - dataCache.lastUpdate < CACHE_DURATION)) {
                 resolve(dataCache[sheet]);
@@ -839,7 +871,6 @@
                 done = true;
                 delete window[cbName];
                 if (script.parentNode) script.parentNode.removeChild(script);
-                // Simpan ke cache
                 dataCache[sheet] = data;
                 dataCache.lastUpdate = Date.now();
                 resolve(data);
@@ -866,7 +897,6 @@
     }
 
     function apiPost(sheet, data) {
-        // Invalidate cache setelah write
         dataCache[sheet] = null;
         dataCache.lastUpdate = 0;
 
@@ -903,7 +933,6 @@
         });
     }
 
-    // ================= LOGIN (DENGAN LOCAL STORAGE) =================
     function doLogin() {
         var uField = document.getElementById('username');
         var pField = document.getElementById('password');
@@ -932,6 +961,7 @@
     }
 
     function masukDashboard() {
+        document.documentElement.classList.add('logged-in');
         document.getElementById('loginPage').style.display = 'none';
         document.getElementById('mainApp').style.display = 'flex';
         var uField = document.getElementById('username');
@@ -944,6 +974,7 @@
 
     function logout() {
         localStorage.removeItem('bumbu_ganes_login');
+        document.documentElement.classList.remove('logged-in');
         document.getElementById('mainApp').style.display = 'none';
         document.getElementById('loginPage').style.display = 'flex';
         hideLoginError();
@@ -952,12 +983,10 @@
         if (uField) uField.value = '';
         if (pField) pField.value = '';
         toggleSidebar(false);
-        // Reset cache saat logout
-        dataCache = { Penjualan: null, Modal: null, Stok: null, Harga: null, lastUpdate: 0 };
+        dataCache = { Penjualan: null, Modal: null, Stok: null, Harga: null, Bumbu: null, lastUpdate: 0 };
         setTimeout(function() { if (uField) uField.focus(); }, 100);
     }
 
-    // ================= SIMPAN MODAL =================
     async function simpanModal() {
         var tgl = document.getElementById('modalTgl').value;
         var nama = document.getElementById('modalNama').value.trim();
@@ -980,7 +1009,6 @@
         }
     }
 
-    // ================= SIMPAN PENJUALAN =================
     async function simpanJual() {
         var tgl = document.getElementById('jualTgl').value;
         var nama = document.getElementById('jualNama').value;
@@ -1021,18 +1049,39 @@
         }
     }
 
-    // ================= LOAD DAFTAR HARGA JUAL =================
+    async function simpanBarang() {
+        var nama = document.getElementById('namaBarangBaru').value.trim();
+        if (!nama) return alert('Masukkan nama barang!');
+        
+        try {
+            await apiPost('Bumbu', [nama]);
+            alert('Barang berhasil ditambahkan!');
+            document.getElementById('namaBarangBaru').value = '';
+            await populateDropdowns(); 
+            loadDaftarBarang();
+        } catch (err) {
+            alert('Gagal menyimpan: ' + err.message);
+        }
+    }
+
+    async function loadDaftarBarang() {
+        var container = document.getElementById('daftarBarangList');
+        if (!container) return;
+        var html = '';
+        for (var i = 0; i < DAFTAR_BUMBU.length; i++) {
+            html += '<div class="bg-gray-800 p-3 rounded-xl text-sm flex items-center"><i class="fas fa-pepper-hot text-amber-400 mr-2"></i> ' + DAFTAR_BUMBU[i] + '</div>';
+        }
+        container.innerHTML = html;
+    }
+
     async function loadDaftarHarga() {
         try {
             var modalData = await apiGet('Modal');
             var hargaData = null;
             try {
                 hargaData = await apiGet('Harga');
-            } catch (e) {
-                console.log('Sheet Harga belum ada, tampil kosong.');
-            }
+            } catch (e) {}
 
-            // Build map of latest modal per kg
             var modalMap = {};
             if (modalData && Array.isArray(modalData)) {
                 for (var i = 1; i < modalData.length; i++) {
@@ -1047,7 +1096,6 @@
                 }
             }
 
-            // Build map of saved prices (ambil yang terakhir di simpan)
             var hargaMap = {};
             if (hargaData && Array.isArray(hargaData)) {
                 for (var i = 1; i < hargaData.length; i++) {
@@ -1103,14 +1151,12 @@
         try {
             await apiPost('Harga', [nama, ons, half, kg1, kg2, kg5]);
             alert('Harga jual untuk ' + nama + ' disimpan!');
-            // Reset cache harga
             dataCache['Harga'] = null;
         } catch (err) {
             alert('Gagal menyimpan: ' + err.message);
         }
     }
 
-    // ================= LOAD DASHBOARD =================
     async function loadDashboard() {
         try {
             var jualData = await apiGet('Penjualan');
@@ -1122,7 +1168,6 @@
             var bulanIni = today.substring(0, 7);
             var pemasukanHariIni = 0, pengeluaranHariIni = 0, untungHariIni = 0;
 
-            // ===== DATA HARI INI =====
             for (var i = 1; i < jualData.length; i++) {
                 if (!jualData[i]) continue;
                 var tgl = jualData[i][0], total = jualData[i][5], untung = jualData[i][6];
@@ -1139,7 +1184,6 @@
             document.getElementById('dPengeluaran').innerText = formatRp(pengeluaranHariIni);
             document.getElementById('dUntung').innerText = formatRp(untungHariIni);
 
-            // ===== KAS BULAN INI =====
             var kasMasuk = 0, kasKeluar = 0, jmlJual = 0, jmlModal = 0;
             for (var i = 1; i < jualData.length; i++) {
                 if (!jualData[i]) continue;
@@ -1162,7 +1206,6 @@
             document.getElementById('dJumlahModal').innerText = jmlModal;
             document.getElementById('dMargin').innerText = margin + '%';
 
-            // ===== ALERT STOK MENIPIS =====
             var alertBox = document.getElementById('alertStok');
             var alertContent = document.getElementById('alertStokIsi');
             var lowStockList = [];
@@ -1182,7 +1225,6 @@
                 alertBox.classList.add('hidden');
             }
 
-            // ===== GRAFIK 1: PENJUALAN PER BULAN =====
             var namaBulan = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Ags', 'Sep', 'Okt', 'Nov', 'Des'];
             var tahunChart = new Date().getFullYear();
             var penjualanPerBulan = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
@@ -1259,7 +1301,6 @@
                 }
             });
 
-            // ===== GRAFIK 2: MODAL PER BULAN =====
             var modalPerBulan = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 
             for (var i = 1; i < modalData.length; i++) {
@@ -1324,7 +1365,6 @@
         }
     }
 
-    // ================= LOAD REKAP HARI INI =================
     async function loadRekap() {
         try {
             var jualData = await apiGet('Penjualan');
@@ -1370,7 +1410,6 @@
         }
     }
 
-    // ================= LOAD STOK =================
     async function loadStok() {
         try {
             var stokData = await apiGet('Stok');
@@ -1391,7 +1430,6 @@
         }
     }
 
-    // ================= LOAD LAPORAN / KAS KEUNGAN =================
     async function loadLaporan() {
         try {
             var bulan = document.getElementById('filterBulan').value;
@@ -1443,7 +1481,6 @@
             document.getElementById('lModal').innerText = formatRp(totalModal);
             document.getElementById('lUntung').innerText = formatRp(totalUntung);
 
-            // Render Daily Table (Crosscheck)
             var dailyTbody = document.getElementById('tabelLaporanHarian');
             var htmlDaily = '';
             var dates = Object.keys(dailyMap).sort();
@@ -1460,7 +1497,6 @@
             }
             dailyTbody.innerHTML = htmlDaily;
 
-            // Render Monthly Detail Table
             var tbody = document.getElementById('tabelLaporan');
             if (!tbody) return;
             if (html === '') {
