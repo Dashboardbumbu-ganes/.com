@@ -9,34 +9,92 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        body { font-family: 'Poppins', sans-serif; background-color: #0f172a; -webkit-tap-highlight-color: transparent; }
-        
-        @keyframes neonPulse {
-            0% { box-shadow: 0 0 15px #0ff, 0 0 30px #0ff, inset 0 0 15px #0ff; }
-            33% { box-shadow: 0 0 15px #f0f, 0 0 30px #f0f, inset 0 0 15px #f0f; }
-            66% { box-shadow: 0 0 15px #ff0, 0 0 30px #ff0, inset 0 0 15px #ff0; }
-            100% { box-shadow: 0 0 15px #0ff, 0 0 30px #0ff, inset 0 0 15px #0ff; }
+        body { font-family: 'Poppins', sans-serif; background-color: #0a0e1a; -webkit-tap-highlight-color: transparent; margin:0; }
+
+        /* ===== PARTIKEL LATAR ===== */
+        .bg-particles { position:fixed; inset:0; z-index:0; pointer-events:none; overflow:hidden; }
+        .bg-particles span { position:absolute; display:block; border-radius:50%; opacity:0; animation:particleFloat linear infinite; }
+        @keyframes particleFloat {
+            0% { opacity:0; transform:translateY(100vh) scale(0); }
+            10% { opacity:0.6; }
+            90% { opacity:0.6; }
+            100% { opacity:0; transform:translateY(-10vh) scale(1); }
         }
-        .neon-border { animation: neonPulse 3s infinite alternate; border: 2px solid rgba(255,255,255,0.1); }
+
+        /* ===== NEON & LAMPU ===== */
+        @keyframes neonPulse {
+            0%,100% { box-shadow: 0 0 12px #00f0ff, 0 0 30px #00f0ff, 0 0 60px #00f0ff33, inset 0 0 15px #00f0ff11; }
+            50% { box-shadow: 0 0 12px #a855f7, 0 0 30px #a855f7, 0 0 60px #a855f733, inset 0 0 15px #a855f711; }
+        }
+        .neon-border { animation: neonPulse 3s infinite alternate; border: 2px solid rgba(0,240,255,0.15); }
+
+        @keyframes neonText {
+            0%,100% { text-shadow: 0 0 8px #00f0ff, 0 0 18px #00f0ff66; }
+            50% { text-shadow: 0 0 8px #a855f7, 0 0 18px #a855f766; }
+        }
+        .neon-text { animation: neonText 3s ease-in-out infinite; }
 
         @keyframes blinkText { 0%, 100% { opacity: 1; } 50% { opacity: 0.12; } }
         .blink-login { animation: blinkText 1.2s ease-in-out infinite; }
+        .blink-dot { animation: blinkText 1.5s ease-in-out infinite; }
 
-        @keyframes glowIndigo { 0% { box-shadow: 0 0 5px rgba(79,70,229,0.2); } 50% { box-shadow: 0 0 25px rgba(79,70,229,0.6); } 100% { box-shadow: 0 0 5px rgba(79,70,229,0.2); } }
-        @keyframes glowRose { 0% { box-shadow: 0 0 5px rgba(244,63,94,0.2); } 50% { box-shadow: 0 0 25px rgba(244,63,94,0.6); } 100% { box-shadow: 0 0 5px rgba(244,63,94,0.2); } }
-        @keyframes glowEmerald { 0% { box-shadow: 0 0 5px rgba(16,185,129,0.2); } 50% { box-shadow: 0 0 25px rgba(16,185,129,0.6); } 100% { box-shadow: 0 0 5px rgba(16,185,129,0.2); } }
-        .card-glow-indigo { animation: glowIndigo 3s infinite alternate; }
+        @keyframes glowCyan { 0%,100%{box-shadow:0 0 12px #00f0ff55,0 0 35px #00f0ff22;} 50%{box-shadow:0 0 22px #00f0ff99,0 0 55px #00f0ff44;} }
+        @keyframes glowPurple { 0%,100%{box-shadow:0 0 12px #a855f755,0 0 35px #a855f722;} 50%{box-shadow:0 0 22px #a855f799,0 0 55px #a855f744;} }
+        @keyframes glowRose { 0%,100%{box-shadow:0 0 12px #f43f5e55,0 0 35px #f43f5e22;} 50%{box-shadow:0 0 22px #f43f5e99,0 0 55px #f43f5e44;} }
+        @keyframes glowEmerald { 0%,100%{box-shadow:0 0 12px #10b98155,0 0 35px #10b98122;} 50%{box-shadow:0 0 22px #10b98199,0 0 55px #10b98144;} }
+        @keyframes glowAmber { 0%,100%{box-shadow:0 0 12px #f59e0b55,0 0 35px #f59e0b22;} 50%{box-shadow:0 0 22px #f59e0b99,0 0 55px #f59e0b44;} }
+        .card-glow-cyan { animation: glowCyan 3s infinite alternate; }
+        .card-glow-purple { animation: glowPurple 3s infinite alternate; }
         .card-glow-rose { animation: glowRose 3s infinite alternate; }
         .card-glow-emerald { animation: glowEmerald 3s infinite alternate; }
-        
+        .card-glow-amber { animation: glowAmber 3s infinite alternate; }
+
+        @keyframes floatCard { 0%,100%{transform:translateY(0);} 50%{transform:translateY(-8px);} }
+        .float-card { animation: floatCard 4s ease-in-out infinite; }
+
         @keyframes fadeIn { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
         .page-transition { animation: fadeIn 0.4s ease-out; }
-        
-        .sidebar-item.active { background: linear-gradient(to right,#eef2ff,#fff); border-left: 5px solid #4f46e5; color: #4f46e5; font-weight: 800; }
-        input:focus { box-shadow: 0 0 0 3px rgba(79,70,229,0.3); }
+
+        /* ===== SIDEBAR ===== */
+        .sidebar-item.active { background: linear-gradient(135deg,#1e1b4b,#312e81); border-left: 5px solid #00f0ff; color: #00f0ff; font-weight: 800; box-shadow: 0 0 12px #00f0ff33; }
+        .sidebar-item:not(.active):hover { background: #1a1a2e; color: #c4b5fd; }
+
+        /* ===== FORM ELEMENTS DARK ===== */
+        select, input[type="text"], input[type="number"], input[type="date"], input[type="password"] {
+            background: #1a1a2e !important;
+            border: 2px solid #334155 !important;
+            color: #f1f5f9 !important;
+            border-radius: 12px;
+            padding: 12px 16px;
+            font-size: 16px;
+            outline: none;
+            transition: all 0.3s;
+        }
+        select:focus, input:focus {
+            border-color: #00f0ff !important;
+            box-shadow: 0 0 12px #00f0ff33 !important;
+        }
+        select option {
+            background: #1a1a2e !important;
+            color: #f1f5f9 !important;
+            padding: 8px;
+        }
+
+        /* ===== SCROLLBAR ===== */
         ::-webkit-scrollbar { width: 8px; height: 8px; }
-        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
-        
+        ::-webkit-scrollbar-track { background: #0a0e1a; }
+        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #00f0ff; }
+
+        /* ===== DARK TABLE ===== */
+        .dark-table { width:100%; border-collapse:collapse; }
+        .dark-table thead tr { background: #1e1b4b; }
+        .dark-table th { padding:14px 18px; text-align:left; color:#00f0ff; font-weight:700; border-bottom:2px solid #00f0ff44; font-size:15px; }
+        .dark-table tbody tr { border-bottom:1px solid #1e293b; transition:all 0.2s; }
+        .dark-table tbody tr:hover { background:#1e1b4b66; }
+        .dark-table td { padding:12px 18px; color:#e2e8f0; font-size:14px; }
+
+        /* ===== MOBILE ===== */
         #sidebar { transition: transform 0.3s ease; }
         @media (max-width: 768px) {
             #sidebar {
@@ -45,13 +103,14 @@
             }
             #sidebar.open { transform: translateX(0); }
             #sidebarOverlay {
-                position: fixed; inset: 0; background: rgba(0,0,0,0.5);
+                position: fixed; inset: 0; background: rgba(0,0,0,0.6);
                 z-index: 55; display: none;
             }
             #sidebarOverlay.open { display: block; }
             #hamburgerBtn { display: block !important; }
             #appBackground { padding: 1rem !important; }
             #page-dashboard .grid-cols-3 { grid-template-columns: 1fr !important; gap: 1rem !important; }
+            #page-dashboard .grid-cols-4 { grid-template-columns: 1fr 1fr !important; gap: 1rem !important; }
             #page-catatModal .max-w-3xl, #page-catatJual .max-w-3xl { max-width: 100% !important; }
             #page-catatModal .grid-cols-2, #page-catatJual .grid-cols-2, #page-catatJual .grid-cols-3 {
                 grid-template-columns: 1fr !important;
@@ -66,191 +125,235 @@
         #hamburgerBtn { display: none; }
     </style>
 </head>
-<body class="text-gray-800 text-base">
+<body class="text-gray-100 text-base">
+
+    <!-- ===== PARTIKEL ===== -->
+    <div class="bg-particles" id="particles"></div>
 
     <!-- ================= HALAMAN LOGIN ================= -->
-    <div id="loginPage" style="position: fixed; inset: 0; background: #0f172a; display: flex; align-items: center; justify-content: center; z-index: 9999; padding: 1rem;">
-        <div class="bg-gray-900 p-6 sm:p-10 rounded-3xl w-full max-w-[400px] text-center neon-border">
+    <div id="loginPage" style="position: fixed; inset: 0; background: #0a0e1a; display: flex; align-items: center; justify-content: center; z-index: 9999; padding: 1rem;">
+        <div class="bg-[#0f1629] p-6 sm:p-10 rounded-3xl w-full max-w-[400px] text-center neon-border">
             <div class="mb-6">
-                <h1 class="text-2xl sm:text-3xl font-extrabold text-white mb-1 tracking-wide blink-login">Silahkan Login</h1>
+                <i class="fas fa-pepper-hot text-4xl text-amber-400 mb-3 block"></i>
+                <h1 class="text-2xl sm:text-3xl font-extrabold text-white mb-1 tracking-wide blink-login">⭐ Silahkan Login ⭐</h1>
+                <p class="text-gray-500 text-sm">BumbuKu - Manajemen Bumbu Kering</p>
             </div>
             <div class="text-left mb-4">
-                <label class="block text-sm font-semibold text-gray-400 mb-1">Username</label>
-                <input type="text" id="username" placeholder="Ketik username..." autocomplete="off" autocapitalize="off" spellcheck="false" onkeydown="if(event.key==='Enter'){document.getElementById('password').focus();}" class="w-full p-3 bg-gray-800 border border-gray-700 rounded-xl text-white text-lg outline-none transition focus:border-indigo-500">
+                <label class="block text-sm font-semibold text-cyan-400 mb-1">Username</label>
+                <input type="text" id="username" placeholder="Ketik username..." autocomplete="off" autocapitalize="off" spellcheck="false" onkeydown="if(event.key==='Enter'){document.getElementById('password').focus();}" class="w-full">
             </div>
             <div class="text-left mb-6">
-                <label class="block text-sm font-semibold text-gray-400 mb-1">Password</label>
-                <input type="password" id="password" placeholder="Ketik password..." autocomplete="off" onkeydown="if(event.key==='Enter'){doLogin();}" class="w-full p-3 bg-gray-800 border border-gray-700 rounded-xl text-white text-lg outline-none transition focus:border-indigo-500">
+                <label class="block text-sm font-semibold text-cyan-400 mb-1">Password</label>
+                <input type="password" id="password" placeholder="Ketik password..." autocomplete="off" onkeydown="if(event.key==='Enter'){doLogin();}" class="w-full">
             </div>
-            <button id="btnLogin" onclick="doLogin()" class="w-full bg-indigo-600 text-white p-3.5 rounded-xl text-lg font-bold hover:bg-indigo-700 transition transform hover:scale-105 shadow-lg active:scale-95">Masuk <i class="fas fa-arrow-right ml-2"></i></button>
+            <button id="btnLogin" onclick="doLogin()" class="w-full bg-gradient-to-r from-cyan-500 to-purple-600 text-white p-3.5 rounded-xl text-lg font-bold hover:from-cyan-400 hover:to-purple-500 transition transform hover:scale-105 shadow-lg active:scale-95 cursor-pointer">Masuk <i class="fas fa-arrow-right ml-2"></i></button>
             <p id="loginError" class="text-red-400 mt-3 font-semibold text-sm hidden"></p>
+            <p class="text-gray-600 mt-3 text-xs">Hint: admin / admin123</p>
         </div>
     </div>
 
     <!-- ================= MAIN APP ================= -->
     <div id="mainApp" style="display: none; height: 100vh; overflow: hidden;" class="flex">
-        
+
         <div id="sidebarOverlay" onclick="toggleSidebar(false)"></div>
-        
+
         <!-- SIDEBAR -->
-        <div id="sidebar" class="w-72 bg-white border-r border-gray-200 flex flex-col justify-between p-6 shadow-xl">
+        <div id="sidebar" class="w-72 bg-[#0f1629] border-r border-gray-800 flex flex-col justify-between p-6 shadow-2xl" style="box-shadow:4px 0 25px #00000088;">
             <div>
-                <h1 class="text-2xl font-extrabold text-indigo-600 mb-10 flex items-center">BumbuKu</h1>
+                <h1 class="text-2xl font-extrabold text-cyan-400 mb-10 flex items-center neon-text"><i class="fas fa-pepper-hot text-amber-400 mr-3"></i>BumbuKu</h1>
                 <ul class="space-y-2">
-                    <li onclick="showPage('dashboard',this)" class="sidebar-item active cursor-pointer p-4 rounded-xl text-lg font-semibold flex items-center transition hover:bg-indigo-50"><i class="fas fa-chart-pie w-8 text-xl"></i> Dashboard</li>
-                    <li onclick="showPage('catatModal',this)" class="sidebar-item cursor-pointer p-4 rounded-xl text-lg font-semibold flex items-center transition hover:bg-indigo-50 text-gray-600"><i class="fas fa-truck-loading w-8 text-xl"></i> Catat Modal</li>
-                    <li onclick="showPage('catatJual',this)" class="sidebar-item cursor-pointer p-4 rounded-xl text-lg font-semibold flex items-center transition hover:bg-indigo-50 text-gray-600"><i class="fas fa-cash-register w-8 text-xl"></i> Catat Penjualan</li>
-                    <li onclick="showPage('stok',this)" class="sidebar-item cursor-pointer p-4 rounded-xl text-lg font-semibold flex items-center transition hover:bg-indigo-50 text-gray-600"><i class="fas fa-boxes-stacked w-8 text-xl"></i> Stok Bumbu</li>
-                    <li onclick="showPage('laporan',this)" class="sidebar-item cursor-pointer p-4 rounded-xl text-lg font-semibold flex items-center transition hover:bg-indigo-50 text-gray-600"><i class="fas fa-file-invoice-dollar w-8 text-xl"></i> Laporan Bulanan</li>
+                    <li onclick="showPage('dashboard',this)" class="sidebar-item active cursor-pointer p-4 rounded-xl text-lg font-semibold flex items-center transition"><i class="fas fa-chart-pie w-8 text-xl"></i> Dashboard</li>
+                    <li onclick="showPage('catatModal',this)" class="sidebar-item cursor-pointer p-4 rounded-xl text-lg font-semibold flex items-center transition text-gray-400"><i class="fas fa-truck-loading w-8 text-xl"></i> Catat Modal</li>
+                    <li onclick="showPage('catatJual',this)" class="sidebar-item cursor-pointer p-4 rounded-xl text-lg font-semibold flex items-center transition text-gray-400"><i class="fas fa-cash-register w-8 text-xl"></i> Catat Penjualan</li>
+                    <li onclick="showPage('stok',this)" class="sidebar-item cursor-pointer p-4 rounded-xl text-lg font-semibold flex items-center transition text-gray-400"><i class="fas fa-boxes-stacked w-8 text-xl"></i> Stok Bumbu</li>
+                    <li onclick="showPage('laporan',this)" class="sidebar-item cursor-pointer p-4 rounded-xl text-lg font-semibold flex items-center transition text-gray-400"><i class="fas fa-file-invoice-dollar w-8 text-xl"></i> Laporan Bulanan</li>
                 </ul>
             </div>
             <div>
-                <button onclick="logout()" class="w-full p-4 rounded-xl bg-red-50 text-red-600 font-bold hover:bg-red-100 transition flex items-center justify-center text-lg"><i class="fas fa-sign-out-alt mr-3"></i> Keluar</button>
+                <button onclick="logout()" class="w-full p-4 rounded-xl bg-red-900/30 text-red-400 font-bold hover:bg-red-900/50 transition flex items-center justify-center text-lg border border-red-800/40 cursor-pointer"><i class="fas fa-sign-out-alt mr-3"></i> Keluar</button>
             </div>
         </div>
 
         <!-- KONTEN -->
-        <div id="appBackground" class="flex-1 overflow-y-auto p-6 sm:p-10 bg-slate-50 relative">
-            
-            <button id="hamburgerBtn" onclick="toggleSidebar(true)" class="absolute top-4 left-4 z-30 bg-indigo-600 text-white p-3 rounded-xl shadow-lg">
+        <div id="appBackground" class="flex-1 overflow-y-auto p-6 sm:p-10 bg-[#0a0e1a] relative">
+
+            <button id="hamburgerBtn" onclick="toggleSidebar(true)" class="absolute top-4 left-4 z-30 bg-gradient-to-r from-cyan-500 to-purple-600 text-white p-3 rounded-xl shadow-lg cursor-pointer">
                 <i class="fas fa-bars text-xl"></i>
             </button>
-            
+
             <!-- DASHBOARD -->
             <div id="page-dashboard" class="page-content page-transition">
-                <h2 class="text-4xl font-extrabold mb-2 text-gray-800 mt-12 sm:mt-0">Ringkasan Hari Ini</h2>
-                <p class="text-gray-500 mb-8 text-lg">Data pemasukan dan pengeluaran hari ini secara realtime.</p>
-                <div class="grid grid-cols-3 gap-8 mb-10">
-                    <div class="bg-white p-8 rounded-3xl card-glow-indigo border border-indigo-100 transition transform hover:-translate-y-2">
-                        <p class="text-lg text-indigo-400 font-bold"><i class="fas fa-arrow-down mr-2"></i> Pemasukan</p>
-                        <h3 id="dPemasukan" class="text-4xl font-extrabold mt-3 text-indigo-600">Rp 0</h3>
+                <h2 class="text-4xl font-extrabold mb-2 text-white mt-12 sm:mt-0 neon-text"><i class="fas fa-chart-pie text-cyan-400 mr-3"></i>Ringkasan Hari Ini</h2>
+                <p class="text-gray-400 mb-8 text-lg">Data pemasukan dan pengeluaran hari ini secara realtime.</p>
+                <div class="grid grid-cols-3 gap-6 mb-8">
+                    <!-- Pemasukan -->
+                    <div class="bg-[#0f1629] p-8 rounded-3xl card-glow-cyan border border-cyan-500/20 transition transform hover:-translate-y-2 float-card">
+                        <p class="text-lg text-cyan-400 font-bold"><i class="fas fa-arrow-down mr-2"></i> Pemasukan</p>
+                        <h3 id="dPemasukan" class="text-4xl font-extrabold mt-3 text-cyan-300">Rp 0</h3>
+                        <div class="mt-3 flex gap-1"><span class="w-2 h-2 rounded-full bg-cyan-400 blink-dot"></span><span class="w-2 h-2 rounded-full bg-cyan-400 blink-dot" style="animation-delay:0.3s;"></span><span class="w-2 h-2 rounded-full bg-cyan-400 blink-dot" style="animation-delay:0.6s;"></span></div>
                     </div>
-                    <div class="bg-white p-8 rounded-3xl card-glow-rose border border-rose-100 transition transform hover:-translate-y-2">
+                    <!-- Pengeluaran -->
+                    <div class="bg-[#0f1629] p-8 rounded-3xl card-glow-rose border border-rose-500/20 transition transform hover:-translate-y-2 float-card" style="animation-delay:0.5s;">
                         <p class="text-lg text-rose-400 font-bold"><i class="fas fa-arrow-up mr-2"></i> Pengeluaran Modal</p>
-                        <h3 id="dPengeluaran" class="text-4xl font-extrabold mt-3 text-rose-600">Rp 0</h3>
+                        <h3 id="dPengeluaran" class="text-4xl font-extrabold mt-3 text-rose-300">Rp 0</h3>
+                        <div class="mt-3 flex gap-1"><span class="w-2 h-2 rounded-full bg-rose-400 blink-dot"></span><span class="w-2 h-2 rounded-full bg-rose-400 blink-dot" style="animation-delay:0.3s;"></span><span class="w-2 h-2 rounded-full bg-rose-400 blink-dot" style="animation-delay:0.6s;"></span></div>
                     </div>
-                    <div class="bg-white p-8 rounded-3xl card-glow-emerald border border-emerald-100 transition transform hover:-translate-y-2">
+                    <!-- Untung -->
+                    <div class="bg-[#0f1629] p-8 rounded-3xl card-glow-emerald border border-emerald-500/20 transition transform hover:-translate-y-2 float-card" style="animation-delay:1s;">
                         <p class="text-lg text-emerald-400 font-bold"><i class="fas fa-coins mr-2"></i> Untung Bersih</p>
-                        <h3 id="dUntung" class="text-4xl font-extrabold mt-3 text-emerald-600">Rp 0</h3>
+                        <h3 id="dUntung" class="text-4xl font-extrabold mt-3 text-emerald-300">Rp 0</h3>
+                        <div class="mt-3 flex gap-1"><span class="w-2 h-2 rounded-full bg-emerald-400 blink-dot"></span><span class="w-2 h-2 rounded-full bg-emerald-400 blink-dot" style="animation-delay:0.3s;"></span><span class="w-2 h-2 rounded-full bg-emerald-400 blink-dot" style="animation-delay:0.6s;"></span></div>
                     </div>
                 </div>
-                <div class="bg-white p-8 rounded-3xl shadow-sm border border-gray-100">
-                    <h3 class="text-2xl font-extrabold mb-6 text-gray-700"><i class="fas fa-chart-area text-indigo-500 mr-2"></i> Grafik Penjualan Bulan Ini</h3>
+
+                <!-- KAS BULAN INI -->
+                <div class="grid grid-cols-4 gap-6 mb-10">
+                    <div class="bg-[#0f1629] p-6 rounded-3xl card-glow-amber border border-amber-500/20">
+                        <p class="text-base text-amber-400 font-bold"><i class="fas fa-wallet mr-2"></i> Kas Bulan Ini</p>
+                        <h3 id="dKasBulan" class="text-2xl font-extrabold mt-2 text-amber-300">Rp 0</h3>
+                    </div>
+                    <div class="bg-[#0f1629] p-6 rounded-3xl card-glow-purple border border-purple-500/20">
+                        <p class="text-base text-purple-400 font-bold"><i class="fas fa-shopping-cart mr-2"></i> Transaksi Jual</p>
+                        <h3 id="dJumlahJual" class="text-2xl font-extrabold mt-2 text-purple-300">0</h3>
+                    </div>
+                    <div class="bg-[#0f1629] p-6 rounded-3xl card-glow-cyan border border-cyan-500/20">
+                        <p class="text-base text-cyan-400 font-bold"><i class="fas fa-truck mr-2"></i> Transaksi Modal</p>
+                        <h3 id="dJumlahModal" class="text-2xl font-extrabold mt-2 text-cyan-300">0</h3>
+                    </div>
+                    <div class="bg-[#0f1629] p-6 rounded-3xl card-glow-emerald border border-emerald-500/20">
+                        <p class="text-base text-emerald-400 font-bold"><i class="fas fa-percentage mr-2"></i> Margin Untung</p>
+                        <h3 id="dMargin" class="text-2xl font-extrabold mt-2 text-emerald-300">0%</h3>
+                    </div>
+                </div>
+
+                <!-- GRAFIK SEMUA BULAN (TIDAK pilih bulan) -->
+                <div class="bg-[#0f1629] p-8 rounded-3xl border border-purple-500/20 card-glow-purple mb-8">
+                    <h3 class="text-2xl font-extrabold mb-6 text-purple-300"><i class="fas fa-chart-area text-purple-400 mr-2"></i> Grafik Penjualan Semua Bulan</h3>
                     <canvas id="salesChart" height="100"></canvas>
+                </div>
+
+                <!-- GRAFIK MODAL SEMUA BULAN -->
+                <div class="bg-[#0f1629] p-8 rounded-3xl border border-rose-500/20 card-glow-rose">
+                    <h3 class="text-2xl font-extrabold mb-6 text-rose-300"><i class="fas fa-chart-bar text-rose-400 mr-2"></i> Grafik Modal Semua Bulan</h3>
+                    <canvas id="modalChart" height="100"></canvas>
                 </div>
             </div>
 
             <!-- CATAT MODAL -->
             <div id="page-catatModal" class="page-content hidden">
-                <h2 class="text-4xl font-extrabold mb-8 text-gray-800 mt-12 sm:mt-0"><i class="fas fa-truck-loading text-indigo-500 mr-3"></i> Catat Belanja Modal</h2>
-                <div class="bg-white p-6 sm:p-10 rounded-3xl shadow-sm max-w-3xl border border-gray-100">
+                <h2 class="text-4xl font-extrabold mb-8 text-white mt-12 sm:mt-0"><i class="fas fa-truck-loading text-cyan-400 mr-3"></i> Catat Belanja Modal</h2>
+                <div class="bg-[#0f1629] p-6 sm:p-10 rounded-3xl max-w-3xl border border-cyan-500/20 card-glow-cyan">
                     <div class="grid grid-cols-2 gap-6 mb-6">
                         <div>
-                            <label class="block text-lg font-bold mb-2 text-gray-600">Tanggal Belanja</label>
-                            <input type="date" id="modalTgl" class="w-full p-4 border-2 rounded-xl text-lg outline-none transition">
+                            <label class="block text-lg font-bold mb-2 text-cyan-400">Tanggal Belanja</label>
+                            <input type="date" id="modalTgl" class="w-full">
                         </div>
                         <div>
-                            <label class="block text-lg font-bold mb-2 text-gray-600">Total Harga Modal (Rp)</label>
-                            <input type="number" id="modalHarga" placeholder="500000" class="w-full p-4 border-2 rounded-xl text-lg outline-none transition">
+                            <label class="block text-lg font-bold mb-2 text-cyan-400">Total Harga Modal (Rp)</label>
+                            <input type="number" id="modalHarga" placeholder="500000" class="w-full">
                         </div>
                     </div>
                     <div class="grid grid-cols-2 gap-6 mb-8">
                         <div>
-                            <label class="block text-lg font-bold mb-2 text-gray-600">Nama Bumbu</label>
-                            <input type="text" id="modalNama" placeholder="Cabe Kering Brekele" class="w-full p-4 border-2 rounded-xl text-lg outline-none transition">
+                            <label class="block text-lg font-bold mb-2 text-cyan-400">Nama Bumbu</label>
+                            <select id="modalNama" class="w-full">
+                                <option value="">-- Pilih Bumbu --</option>
+                            </select>
                         </div>
                         <div>
-                            <label class="block text-lg font-bold mb-2 text-gray-600">Jumlah Beli (Kg)</label>
-                            <input type="number" id="modalKg" placeholder="10" class="w-full p-4 border-2 rounded-xl text-lg outline-none transition">
+                            <label class="block text-lg font-bold mb-2 text-cyan-400">Jumlah Beli (Kg)</label>
+                            <input type="number" id="modalKg" placeholder="10" class="w-full">
                         </div>
                     </div>
-                    <button onclick="simpanModal()" class="w-full bg-indigo-600 text-white p-4 rounded-xl text-xl font-bold hover:bg-indigo-700 transition transform hover:scale-105 shadow-lg active:scale-95"><i class="fas fa-save mr-2"></i> Simpan Modal</button>
+                    <button onclick="simpanModal()" class="w-full bg-gradient-to-r from-cyan-500 to-blue-600 text-white p-4 rounded-xl text-xl font-bold hover:from-cyan-400 hover:to-blue-500 transition transform hover:scale-105 shadow-lg active:scale-95 cursor-pointer"><i class="fas fa-save mr-2"></i> Simpan Modal</button>
                 </div>
             </div>
 
             <!-- CATAT PENJUALAN -->
             <div id="page-catatJual" class="page-content hidden">
-                <h2 class="text-4xl font-extrabold mb-8 text-gray-800 mt-12 sm:mt-0"><i class="fas fa-cash-register text-emerald-500 mr-3"></i> Catat Penjualan</h2>
-                <div class="bg-white p-6 sm:p-10 rounded-3xl shadow-sm max-w-3xl border border-gray-100">
+                <h2 class="text-4xl font-extrabold mb-8 text-white mt-12 sm:mt-0"><i class="fas fa-cash-register text-emerald-400 mr-3"></i> Catat Penjualan</h2>
+                <div class="bg-[#0f1629] p-6 sm:p-10 rounded-3xl max-w-3xl border border-emerald-500/20 card-glow-emerald">
                     <div class="grid grid-cols-2 gap-6 mb-6">
                         <div>
-                            <label class="block text-lg font-bold mb-2 text-gray-600">Tanggal Jual</label>
-                            <input type="date" id="jualTgl" class="w-full p-4 border-2 rounded-xl text-lg outline-none transition">
+                            <label class="block text-lg font-bold mb-2 text-emerald-400">Tanggal Jual</label>
+                            <input type="date" id="jualTgl" class="w-full">
                         </div>
                         <div>
-                            <label class="block text-lg font-bold mb-2 text-gray-600">Nama Bumbu</label>
-                            <input type="text" id="jualNama" placeholder="Cabe Kering Brekele" class="w-full p-4 border-2 rounded-xl text-lg outline-none transition">
+                            <label class="block text-lg font-bold mb-2 text-emerald-400">Nama Bumbu</label>
+                            <select id="jualNama" class="w-full">
+                                <option value="">-- Pilih Bumbu --</option>
+                            </select>
                         </div>
                     </div>
                     <div class="grid grid-cols-3 gap-6 mb-6">
                         <div>
-                            <label class="block text-lg font-bold mb-2 text-gray-600">Jumlah Jual (Kg)</label>
-                            <input type="number" id="jualKg" placeholder="2" class="w-full p-4 border-2 rounded-xl text-lg outline-none transition">
+                            <label class="block text-lg font-bold mb-2 text-emerald-400">Jumlah Jual (Kg)</label>
+                            <input type="number" id="jualKg" placeholder="2" class="w-full">
                         </div>
                         <div>
-                            <label class="block text-lg font-bold mb-2 text-gray-600">Harga Jual Normal (Rp)</label>
-                            <input type="number" id="jualHarga" placeholder="150000" class="w-full p-4 border-2 rounded-xl text-lg outline-none transition">
+                            <label class="block text-lg font-bold mb-2 text-emerald-400">Harga Jual Normal (Rp)</label>
+                            <input type="number" id="jualHarga" placeholder="150000" class="w-full">
                         </div>
                         <div>
-                            <label class="block text-lg font-bold mb-2 text-gray-600">Potongan / Kurang (Rp)</label>
-                            <input type="number" id="jualPotong" value="0" placeholder="5000" class="w-full p-4 border-2 rounded-xl text-lg outline-none transition border-rose-300">
+                            <label class="block text-lg font-bold mb-2 text-rose-400">Potongan / Kurang (Rp)</label>
+                            <input type="number" id="jualPotong" value="0" placeholder="5000" class="w-full" style="border-color:#f43f5e44 !important;">
                         </div>
                     </div>
-                    <button onclick="simpanJual()" class="w-full bg-emerald-600 text-white p-4 rounded-xl text-xl font-bold hover:bg-emerald-700 transition transform hover:scale-105 shadow-lg active:scale-95"><i class="fas fa-receipt mr-2"></i> Simpan Penjualan</button>
+                    <button onclick="simpanJual()" class="w-full bg-gradient-to-r from-emerald-500 to-teal-600 text-white p-4 rounded-xl text-xl font-bold hover:from-emerald-400 hover:to-teal-500 transition transform hover:scale-105 shadow-lg active:scale-95 cursor-pointer"><i class="fas fa-receipt mr-2"></i> Simpan Penjualan</button>
                 </div>
             </div>
 
             <!-- STOK -->
             <div id="page-stok" class="page-content hidden">
-                <h2 class="text-4xl font-extrabold mb-8 text-gray-800 mt-12 sm:mt-0"><i class="fas fa-boxes-stacked text-amber-500 mr-3"></i> Sisa Stok Bumbu</h2>
-                <div class="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 overflow-x-auto">
-                    <table class="w-full text-left border-collapse">
+                <h2 class="text-4xl font-extrabold mb-8 text-white mt-12 sm:mt-0"><i class="fas fa-boxes-stacked text-amber-400 mr-3"></i> Sisa Stok Bumbu</h2>
+                <div class="bg-[#0f1629] p-8 rounded-3xl border border-amber-500/20 card-glow-amber overflow-x-auto">
+                    <table class="dark-table">
                         <thead>
-                            <tr class="border-b-2 text-xl text-gray-500">
-                                <th class="p-5">Nama Bumbu</th>
-                                <th class="p-5">Sisa Stok (Kg)</th>
+                            <tr>
+                                <th><i class="fas fa-pepper-hot mr-2"></i>Nama Bumbu</th>
+                                <th><i class="fas fa-weight-hanging mr-2"></i>Sisa Stok (Kg)</th>
                             </tr>
                         </thead>
-                        <tbody id="tabelStok" class="text-lg font-bold"></tbody>
+                        <tbody id="tabelStok"></tbody>
                     </table>
                 </div>
             </div>
 
             <!-- LAPORAN -->
             <div id="page-laporan" class="page-content hidden">
-                <h2 class="text-4xl font-extrabold mb-8 text-gray-800 mt-12 sm:mt-0"><i class="fas fa-file-invoice-dollar text-purple-500 mr-3"></i> Laporan Bulanan</h2>
+                <h2 class="text-4xl font-extrabold mb-8 text-white mt-12 sm:mt-0"><i class="fas fa-file-invoice-dollar text-purple-400 mr-3"></i> Laporan Bulanan</h2>
                 <div class="flex gap-4 mb-8 items-center">
-                    <select id="filterBulan" class="p-3 border-2 rounded-xl text-lg font-bold outline-none" onchange="loadLaporan()">
+                    <select id="filterBulan" class="p-3 text-lg font-bold" onchange="loadLaporan()">
                         <option value="01">Januari</option><option value="02">Februari</option><option value="03">Maret</option>
                         <option value="04">April</option><option value="05">Mei</option><option value="06">Juni</option>
                         <option value="07">Juli</option><option value="08">Agustus</option><option value="09">September</option>
                         <option value="10">Oktober</option><option value="11">November</option><option value="12">Desember</option>
                     </select>
-                    <select id="filterTahun" class="p-3 border-2 rounded-xl text-lg font-bold outline-none" onchange="loadLaporan()"></select>
+                    <select id="filterTahun" class="p-3 text-lg font-bold" onchange="loadLaporan()"></select>
                 </div>
-                <div class="grid grid-cols-3 gap-8 mb-10">
-                    <div class="bg-white p-6 rounded-3xl shadow-sm border-l-8 border-blue-500">
-                        <p class="text-lg text-gray-500 font-bold">Total Pemasukan</p>
-                        <h3 id="lPemasukan" class="text-3xl font-extrabold mt-2 text-blue-600">Rp 0</h3>
+                <div class="grid grid-cols-3 gap-6 mb-10">
+                    <div class="bg-[#0f1629] p-6 rounded-3xl border-l-4 border-cyan-500 card-glow-cyan">
+                        <p class="text-lg text-gray-400 font-bold">Total Pemasukan</p>
+                        <h3 id="lPemasukan" class="text-3xl font-extrabold mt-2 text-cyan-400">Rp 0</h3>
                     </div>
-                    <div class="bg-white p-6 rounded-3xl shadow-sm border-l-8 border-red-500">
-                        <p class="text-lg text-gray-500 font-bold">Total Modal</p>
-                        <h3 id="lModal" class="text-3xl font-extrabold mt-2 text-red-600">Rp 0</h3>
+                    <div class="bg-[#0f1629] p-6 rounded-3xl border-l-4 border-rose-500 card-glow-rose">
+                        <p class="text-lg text-gray-400 font-bold">Total Modal</p>
+                        <h3 id="lModal" class="text-3xl font-extrabold mt-2 text-rose-400">Rp 0</h3>
                     </div>
-                    <div class="bg-white p-6 rounded-3xl shadow-sm border-l-8 border-green-500">
-                        <p class="text-lg text-gray-500 font-bold">Total Untung</p>
-                        <h3 id="lUntung" class="text-3xl font-extrabold mt-2 text-green-600">Rp 0</h3>
+                    <div class="bg-[#0f1629] p-6 rounded-3xl border-l-4 border-emerald-500 card-glow-emerald">
+                        <p class="text-lg text-gray-400 font-bold">Total Untung</p>
+                        <h3 id="lUntung" class="text-3xl font-extrabold mt-2 text-emerald-400">Rp 0</h3>
                     </div>
                 </div>
-                <div class="bg-white p-6 rounded-3xl shadow-sm overflow-x-auto">
-                    <h3 class="text-xl font-extrabold mb-4 text-gray-700">Riwayat Penjualan Bulan Ini</h3>
-                    <table class="w-full text-left border-collapse">
+                <div class="bg-[#0f1629] p-6 rounded-3xl border border-purple-500/20 overflow-x-auto">
+                    <h3 class="text-xl font-extrabold mb-4 text-purple-300"><i class="fas fa-list mr-2"></i>Riwayat Penjualan Bulan Ini</h3>
+                    <table class="dark-table">
                         <thead>
-                            <tr class="border-b text-lg text-gray-500">
-                                <th class="p-3">Tanggal</th><th class="p-3">Item</th><th class="p-3">Kg</th><th class="p-3">Total Bayar</th><th class="p-3">Untung</th>
+                            <tr>
+                                <th>Tanggal</th><th>Item</th><th>Kg</th><th>Total Bayar</th><th>Untung</th>
                             </tr>
                         </thead>
-                        <tbody id="tabelLaporan" class="text-base font-semibold"></tbody>
+                        <tbody id="tabelLaporan"></tbody>
                     </table>
                 </div>
             </div>
@@ -261,13 +364,72 @@
     // ================= KONFIGURASI =================
     const API_URL = 'https://script.google.com/macros/s/AKfycbzDmMJFAxEbSc-66g16wdn6lIW3BCNJeqZaYsI8R6LpBieAoTdt49S3yYu3HQQvmluBUg/exec';
     let salesChartInstance = null;
+    let modalChartInstance = null;
 
     // ================= KREDENSIAL LOGIN (EDIT DI SINI) =================
     const VALID_USERS = [
         { username: 'admin', password: 'admin123' },
-        // Tambah user lain di sini kalau perlu:
-        // { username: 'kasir', password: 'kasir123' },
     ];
+
+    // ================= DAFTAR 105 BUMBU (DROPDOWN) =================
+    const DAFTAR_BUMBU = [
+        "Lada Hitam","Lada Putih","Lada Hijau Kering","Ketumbar","Jintan Putih","Jintan Hitam",
+        "Jintan India","Adas","Ajwain","Fenugreek / Kelabat","Kalonji / Nigella",
+        "Biji Mustard Kuning","Biji Mustard Hitam","Biji Seledri","Biji Adas Manis",
+        "Kapulaga Hijau","Kapulaga Hitam","Kapulaga Putih","Kemiri","Pala","Cengkeh",
+        "Biji Poppy","Wijen Putih","Wijen Hitam","Anardana","Mahleb","Biji Dill",
+        "Kayu Manis","Cassia","Kayu Secang","Akar Manis","Jahe Kering","Kunyit Kering",
+        "Lengkuas Kering","Kencur Kering","Temulawak Kering","Serai Kering","Akar Wangi",
+        "Bunga Lawang","Bunga Pala","Saffron","Bunga Telang Kering","Kelopak Mawar Kering",
+        "Lavender Kering","Chamomile Kering","Daun Salam Kering","Daun Jeruk Kering",
+        "Daun Kari Kering","Daun Pandan Kering","Daun Ketumbar Kering","Daun Mint Kering",
+        "Oregano","Basil Kering","Rosemary","Thyme","Sage","Tarragon","Marjoram",
+        "Parsley Kering","Dill Kering","Kasuri Methi","Tej Patta","Daun Stevia Kering",
+        "Cabai Kering Keriting","Cabai Kering Gembong","Kashmiri Chili","Byadgi Chili",
+        "Guntur Chili","Thai Chili Kering","Paprika Kering","Chili Flakes",
+        "Bawang Putih Kering","Bawang Merah Kering","Bawang Bombay Kering",
+        "Daun Bawang Kering","Seledri Kering","Bawang Prei Kering",
+        "Asafoetida / Hing","Amchur","Kokum Kering","Asam Jawa Kering",
+        "Asam Kandis","Asam Gelugur","Black Stone Flower / Kalpasi","Ratan Jot","Gond",
+        "Sumac","Juniper Berry Kering","Lemon Kering","Jeruk Nipis Kering",
+        "Jeruk Purut Kering","Kulit Jeruk Kering","Ebi Kering","Udang Kering",
+        "Rebon Kering","Teri Kering","Jamur Kering","Kelapa Kering","Kacang Tanah",
+        "Kacang Hijau","Kacang Kedelai","Kacang Merah","Biji Labu",
+        "Biji Bunga Matahari","Flaxseed","Chia Seed","Bumbu Babas"
+    ];
+
+    // ====== ISI DROPDOWN BUMBU ======
+    function populateDropdowns() {
+        var selects = [document.getElementById('modalNama'), document.getElementById('jualNama')];
+        selects.forEach(function(sel) {
+            if (!sel) return;
+            while (sel.options.length > 1) sel.remove(1);
+            DAFTAR_BUMBU.forEach(function(nama) {
+                var opt = document.createElement('option');
+                opt.value = nama;
+                opt.textContent = nama;
+                sel.appendChild(opt);
+            });
+        });
+    }
+
+    // ====== PARTIKEL LATAR ======
+    function createParticles() {
+        var c = document.getElementById('particles');
+        if (!c) return;
+        var colors = ['#00f0ff','#a855f7','#f43f5e','#10b981','#f59e0b'];
+        for (var i = 0; i < 40; i++) {
+            var s = document.createElement('span');
+            s.style.left = Math.random() * 100 + '%';
+            s.style.animationDuration = (10 + Math.random() * 15) + 's';
+            s.style.animationDelay = (Math.random() * 10) + 's';
+            s.style.background = colors[Math.floor(Math.random() * colors.length)];
+            var sz = 2 + Math.random() * 3;
+            s.style.width = sz + 'px';
+            s.style.height = sz + 'px';
+            c.appendChild(s);
+        }
+    }
 
     // ================= HELPER =================
     const formatRp = (angka) => 'Rp ' + Number(angka || 0).toLocaleString('id-ID');
@@ -293,13 +455,16 @@
     }
 
     window.onload = function() {
+        createParticles();
+        populateDropdowns();
+
         // Set tanggal default
         var mTgl = document.getElementById('modalTgl');
         if(mTgl) mTgl.value = getToday();
         var jTgl = document.getElementById('jualTgl');
         if(jTgl) jTgl.value = getToday();
 
-        // Set filter tahun
+        // Set filter tahun (laporan)
         var yr = new Date().getFullYear();
         var yrSelect = document.getElementById('filterTahun');
         if(yrSelect) {
@@ -312,7 +477,7 @@
             document.getElementById('filterBulan').value = String(new Date().getMonth() + 1).padStart(2, '0');
         }
 
-        // ✅ PASANG EVENT LISTENER LOGIN (lebih aman dari inline onclick)
+        // PASANG EVENT LISTENER LOGIN (lebih aman dari inline onclick)
         var btnLogin = document.getElementById('btnLogin');
         if(btnLogin) {
             btnLogin.addEventListener('click', function(e) {
@@ -335,11 +500,11 @@
             });
         }
 
-        // ✅ PASTIKAN halaman login tampil & main app tersembunyi
+        // PASTIKAN halaman login tampil & main app tersembunyi
         document.getElementById('loginPage').style.display = 'flex';
         document.getElementById('mainApp').style.display = 'none';
 
-        // ✅ Fokus ke username
+        // Fokus ke username
         setTimeout(function() {
             if(userField) userField.focus();
         }, 200);
@@ -358,10 +523,10 @@
             target.classList.add('page-transition');
         }
         document.querySelectorAll('.sidebar-item').forEach(function(item) {
-            item.classList.remove('active'); item.classList.add('text-gray-600');
+            item.classList.remove('active'); item.classList.add('text-gray-400');
         });
         if(element) {
-            element.classList.add('active'); element.classList.remove('text-gray-600');
+            element.classList.add('active'); element.classList.remove('text-gray-400');
         }
 
         if (window.innerWidth <= 768) toggleSidebar(false);
@@ -446,7 +611,7 @@
     function doLogin() {
         var uField = document.getElementById('username');
         var pField = document.getElementById('password');
-        var u = uField ? uField.value.trim().toLowerCase() : '';  // ✅ case-insensitive
+        var u = uField ? uField.value.trim().toLowerCase() : '';
         var p = pField ? pField.value.trim() : '';
 
         console.log('--- LOGIN DEBUG ---');
@@ -458,7 +623,6 @@
             return;
         }
 
-        // ✅ CEK SEMUA USER YANG VALID
         var loginBerhasil = false;
         for(var i = 0; i < VALID_USERS.length; i++) {
             if(u === VALID_USERS[i].username.toLowerCase() && p === VALID_USERS[i].password) {
@@ -501,7 +665,7 @@
     // ================= SIMPAN MODAL =================
     async function simpanModal() {
         var tgl = document.getElementById('modalTgl').value;
-        var nama = document.getElementById('modalNama').value.trim();
+        var nama = document.getElementById('modalNama').value;
         var kg = parseFloat(document.getElementById('modalKg').value);
         var harga = parseFloat(document.getElementById('modalHarga').value);
 
@@ -522,7 +686,7 @@
     // ================= SIMPAN PENJUALAN =================
     async function simpanJual() {
         var tgl = document.getElementById('jualTgl').value;
-        var nama = document.getElementById('jualNama').value.trim();
+        var nama = document.getElementById('jualNama').value;
         var kg = parseFloat(document.getElementById('jualKg').value);
         var hargaJual = parseFloat(document.getElementById('jualHarga').value);
         var potongan = parseFloat(document.getElementById('jualPotong').value) || 0;
@@ -556,7 +720,7 @@
         }
     }
 
-    // ================= LOAD DASHBOARD =================
+    // ================= LOAD DASHBOARD (GRAFIK SEMUA BULAN + KAS) =================
     async function loadDashboard() {
         try {
             var jualData = await apiGet('Penjualan');
@@ -564,18 +728,14 @@
             if (!jualData || !modalData) return;
 
             var today = getToday();
-            var pemasukanHariIni = 0, pengeluaranHariIni = 0, untungHariIni = 0;
-            var chartBulanan = {};
             var bulanIni = today.substring(0, 7);
+            var pemasukanHariIni = 0, pengeluaranHariIni = 0, untungHariIni = 0;
 
+            // ===== DATA HARI INI =====
             for(var i=1; i < jualData.length; i++) {
                 if (!jualData[i]) continue;
                 var tgl = jualData[i][0], total = jualData[i][5], untung = jualData[i][6];
                 if(tgl == today) { pemasukanHariIni += Number(total); untungHariIni += Number(untung); }
-                if(String(tgl).substring(0,7) == bulanIni) {
-                    var day = String(tgl).substring(8,10);
-                    chartBulanan[day] = (chartBulanan[day] || 0) + Number(total);
-                }
             }
             for(var i=1; i < modalData.length; i++) {
                 if(modalData[i] && modalData[i][0] == today) pengeluaranHariIni += Number(modalData[i][3]);
@@ -585,33 +745,149 @@
             document.getElementById('dPengeluaran').innerText = formatRp(pengeluaranHariIni);
             document.getElementById('dUntung').innerText = formatRp(untungHariIni);
 
-            var labels = Object.keys(chartBulanan).sort();
-            var values = labels.map(function(l) { return chartBulanan[l]; });
+            // ===== KAS BULAN INI =====
+            var kasMasuk = 0, kasKeluar = 0, jmlJual = 0, jmlModal = 0;
+            for(var i=1; i < jualData.length; i++) {
+                if (!jualData[i]) continue;
+                if(String(jualData[i][0]).substring(0,7) == bulanIni) {
+                    kasMasuk += Number(jualData[i][5]);
+                    jmlJual++;
+                }
+            }
+            for(var i=1; i < modalData.length; i++) {
+                if(modalData[i] && String(modalData[i][0]).substring(0,7) == bulanIni) {
+                    kasKeluar += Number(modalData[i][3]);
+                    jmlModal++;
+                }
+            }
+            var kasBulanIni = kasMasuk - kasKeluar;
+            var margin = kasMasuk > 0 ? ((kasBulanIni / kasMasuk) * 100).toFixed(1) : 0;
+
+            document.getElementById('dKasBulan').innerText = formatRp(kasBulanIni);
+            document.getElementById('dJumlahJual').innerText = jmlJual;
+            document.getElementById('dJumlahModal').innerText = jmlModal;
+            document.getElementById('dMargin').innerText = margin + '%';
+
+            // ===== GRAFIK 1: PENJUALAN PER BULAN (SEMUA BULAN TAHUN INI) =====
+            var namaBulan = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Ags','Sep','Okt','Nov','Des'];
+            var tahunChart = new Date().getFullYear();
+            var penjualanPerBulan = [0,0,0,0,0,0,0,0,0,0,0,0];
+            var untungPerBulan = [0,0,0,0,0,0,0,0,0,0,0,0];
+
+            for(var i=1; i < jualData.length; i++) {
+                if (!jualData[i]) continue;
+                var tglStr = String(jualData[i][0]);
+                var thn = parseInt(tglStr.substring(0,4));
+                var bln = parseInt(tglStr.substring(5,7)) - 1;
+                if(thn == tahunChart && bln >= 0 && bln < 12) {
+                    penjualanPerBulan[bln] += Number(jualData[i][5]);
+                    untungPerBulan[bln] += Number(jualData[i][6]);
+                }
+            }
 
             if(salesChartInstance) salesChartInstance.destroy();
-            var ctx = document.getElementById('salesChart').getContext('2d');
-            salesChartInstance = new Chart(ctx, {
-                type: 'line',
+            var ctx1 = document.getElementById('salesChart').getContext('2d');
+            salesChartInstance = new Chart(ctx1, {
+                type: 'bar',
                 data: {
-                    labels: labels.map(function(l){return 'Tgl '+l;}),
+                    labels: namaBulan,
+                    datasets: [
+                        {
+                            label: 'Penjualan (Rp)',
+                            data: penjualanPerBulan,
+                            backgroundColor: 'rgba(0,240,255,0.6)',
+                            borderColor: '#00f0ff',
+                            borderWidth: 2,
+                            borderRadius: 8
+                        },
+                        {
+                            label: 'Untung (Rp)',
+                            data: untungPerBulan,
+                            backgroundColor: 'rgba(16,185,129,0.6)',
+                            borderColor: '#10b981',
+                            borderWidth: 2,
+                            borderRadius: 8
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { labels: { color: '#94a3b8', font: { size: 13 } } },
+                        tooltip: {
+                            callbacks: {
+                                label: function(ctx) { return ctx.dataset.label + ': ' + formatRp(ctx.raw); }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            ticks: { color: '#64748b' },
+                            grid: { color: '#1e293b' }
+                        },
+                        y: {
+                            beginAtZero: true,
+                            ticks: { color: '#64748b', callback: function(v){return formatRp(v);} },
+                            grid: { color: '#1e293b' }
+                        }
+                    }
+                }
+            });
+
+            // ===== GRAFIK 2: MODAL PER BULAN (SEMUA BULAN TAHUN INI) =====
+            var modalPerBulan = [0,0,0,0,0,0,0,0,0,0,0,0];
+
+            for(var i=1; i < modalData.length; i++) {
+                if(!modalData[i]) continue;
+                var tglStr = String(modalData[i][0]);
+                var thn = parseInt(tglStr.substring(0,4));
+                var bln = parseInt(tglStr.substring(5,7)) - 1;
+                if(thn == tahunChart && bln >= 0 && bln < 12) {
+                    modalPerBulan[bln] += Number(modalData[i][3]);
+                }
+            }
+
+            if(modalChartInstance) modalChartInstance.destroy();
+            var ctx2 = document.getElementById('modalChart').getContext('2d');
+            modalChartInstance = new Chart(ctx2, {
+                type: 'bar',
+                data: {
+                    labels: namaBulan,
                     datasets: [{
-                        label: 'Penjualan (Rp)',
-                        data: values,
-                        borderColor: '#4f46e5',
-                        backgroundColor: 'rgba(79,70,229,0.1)',
-                        fill: true,
-                        tension: 0.4,
-                        borderWidth: 3
+                        label: 'Modal (Rp)',
+                        data: modalPerBulan,
+                        backgroundColor: 'rgba(244,63,94,0.6)',
+                        borderColor: '#f43f5e',
+                        borderWidth: 2,
+                        borderRadius: 8
                     }]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
+                    plugins: {
+                        legend: { labels: { color: '#94a3b8', font: { size: 13 } } },
+                        tooltip: {
+                            callbacks: {
+                                label: function(ctx) { return ctx.dataset.label + ': ' + formatRp(ctx.raw); }
+                            }
+                        }
+                    },
                     scales: {
-                        y: { beginAtZero: true, ticks: { callback: function(v){return formatRp(v);} } }
+                        x: {
+                            ticks: { color: '#64748b' },
+                            grid: { color: '#1e293b' }
+                        },
+                        y: {
+                            beginAtZero: true,
+                            ticks: { color: '#64748b', callback: function(v){return formatRp(v);} },
+                            grid: { color: '#1e293b' }
+                        }
                     }
                 }
             });
+
         } catch(err) {
             console.error('Dashboard error:', err);
         }
@@ -626,7 +902,10 @@
             tbody.innerHTML = '';
             for(var i=1; i < stokData.length; i++) {
                 if (!stokData[i]) continue;
-                tbody.innerHTML += '<tr class="border-b hover:bg-gray-50 transition"><td class="p-5">'+stokData[i][0]+'</td><td class="p-5">'+stokData[i][1]+' Kg</td></tr>';
+                var kgVal = parseFloat(stokData[i][1]);
+                var warnaStok = kgVal <= 2 ? 'style="color:#f43f5e;"' : '';
+                var warning = kgVal <= 2 ? ' ⚠️' : '';
+                tbody.innerHTML += '<tr><td>'+stokData[i][0]+'</td><td '+warnaStok+'>'+stokData[i][1]+' Kg'+warning+'</td></tr>';
             }
         } catch(err) { console.error('Stok error:', err); }
     }
@@ -650,7 +929,7 @@
                 if(String(jualData[i][0]).substring(0,7) == prefix) {
                     totalPemasukan += Number(jualData[i][5]);
                     totalUntung += Number(jualData[i][6]);
-                    tbody.innerHTML += '<tr class="border-b hover:bg-gray-50 transition"><td class="p-3">'+jualData[i][0]+'</td><td class="p-3">'+jualData[i][1]+'</td><td class="p-3">'+jualData[i][2]+'</td><td class="p-3">'+formatRp(jualData[i][5])+'</td><td class="p-3 text-green-600 font-bold">'+formatRp(jualData[i][6])+'</td></tr>';
+                    tbody.innerHTML += '<tr><td>'+jualData[i][0]+'</td><td>'+jualData[i][1]+'</td><td>'+jualData[i][2]+'</td><td>'+formatRp(jualData[i][5])+'</td><td style="color:#10b981;font-weight:700;">'+formatRp(jualData[i][6])+'</td></tr>';
                 }
             }
             for(var i=1; i < modalData.length; i++) {
@@ -662,4 +941,6 @@
             document.getElementById('lUntung').innerText = formatRp(totalUntung);
         } catch(err) { console.error('Laporan error:', err); }
     }
-</script>
+    </script>
+</body>
+</html>
