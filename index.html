@@ -6,7 +6,7 @@
     <title>Dashboard Bumbu Ganes</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         body {
@@ -15,6 +15,7 @@
             -webkit-tap-highlight-color: transparent;
             margin: 0;
             overflow-x: hidden;
+            font-size: 16px;
         }
 
         /* ===== BACKGROUND LUAR (GANTI URL INI NANTI) ===== */
@@ -166,18 +167,18 @@
             border: 2px solid #334155 !important;
             color: #f1f5f9 !important;
             border-radius: 12px;
-            padding: 12px 16px;
-            font-size: 16px;
+            padding: 14px 16px;
+            font-size: 18px;
             outline: none;
             transition: all 0.3s;
             width: 100%;
             box-sizing: border-box;
+            font-weight: 600;
         }
         input[type="date"] {
             background: #2a3142 !important;
             color: #ffffff !important;
             border: 2px solid #475569 !important;
-            font-weight: 600;
         }
         input[type="date"]::-webkit-calendar-picker-indicator {
             filter: invert(1) brightness(1.5);
@@ -201,9 +202,10 @@
             cursor: not-allowed;
         }
         .table-input {
-            padding: 8px !important;
-            font-size: 14px !important;
-            width: 120px !important;
+            padding: 12px !important;
+            font-size: 18px !important;
+            width: 160px !important;
+            border-radius: 10px !important;
         }
 
         /* ===== SCROLLBAR ===== */
@@ -212,13 +214,13 @@
         ::-webkit-scrollbar-thumb { background: #334155; border-radius: 10px; }
         ::-webkit-scrollbar-thumb:hover { background: #00f0ff; }
 
-        /* ===== DARK TABLE - RAPI & SEJAJAR ===== */
+        /* ===== DARK TABLE - FONT BESAR & JELAS ===== */
         .dark-table { width: 100%; border-collapse: collapse; table-layout: auto; }
         .dark-table thead tr { background: #1e1b4b; }
-        .dark-table th { padding: 14px 18px; text-align: left; color: #00f0ff; font-weight: 700; border-bottom: 2px solid #00f0ff44; font-size: 15px; white-space: nowrap; }
+        .dark-table th { padding: 16px 20px; text-align: left; color: #00f0ff; font-weight: 700; border-bottom: 2px solid #00f0ff44; font-size: 17px; white-space: nowrap; }
         .dark-table tbody tr { border-bottom: 1px solid #1e293b; transition: all 0.2s; }
         .dark-table tbody tr:hover { background: #1e1b4b66; }
-        .dark-table td { padding: 12px 18px; color: #e2e8f0; font-size: 14px; vertical-align: middle; white-space: nowrap; }
+        .dark-table td { padding: 14px 20px; color: #e2e8f0; font-size: 17px; vertical-align: middle; white-space: nowrap; font-weight: 500; }
 
         /* ===== MOBILE SIDEBAR BAWAH ===== */
         #sidebar { transition: transform 0.3s ease; }
@@ -244,7 +246,7 @@
             justify-content: center;
             padding: 8px 4px;
             color: #64748b;
-            font-size: 10px;
+            font-size: 11px;
             font-weight: 600;
             background: transparent;
             border: none;
@@ -253,7 +255,7 @@
             border-radius: 10px;
             margin: 0 2px;
         }
-        .bottom-nav button i { font-size: 18px; margin-bottom: 4px; }
+        .bottom-nav button i { font-size: 20px; margin-bottom: 4px; }
         .bottom-nav button.active {
             color: #00f0ff;
             background: #1e1b4b;
@@ -296,7 +298,7 @@
             #page-stok table,
             #page-laporan table,
             #page-rekap table,
-            #page-daftarHarga table { font-size: 12px; }
+            #page-daftarHarga table { font-size: 14px; }
             #page-stok th,
             #page-stok td,
             #page-laporan th,
@@ -304,9 +306,9 @@
             #page-rekap th,
             #page-rekap td,
             #page-daftarHarga th,
-            #page-daftarHarga td { padding: 8px !important; }
-            .table-input { width: 80px !important; }
-            h2 { font-size: 1.5rem !important; }
+            #page-daftarHarga td { padding: 10px !important; }
+            .table-input { width: 100px !important; font-size: 14px !important; padding: 8px !important; }
+            h2 { font-size: 1.8rem !important; }
             #salesChart { height: 200px !important; }
             #modalChart { height: 200px !important; }
             .bumbu-ganes-text { font-size: 1.5rem !important; }
@@ -484,16 +486,18 @@
             <!-- DAFTAR HARGA JUAL (BARU) -->
             <div id="page-daftarHarga" class="page-content hidden">
                 <h2 class="text-4xl font-extrabold mb-2 text-white mt-12 sm:mt-0"><i class="fas fa-tags text-amber-400 mr-3"></i> Daftar Harga & Perhitungan</h2>
-                <p class="text-gray-400 mb-8 text-lg">Modal/Kg otomatis dari pembelian terakhir. Isi harga jual dan klik simpan. Saat ada transaksi, lihat daftar ini untuk acuan harga & potongan.</p>
+                <p class="text-gray-400 mb-8 text-lg">Modal/Kg otomatis dari pembelian terakhir. Isi harga jual dan klik simpan. Saat ada transaksi, lihat daftar ini untuk acuan harga & diskon.</p>
                 <div class="bg-[#0f1629] p-6 sm:p-8 rounded-3xl max-w-6xl border border-amber-500/20 card-glow-amber overflow-x-auto">
                     <table class="dark-table">
                         <thead>
                             <tr>
                                 <th>Nama Bumbu</th>
                                 <th>Modal/Kg (Auto)</th>
-                                <th>Harga Jual/Kg</th>
-                                <th>Harga Jual/Ons</th>
-                                <th>Harga Jual/½ Kg</th>
+                                <th>Harga / Ons</th>
+                                <th>Harga / ½ Kg</th>
+                                <th>Harga / 1 Kg</th>
+                                <th>Harga / 2 Kg</th>
+                                <th>Harga / 5 Kg</th>
                                 <th>Aksi</th>
                             </tr>
                         </thead>
@@ -1051,9 +1055,11 @@
                     if (hargaData[i] && hargaData[i][0]) {
                         var n = String(hargaData[i][0]).trim();
                         hargaMap[n] = {
-                            kg: hargaData[i][1] || '',
-                            ons: hargaData[i][2] || '',
-                            half: hargaData[i][3] || ''
+                            ons: hargaData[i][1] || '',
+                            half: hargaData[i][2] || '',
+                            kg1: hargaData[i][3] || '',
+                            kg2: hargaData[i][4] || '',
+                            kg5: hargaData[i][5] || ''
                         };
                     }
                 }
@@ -1065,17 +1071,21 @@
             for (var b = 0; b < DAFTAR_BUMBU.length; b++) {
                 var namaB = DAFTAR_BUMBU[b];
                 var mPerKg = modalMap[namaB] || 0;
-                var savedKg = (hargaMap[namaB] && hargaMap[namaB].kg) ? hargaMap[namaB].kg : '';
                 var savedOns = (hargaMap[namaB] && hargaMap[namaB].ons) ? hargaMap[namaB].ons : '';
                 var savedHalf = (hargaMap[namaB] && hargaMap[namaB].half) ? hargaMap[namaB].half : '';
+                var savedKg1 = (hargaMap[namaB] && hargaMap[namaB].kg1) ? hargaMap[namaB].kg1 : '';
+                var savedKg2 = (hargaMap[namaB] && hargaMap[namaB].kg2) ? hargaMap[namaB].kg2 : '';
+                var savedKg5 = (hargaMap[namaB] && hargaMap[namaB].kg5) ? hargaMap[namaB].kg5 : '';
 
                 html += '<tr>' +
-                    '<td>' + namaB + '</td>' +
-                    '<td>' + formatRp(mPerKg) + '</td>' +
-                    '<td><input type="text" inputmode="numeric" id="harga_kg_' + b + '" value="' + savedKg + '" placeholder="0" oninput="formatNominal(this)" class="table-input"></td>' +
-                    '<td><input type="text" inputmode="numeric" id="harga_ons_' + b + '" value="' + savedOns + '" placeholder="0" oninput="formatNominal(this)" class="table-input"></td>' +
-                    '<td><input type="text" inputmode="numeric" id="harga_half_' + b + '" value="' + savedHalf + '" placeholder="0" oninput="formatNominal(this)" class="table-input"></td>' +
-                    '<td><button onclick="simpanSatuHarga(' + b + ', \'' + namaB.replace(/'/g, "\\'") + '\')" class="bg-blue-600 hover:bg-blue-500 text-white p-2 rounded text-sm cursor-pointer"><i class="fas fa-save"></i></button></td>' +
+                    '<td><b>' + namaB + '</b></td>' +
+                    '<td style="color:#f43f5e; font-weight:bold;">' + formatRp(mPerKg) + '</td>' +
+                    '<td><input type="text" inputmode="numeric" id="harga_ons_' + b + '" value="' + savedOns + '" placeholder="Rp 0" oninput="formatNominal(this)" class="table-input"></td>' +
+                    '<td><input type="text" inputmode="numeric" id="harga_half_' + b + '" value="' + savedHalf + '" placeholder="Rp 0" oninput="formatNominal(this)" class="table-input"></td>' +
+                    '<td><input type="text" inputmode="numeric" id="harga_1kg_' + b + '" value="' + savedKg1 + '" placeholder="Rp 0" oninput="formatNominal(this)" class="table-input"></td>' +
+                    '<td><input type="text" inputmode="numeric" id="harga_2kg_' + b + '" value="' + savedKg2 + '" placeholder="Rp 0" oninput="formatNominal(this)" class="table-input"></td>' +
+                    '<td><input type="text" inputmode="numeric" id="harga_5kg_' + b + '" value="' + savedKg5 + '" placeholder="Rp 0" oninput="formatNominal(this)" class="table-input"></td>' +
+                    '<td><button onclick="simpanSatuHarga(' + b + ', \'' + namaB.replace(/'/g, "\\'") + '\')" class="bg-blue-600 hover:bg-blue-500 text-white p-3 rounded-lg text-base cursor-pointer"><i class="fas fa-save"></i></button></td>' +
                     '</tr>';
             }
             tbody.innerHTML = html;
@@ -1085,12 +1095,14 @@
     }
 
     async function simpanSatuHarga(index, nama) {
-        var kg = parseNominal(document.getElementById('harga_kg_' + index));
         var ons = parseNominal(document.getElementById('harga_ons_' + index));
         var half = parseNominal(document.getElementById('harga_half_' + index));
+        var kg1 = parseNominal(document.getElementById('harga_1kg_' + index));
+        var kg2 = parseNominal(document.getElementById('harga_2kg_' + index));
+        var kg5 = parseNominal(document.getElementById('harga_5kg_' + index));
 
         try {
-            await apiPost('Harga', [nama, kg, ons, half]);
+            await apiPost('Harga', [nama, ons, half, kg1, kg2, kg5]);
             alert('Harga jual untuk ' + nama + ' disimpan!');
             // Reset cache harga
             dataCache['Harga'] = null;
