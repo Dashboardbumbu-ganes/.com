@@ -488,14 +488,18 @@
                         <div>
                             <label class="block text-lg font-bold mb-2 text-emerald-400">Jumlah Jual</label>
                             <select id="jualKgPilihan" class="w-full mb-2" onchange="setJumlah(this, 'jualKg'); hitungJual();"></select>
-                            <input type="number" id="jualKg" step="any" placeholder="0.25 / 0.5 / 1" class="w-full" style="display:none;" oninput="hitungJual()">
+                            <input type="number" id="jualKg" step="any" placeholder="0.25 / 0.5 / 1 / 10" class="w-full" style="display:none;" oninput="hitungJual()">
                         </div>
-                        <div><label class="block text-lg font-bold mb-2 text-emerald-400">Harga Jual Normal (Rp)</label><input type="text" inputmode="numeric" id="jualHarga" placeholder="150.000" oninput="formatNominal(this); hitungJual()" class="w-full"></div>
-                        <div><label class="block text-lg font-bold mb-2 text-rose-400">Potongan / Kurang (Rp)</label><input type="text" inputmode="numeric" id="jualPotong" value="0" placeholder="5.000" oninput="formatNominal(this); hitungJual()" class="w-full" style="border-color:#f43f5e44 !important;"></div>
+                        <div>
+                            <label class="block text-lg font-bold mb-2 text-emerald-400">Harga Jual per Kg (Rp)</label>
+                            <input type="text" inputmode="numeric" id="jualHarga" placeholder="Contoh: 50.000" oninput="formatNominal(this); hitungJual()" class="w-full">
+                            <p class="text-xs text-gray-500 mt-1">*Jika beli 10Kg, auto: 10 x 50.000</p>
+                        </div>
+                        <div><label class="block text-lg font-bold mb-2 text-rose-400">Potongan / Diskon (Rp)</label><input type="text" inputmode="numeric" id="jualPotong" value="0" placeholder="Contoh: 5.000" oninput="formatNominal(this); hitungJual()" class="w-full" style="border-color:#f43f5e44 !important;"></div>
                     </div>
                     <div class="grid grid-cols-2 gap-6 mb-8">
                         <div><label class="block text-lg font-bold mb-2 text-emerald-400">Total Dibayar (Rp)</label><input type="text" id="jualTotal" readonly class="w-full"></div>
-                        <div style="display: flex; align-items: flex-end;"><div class="text-gray-400 text-sm p-2">*Jika beli banyak, masukkan potongan harga untuk pelanggan.</div></div>
+                        <div style="display: flex; align-items: flex-end;"><div class="text-gray-400 text-sm p-2">*Total = (Harga/Kg x Jumlah) - Potongan.</div></div>
                     </div>
                     <button onclick="simpanJual()" class="w-full bg-gradient-to-r from-emerald-500 to-teal-600 text-white p-4 rounded-xl text-xl font-bold hover:from-emerald-400 hover:to-teal-500 transition transform hover:scale-105 shadow-lg active:scale-95 cursor-pointer"><i class="fas fa-receipt mr-2"></i> Simpan Penjualan</button>
                 </div>
@@ -506,7 +510,7 @@
                 <h2 class="text-4xl font-extrabold mb-2 text-white mt-12 sm:mt-0"><i class="fas fa-tags text-amber-400 mr-3"></i> Daftar Harga & Perhitungan</h2>
                 <p class="text-gray-400 mb-8 text-lg">Modal/Kg otomatis dari pembelian terakhir. Isi harga jual dan klik simpan. Saat ada transaksi, lihat daftar ini untuk acuan harga & diskon.</p>
                 <div class="bg-[#0f1629] p-6 sm:p-8 rounded-3xl container-full border border-amber-500/20 card-glow-amber overflow-x-auto">
-                    <table class="dark-table" style="width:100%; min-width: 800px;">
+                    <table class="dark-table" style="width:100%; min-width: 900px;">
                         <thead>
                             <tr>
                                 <th>Nama Bumbu</th>
@@ -516,6 +520,7 @@
                                 <th>Harga / 1 Kg</th>
                                 <th>Harga / 2 Kg</th>
                                 <th>Harga / 5 Kg</th>
+                                <th>Harga >5Kg (/Kg)</th>
                                 <th>Aksi</th>
                             </tr>
                         </thead>
@@ -1136,7 +1141,8 @@
                             half: hargaData[i][2] || '',
                             kg1: hargaData[i][3] || '',
                             kg2: hargaData[i][4] || '',
-                            kg5: hargaData[i][5] || ''
+                            kg5: hargaData[i][5] || '',
+                            above5: hargaData[i][6] || ''
                         };
                     }
                 }
@@ -1153,6 +1159,7 @@
                 var savedKg1 = (hargaMap[namaB] && hargaMap[namaB].kg1) ? hargaMap[namaB].kg1 : '';
                 var savedKg2 = (hargaMap[namaB] && hargaMap[namaB].kg2) ? hargaMap[namaB].kg2 : '';
                 var savedKg5 = (hargaMap[namaB] && hargaMap[namaB].kg5) ? hargaMap[namaB].kg5 : '';
+                var savedAbove5 = (hargaMap[namaB] && hargaMap[namaB].above5) ? hargaMap[namaB].above5 : '';
 
                 html += '<tr>' +
                     '<td><b>' + namaB + '</b></td>' +
@@ -1162,6 +1169,7 @@
                     '<td><input type="text" inputmode="numeric" id="harga_1kg_' + b + '" value="' + savedKg1 + '" placeholder="Rp 0" oninput="formatNominal(this)" class="table-input"></td>' +
                     '<td><input type="text" inputmode="numeric" id="harga_2kg_' + b + '" value="' + savedKg2 + '" placeholder="Rp 0" oninput="formatNominal(this)" class="table-input"></td>' +
                     '<td><input type="text" inputmode="numeric" id="harga_5kg_' + b + '" value="' + savedKg5 + '" placeholder="Rp 0" oninput="formatNominal(this)" class="table-input"></td>' +
+                    '<td><input type="text" inputmode="numeric" id="harga_above5_' + b + '" value="' + savedAbove5 + '" placeholder="Rp 0" oninput="formatNominal(this)" class="table-input"></td>' +
                     '<td><div class="flex gap-2">' +
                         '<button onclick="simpanSatuHarga(' + b + ', \'' + namaB.replace(/'/g, "\\'") + '\')" class="bg-blue-600 hover:bg-blue-500 text-white p-3 rounded-lg text-base cursor-pointer"><i class="fas fa-save"></i></button>' +
                         '<button onclick="hapusHarga(\'' + namaB.replace(/'/g, "\\'") + '\')" class="bg-red-600 hover:bg-red-500 text-white p-3 rounded-lg text-base cursor-pointer"><i class="fas fa-trash"></i></button>' +
@@ -1180,9 +1188,10 @@
         var kg1 = parseNominal(document.getElementById('harga_1kg_' + index));
         var kg2 = parseNominal(document.getElementById('harga_2kg_' + index));
         var kg5 = parseNominal(document.getElementById('harga_5kg_' + index));
+        var above5 = parseNominal(document.getElementById('harga_above5_' + index));
 
         try {
-            await apiPost('Harga', [nama, ons, half, kg1, kg2, kg5]);
+            await apiPost('Harga', [nama, ons, half, kg1, kg2, kg5, above5]);
             alert('Harga jual untuk ' + nama + ' disimpan!');
         } catch (err) {
             alert('Gagal menyimpan: ' + err.message);
