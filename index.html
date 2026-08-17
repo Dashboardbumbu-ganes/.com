@@ -121,6 +121,7 @@
 
         @keyframes blinkText { 0%, 100% { opacity: 1; } 50% { opacity: 0.12; } }
         .blink-login { animation: blinkText 1.2s ease-in-out infinite; }
+        .blink-dot { animation: blinkText 1.5s ease-in-out infinite; }
 
         @keyframes glowCyan { 0%, 100% { box-shadow: 0 0 12px #00f0ff55, 0 0 35px #00f0ff22; } 50% { box-shadow: 0 0 22px #00f0ff99, 0 0 55px #00f0ff44; } }
         @keyframes glowPurple { 0%, 100% { box-shadow: 0 0 12px #a855f755, 0 0 35px #a855f722; } 50% { box-shadow: 0 0 22px #a855f799, 0 0 55px #a855f744; } }
@@ -215,11 +216,12 @@
             cursor: not-allowed;
         }
         .table-input {
-            padding: 12px !important;
-            font-size: 18px !important;
+            padding: 10px !important;
+            font-size: 16px !important;
             width: 100% !important;
-            border-radius: 10px !important;
+            border-radius: 8px !important;
             box-sizing: border-box !important;
+            text-align: center;
         }
 
         /* ===== SCROLLBAR ===== */
@@ -228,13 +230,14 @@
         ::-webkit-scrollbar-thumb { background: #334155; border-radius: 10px; }
         ::-webkit-scrollbar-thumb:hover { background: #00f0ff; }
 
-        /* ===== DARK TABLE - TANPA TITIK 3 (WORD WRAP) ===== */
+        /* ===== DARK TABLE ===== */
         .dark-table { width: 100%; border-collapse: collapse; table-layout: auto; }
         .dark-table thead tr { background: #1e1b4b; }
-        .dark-table th { padding: 16px 20px; text-align: left; color: #00f0ff; font-weight: 700; border-bottom: 2px solid #00f0ff44; font-size: 17px; white-space: normal; word-wrap: break-word; }
+        .dark-table th { padding: 16px 20px; text-align: center; color: #00f0ff; font-weight: 700; border-bottom: 2px solid #00f0ff44; font-size: 16px; white-space: normal; word-wrap: break-word; }
         .dark-table tbody tr { border-bottom: 1px solid #1e293b; transition: all 0.2s; }
         .dark-table tbody tr:hover { background: #1e1b4b66; }
-        .dark-table td { padding: 14px 20px; color: #e2e8f0; font-size: 17px; vertical-align: middle; white-space: normal; word-wrap: break-word; word-break: break-word; font-weight: 500; }
+        .dark-table td { padding: 12px 16px; color: #e2e8f0; font-size: 16px; vertical-align: middle; white-space: normal; word-wrap: break-word; word-break: break-word; font-weight: 500; text-align: center; }
+        .dark-table td.left-align { text-align: left; }
 
         /* ===== CONTAINER FULL WIDTH ===== */
         .container-full { width: 100% !important; max-width: 100% !important; }
@@ -242,91 +245,40 @@
         /* ===== MOBILE SIDEBAR BAWAH ===== */
         #sidebar { transition: transform 0.3s ease; }
         .bottom-nav {
-            display: none;
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: #0f1629;
-            border-top: 2px solid #00f0ff33;
-            z-index: 60;
-            box-shadow: 0 -4px 25px #00000088;
-            padding: 8px 4px;
-            justify-content: space-around;
-            align-items: center;
+            display: none; position: fixed; bottom: 0; left: 0; right: 0; background: #0f1629;
+            border-top: 2px solid #00f0ff33; z-index: 60; box-shadow: 0 -4px 25px #00000088;
+            padding: 8px 4px; justify-content: space-around; align-items: center;
         }
         .bottom-nav button {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 8px 4px;
-            color: #64748b;
-            font-size: 11px;
-            font-weight: 600;
-            background: transparent;
-            border: none;
-            cursor: pointer;
-            transition: all 0.2s;
-            border-radius: 10px;
-            margin: 0 2px;
+            flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
+            padding: 8px 4px; color: #64748b; font-size: 11px; font-weight: 600; background: transparent;
+            border: none; cursor: pointer; transition: all 0.2s; border-radius: 10px; margin: 0 2px;
         }
         .bottom-nav button i { font-size: 20px; margin-bottom: 4px; }
-        .bottom-nav button.active {
-            color: #00f0ff;
-            background: #1e1b4b;
-            box-shadow: 0 0 10px #00f0ff33;
-        }
+        .bottom-nav button.active { color: #00f0ff; background: #1e1b4b; box-shadow: 0 0 10px #00f0ff33; }
+        
         @media (max-width: 768px) {
-            #sidebar {
-                position: fixed;
-                top: 0;
-                left: 0;
-                bottom: 0;
-                z-index: 60;
-                transform: translateX(-100%);
-            }
+            #sidebar { position: fixed; top: 0; left: 0; bottom: 0; z-index: 60; transform: translateX(-100%); }
             #sidebar.open { transform: translateX(0); }
-            #sidebarOverlay {
-                position: fixed;
-                inset: 0;
-                background: rgba(0,0,0,0.6);
-                z-index: 55;
-                display: none;
-            }
+            #sidebarOverlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 55; display: none; }
             #sidebarOverlay.open { display: block; }
             #hamburgerBtn { display: block !important; }
             #appBackground { padding: 1rem !important; padding-bottom: 100px !important; }
             .bottom-nav { display: flex; }
             #page-dashboard .grid-cols-3 { grid-template-columns: 1fr !important; gap: 1rem !important; }
             #page-dashboard .grid-cols-4 { grid-template-columns: 1fr 1fr !important; gap: 1rem !important; }
-            #page-catatModal .grid-cols-2,
-            #page-catatJual .grid-cols-2,
-            #page-catatJual .grid-cols-3,
-            #page-laporan .grid-cols-3 {
-                grid-template-columns: 1fr !important;
-            }
+            #page-catatModal .grid-cols-2, #page-catatJual .grid-cols-2, #page-catatJual .grid-cols-3, #page-laporan .grid-cols-3 { grid-template-columns: 1fr !important; }
             #page-laporan .flex.gap-4 { flex-direction: column; align-items: stretch; }
-            #page-stok table,
-            #page-laporan table,
-            #page-rekap table,
-            #page-daftarHarga table { font-size: 14px; }
-            #page-stok th,
-            #page-stok td,
-            #page-laporan th,
-            #page-laporan td,
-            #page-rekap th,
-            #page-rekap td,
-            #page-daftarHarga th,
-            #page-daftarHarga td { padding: 10px !important; }
-            .table-input { font-size: 14px !important; padding: 8px !important; }
+            #page-stok table, #page-laporan table, #page-rekap table, #page-daftarHarga table { font-size: 14px; }
+            #page-stok th, #page-stok td, #page-laporan th, #page-laporan td, #page-rekap th, #page-rekap td, #page-daftarHarga th, #page-daftarHarga td { padding: 8px !important; }
+            .table-input { font-size: 14px !important; padding: 6px !important; }
             h2 { font-size: 1.8rem !important; }
             #salesChart { height: 200px !important; }
             #modalChart { height: 200px !important; }
             .bumbu-ganes-text { font-size: 1.5rem !important; }
             .bumbu-ganes-text-login { font-size: 1.8rem !important; }
             #page-daftarHarga .overflow-x-auto { overflow-x: auto; }
+            .dark-table th, .dark-table td { font-size: 13px !important; }
         }
         #hamburgerBtn { display: none; }
     </style>
@@ -370,7 +322,8 @@
                     <li onclick="showPage('dashboard',this)" class="sidebar-item active cursor-pointer p-4 rounded-xl text-lg font-semibold flex items-center transition"><i class="fas fa-chart-pie w-8 text-xl"></i> Dashboard</li>
                     <li onclick="showPage('rekap',this)" class="sidebar-item cursor-pointer p-4 rounded-xl text-lg font-semibold flex items-center transition text-gray-400"><i class="fas fa-clipboard-list w-8 text-xl"></i> Rekap Hari Ini</li>
                     <li onclick="showPage('catatModal',this)" class="sidebar-item cursor-pointer p-4 rounded-xl text-lg font-semibold flex items-center transition text-gray-400"><i class="fas fa-truck-loading w-8 text-xl"></i> Catat Modal</li>
-                    <li onclick="showPage('catatJual',this)" class="sidebar-item cursor-pointer p-4 rounded-xl text-lg font-semibold flex items-center transition text-gray-400"><i class="fas fa-cash-register w-8 text-xl"></i> Catat Penjualan</li>
+                    <li onclick="showPage('catatJual',this)" class="sidebar-item cursor-pointer p-4 rounded-xl text-lg font-semibold flex items-center transition text-gray-400"><i class="fas fa-cash-register w-8 text-xl"></i> Catat Penjualan (Kg)</li>
+                    <li onclick="showPage('catatJualPcs',this)" class="sidebar-item cursor-pointer p-4 rounded-xl text-lg font-semibold flex items-center transition text-gray-400"><i class="fas fa-prescription-bottle w-8 text-xl"></i> Catat Penjualan (Pcs/Btl)</li>
                     <li onclick="showPage('daftarHarga',this)" class="sidebar-item cursor-pointer p-4 rounded-xl text-lg font-semibold flex items-center transition text-gray-400"><i class="fas fa-tags w-8 text-xl"></i> Daftar Harga Jual</li>
                     <li onclick="showPage('stok',this)" class="sidebar-item cursor-pointer p-4 rounded-xl text-lg font-semibold flex items-center transition text-gray-400"><i class="fas fa-boxes-stacked w-8 text-xl"></i> Stok Bumbu</li>
                     <li onclick="showPage('tambahBarang',this)" class="sidebar-item cursor-pointer p-4 rounded-xl text-lg font-semibold flex items-center transition text-gray-400"><i class="fas fa-plus-circle w-8 text-xl"></i> Tambah Barang</li>
@@ -385,7 +338,8 @@
         <!-- BOTTOM NAV MOBILE -->
         <div class="bottom-nav" id="bottomNav">
             <button onclick="showPage('dashboard',this)" class="active"><i class="fas fa-chart-pie"></i>Home</button>
-            <button onclick="showPage('catatJual',this)"><i class="fas fa-cash-register"></i>Jual</button>
+            <button onclick="showPage('catatJual',this)"><i class="fas fa-cash-register"></i>Kg</button>
+            <button onclick="showPage('catatJualPcs',this)"><i class="fas fa-prescription-bottle"></i>Pcs</button>
             <button onclick="showPage('daftarHarga',this)"><i class="fas fa-tags"></i>Harga</button>
             <button onclick="showPage('stok',this)"><i class="fas fa-boxes-stacked"></i>Stok</button>
             <button onclick="showPage('laporan',this)"><i class="fas fa-file-invoice-dollar"></i>Kas</button>
@@ -398,17 +352,13 @@
 
             <!-- DASHBOARD -->
             <div id="page-dashboard" class="page-content page-transition">
-                <!-- MARQUEE BERJALAN DI DALAM DASHBOARD -->
                 <div class="marquee-banner bg-gradient-to-r from-purple-900/40 via-cyan-900/40 to-purple-900/40 border border-cyan-500/20 rounded-2xl p-3 mb-6 card-glow-purple">
                     <span class="marquee-run text-cyan-300 font-bold text-lg">✨ SELAMAT DATANG DI BUMBU GANES ✨ • 🌶️ BUMBU BASAH & REMPAH KERING TERLENGKAP 🌶️ • SEMOGA HARI INI PESANAN RAMAI • LARIS MANIS • REZEKI MELIMPAH • USAHA SEMAKIN MAJU DAN BERKAH 🙏</span>
                 </div>
-
-                <!-- PERINGATAN STOK MENIPIS -->
                 <div id="alertStok" class="hidden mb-6 p-5 rounded-2xl border-2 border-red-500 bg-red-900/20 card-glow-rose">
                     <h3 class="text-xl font-extrabold mb-3 text-red-400"><i class="fas fa-exclamation-triangle mr-2"></i>PERINGATAN STOK MENIPIS!</h3>
                     <div id="alertStokIsi" class="text-red-300 text-base font-semibold flex flex-col gap-1"></div>
                 </div>
-
                 <h2 class="text-4xl font-extrabold mb-2 text-white mt-12 sm:mt-0 neon-text"><i class="fas fa-chart-pie text-cyan-400 mr-3"></i>Ringkasan Hari Ini</h2>
                 <p class="text-gray-400 mb-8 text-lg">Data pemasukan dan pengeluaran hari ini secara realtime.</p>
                 <div class="grid grid-cols-3 gap-6 mb-8">
@@ -476,9 +426,9 @@
                 </div>
             </div>
 
-            <!-- CATAT PENJUALAN -->
+            <!-- CATAT PENJUALAN KG -->
             <div id="page-catatJual" class="page-content hidden">
-                <h2 class="text-4xl font-extrabold mb-8 text-white mt-12 sm:mt-0"><i class="fas fa-cash-register text-emerald-400 mr-3"></i> Catat Penjualan</h2>
+                <h2 class="text-4xl font-extrabold mb-8 text-white mt-12 sm:mt-0"><i class="fas fa-cash-register text-emerald-400 mr-3"></i> Catat Penjualan (Per Kg/Ons)</h2>
                 <div class="bg-[#0f1629] p-6 sm:p-10 rounded-3xl container-full border border-emerald-500/20 card-glow-emerald">
                     <div class="grid grid-cols-2 gap-6 mb-6">
                         <div><label class="block text-lg font-bold mb-2 text-emerald-400">Tanggal Jual</label><input type="date" id="jualTgl" class="w-full"></div>
@@ -486,14 +436,14 @@
                     </div>
                     <div class="grid grid-cols-3 gap-6 mb-6">
                         <div>
-                            <label class="block text-lg font-bold mb-2 text-emerald-400">Jumlah Jual</label>
+                            <label class="block text-lg font-bold mb-2 text-emerald-400">Jumlah Jual (Kg)</label>
                             <select id="jualKgPilihan" class="w-full mb-2" onchange="setJumlah(this, 'jualKg'); hitungJual();"></select>
                             <input type="number" id="jualKg" step="any" placeholder="0.25 / 0.5 / 1 / 10" class="w-full" style="display:none;" oninput="hitungJual()">
                         </div>
                         <div>
-                            <label class="block text-lg font-bold mb-2 text-emerald-400">Harga Jual per Kg (Rp)</label>
+                            <label class="block text-lg font-bold mb-2 text-emerald-400">Harga Jual Normal (Rp)</label>
                             <input type="text" inputmode="numeric" id="jualHarga" placeholder="Contoh: 50.000" oninput="formatNominal(this); hitungJual()" class="w-full">
-                            <p class="text-xs text-gray-500 mt-1">*Jika beli 10Kg, auto: 10 x 50.000</p>
+                            <p class="text-xs text-gray-500 mt-1">*Harga per Kg. 10Kg auto: 10 x 50.000</p>
                         </div>
                         <div><label class="block text-lg font-bold mb-2 text-rose-400">Potongan / Diskon (Rp)</label><input type="text" inputmode="numeric" id="jualPotong" value="0" placeholder="Contoh: 5.000" oninput="formatNominal(this); hitungJual()" class="w-full" style="border-color:#f43f5e44 !important;"></div>
                     </div>
@@ -505,22 +455,52 @@
                 </div>
             </div>
 
+            <!-- CATAT PENJUALAN PCS / BOTOL -->
+            <div id="page-catatJualPcs" class="page-content hidden">
+                <h2 class="text-4xl font-extrabold mb-8 text-white mt-12 sm:mt-0"><i class="fas fa-prescription-bottle text-emerald-400 mr-3"></i> Catat Penjualan (Pcs / Botol)</h2>
+                <div class="bg-[#0f1629] p-6 sm:p-10 rounded-3xl container-full border border-emerald-500/20 card-glow-emerald">
+                    <div class="grid grid-cols-2 gap-6 mb-6">
+                        <div><label class="block text-lg font-bold mb-2 text-emerald-400">Tanggal Jual</label><input type="date" id="pcsTgl" class="w-full"></div>
+                        <div><label class="block text-lg font-bold mb-2 text-emerald-400">Nama Barang (Kecap/Saos/Dll)</label><select id="pcsNama" class="w-full"><option value="">-- Pilih Barang --</option></select></div>
+                    </div>
+                    <div class="grid grid-cols-3 gap-6 mb-6">
+                        <div>
+                            <label class="block text-lg font-bold mb-2 text-emerald-400">Jumlah Beli (Pcs/Btl)</label>
+                            <input type="number" id="pcsJumlah" placeholder="Contoh: 2" oninput="hitungJualPcs()" class="w-full">
+                        </div>
+                        <div>
+                            <label class="block text-lg font-bold mb-2 text-emerald-400">Harga Jual Normal (Rp)</label>
+                            <input type="text" inputmode="numeric" id="pcsHarga" placeholder="Contoh: 20.000" oninput="formatNominal(this); hitungJualPcs()" class="w-full">
+                            <p class="text-xs text-gray-500 mt-1">*Harga per Pcs/Botol</p>
+                        </div>
+                        <div><label class="block text-lg font-bold mb-2 text-rose-400">Potongan / Diskon (Rp)</label><input type="text" inputmode="numeric" id="pcsPotong" value="0" placeholder="Contoh: 1.000" oninput="formatNominal(this); hitungJualPcs()" class="w-full" style="border-color:#f43f5e44 !important;"></div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-6 mb-8">
+                        <div><label class="block text-lg font-bold mb-2 text-emerald-400">Total Dibayar (Rp)</label><input type="text" id="pcsTotal" readonly class="w-full"></div>
+                        <div style="display: flex; align-items: flex-end;"><div class="text-gray-400 text-sm p-2">*Total = (Harga x Jumlah) - Potongan.</div></div>
+                    </div>
+                    <button onclick="simpanJualPcs()" class="w-full bg-gradient-to-r from-emerald-500 to-teal-600 text-white p-4 rounded-xl text-xl font-bold hover:from-emerald-400 hover:to-teal-500 transition transform hover:scale-105 shadow-lg active:scale-95 cursor-pointer"><i class="fas fa-receipt mr-2"></i> Simpan Penjualan</button>
+                </div>
+            </div>
+
             <!-- DAFTAR HARGA JUAL -->
             <div id="page-daftarHarga" class="page-content hidden">
                 <h2 class="text-4xl font-extrabold mb-2 text-white mt-12 sm:mt-0"><i class="fas fa-tags text-amber-400 mr-3"></i> Daftar Harga & Perhitungan</h2>
-                <p class="text-gray-400 mb-8 text-lg">Modal/Kg otomatis dari pembelian terakhir. Isi harga jual dan klik simpan. Saat ada transaksi, lihat daftar ini untuk acuan harga & diskon.</p>
+                <p class="text-gray-400 mb-8 text-lg">Modal/Pcs otomatis dari pembelian terakhir. Isi harga jual dan klik simpan. Saat ada transaksi, lihat daftar ini untuk acuan harga & diskon.</p>
                 <div class="bg-[#0f1629] p-6 sm:p-8 rounded-3xl container-full border border-amber-500/20 card-glow-amber overflow-x-auto">
-                    <table class="dark-table" style="width:100%; min-width: 900px;">
+                    <table class="dark-table" style="width:100%; min-width: 1100px;">
                         <thead>
                             <tr>
                                 <th>Nama Bumbu</th>
-                                <th>Modal/Kg (Auto)</th>
-                                <th>Harga / Ons</th>
-                                <th>Harga / ½ Kg</th>
-                                <th>Harga / 1 Kg</th>
-                                <th>Harga / 2 Kg</th>
-                                <th>Harga / 5 Kg</th>
-                                <th>Harga >6Kg (/Kg)</th>
+                                <th>Modal/Pcs (Auto)</th>
+                                <th>Harga ½ Ons</th>
+                                <th>Harga 1 Ons</th>
+                                <th>Harga ½ Kg</th>
+                                <th>Harga 1 Kg</th>
+                                <th>Harga 2 Kg</th>
+                                <th>Harga 5 Kg</th>
+                                <th>Harga 6Kg Keatas</th>
+                                <th>Harga Pcs/Btl</th>
                                 <th>Aksi</th>
                             </tr>
                         </thead>
@@ -542,7 +522,7 @@
                 <h2 class="text-4xl font-extrabold mb-8 text-white mt-12 sm:mt-0"><i class="fas fa-plus-circle text-green-400 mr-3"></i> Tambah Barang / Bumbu</h2>
                 <div class="bg-[#0f1629] p-6 sm:p-10 rounded-3xl container-full border border-emerald-500/20 card-glow-emerald mb-8">
                     <label class="block text-lg font-bold mb-2 text-emerald-400">Nama Barang Baru</label>
-                    <input type="text" id="namaBarangBaru" placeholder="Contoh: Lada Hitam Super" class="w-full mb-6">
+                    <input type="text" id="namaBarangBaru" placeholder="Contoh: Lada Hitam Super / Kecap 1L" class="w-full mb-6">
                     <button onclick="simpanBarang()" class="w-full bg-gradient-to-r from-emerald-500 to-teal-600 text-white p-4 rounded-xl text-xl font-bold hover:from-emerald-400 hover:to-teal-500 transition transform hover:scale-105 shadow-lg active:scale-95 cursor-pointer"><i class="fas fa-save mr-2"></i> Simpan Barang</button>
                 </div>
                 <div class="bg-[#0f1629] p-8 rounded-3xl container-full border border-gray-700">
@@ -586,16 +566,14 @@
     var salesChartInstance = null;
     var modalChartInstance = null;
 
-    // ================= CACHE (DIBERSIHKAN SETIKA ADA PERUBAHAN) =================
+    // ================= CACHE =================
     var dataCache = { Penjualan: null, Modal: null, Stok: null, Harga: null, Bumbu: null, lastUpdate: 0 };
-    function clearCache() {
-        dataCache = { Penjualan: null, Modal: null, Stok: null, Harga: null, Bumbu: null, lastUpdate: 0 };
+    function clearCache() { 
+        dataCache = { Penjualan: null, Modal: null, Stok: null, Harga: null, Bumbu: null, lastUpdate: 0 }; 
     }
 
     // ================= KREDENSIAL LOGIN =================
-    var VALID_USERS = [
-        { username: 'admin', password: 'admin123' }
-    ];
+    var VALID_USERS = [{ username: 'admin', password: 'admin123' }];
 
     // ================= DAFTAR BUMBU AWAL =================
     var DAFTAR_BUMBU_DEFAULT = [
@@ -608,7 +586,7 @@
         "Lengkuas Kering", "Kencur Kering", "Temulawak Kering", "Serai Kering", "Akar Wangi",
         "Bunga Lawang", "Bunga Pala", "Saffron", "Bunga Telang Kering", "Kelopak Mawar Kering",
         "Lavender Kering", "Chamomile Kering", "Daun Salam Kering", "Daun Jeruk Kering",
-        "Daun Kari Kering", "Daun Pandan Kering", "Daun Ketumbar Kering", "Daun Mint Kering",
+        "Daun Kari Kery", "Daun Pandan Kering", "Daun Ketumbar Kering", "Daun Mint Kering",
         "Oregano", "Basil Kering", "Rosemary", "Thyme", "Sage", "Tarragon", "Marjoram",
         "Parsley Kering", "Dill Kering", "Kasuri Methi", "Tej Patta", "Daun Stevia Kering",
         "Cabai Kering Keriting", "Cabai Kering Gembong", "Kashmiri Chili", "Byadgi Chili",
@@ -628,33 +606,31 @@
     // ====== ISI DROPDOWN BUMBU & BERAT ======
     async function populateDropdowns() {
         DAFTAR_BUMBU = DAFTAR_BUMBU_DEFAULT.slice();
-
         try {
             var bumbuData = await apiGet('Bumbu');
             if (bumbuData && Array.isArray(bumbuData)) {
                 for (var i = 1; i < bumbuData.length; i++) {
                     if (bumbuData[i] && bumbuData[i][0]) {
                         var nama = String(bumbuData[i][0]).trim();
-                        if (nama && !DAFTAR_BUMBU.includes(nama)) {
-                            DAFTAR_BUMBU.push(nama);
+                        if (nama && !DAFTAR_BUMBU.includes(nama)) { 
+                            DAFTAR_BUMBU.push(nama); 
                         }
                     }
                 }
             }
-        } catch (e) {
-            console.log('Sheet Bumbu belum ada atau error, pakai default.');
+        } catch (e) { 
+            console.log('Sheet Bumbu belum ada, pakai default.'); 
         }
-
         DAFTAR_BUMBU.sort();
 
-        var selects = [document.getElementById('modalNama'), document.getElementById('jualNama')];
+        var selects = [document.getElementById('modalNama'), document.getElementById('jualNama'), document.getElementById('pcsNama')];
         for (var s = 0; s < selects.length; s++) {
-            var sel = selects[s];
+            var sel = selects[s]; 
             if (!sel) continue;
             while (sel.options.length > 1) sel.remove(1);
             for (var b = 0; b < DAFTAR_BUMBU.length; b++) {
                 var opt = document.createElement('option');
-                opt.value = DAFTAR_BUMBU[b];
+                opt.value = DAFTAR_BUMBU[b]; 
                 opt.textContent = DAFTAR_BUMBU[b];
                 sel.appendChild(opt);
             }
@@ -663,30 +639,46 @@
     }
 
     function populateBerat() {
-        var html = '<option value="">-- Pilih Berat --</option>';
+        var html = '<option value="">-- Pilih Jumlah --</option>';
         var berat = [
-            {t: "¼ Ons", v: 0.025}, {t: "½ Ons", v: 0.05}, {t: "1 Ons", v: 0.1},
-            {t: "¼ Kg", v: 0.25}, {t: "½ Kg", v: 0.5}, {t: "¾ Kg", v: 0.75},
-            {t: "1 Kg", v: 1}, {t: "1,5 Kg", v: 1.5}, {t: "2 Kg", v: 2}, {t: "2,5 Kg", v: 2.5},
-            {t: "3 Kg", v: 3}, {t: "3,5 Kg", v: 3.5}, {t: "4 Kg", v: 4}, {t: "4,5 Kg", v: 4.5},
-            {t: "5 Kg", v: 5}
+            {t: "Pcs / Botol / Bungkus", v: 1}, 
+            {t: "¼ Ons", v: 0.025}, 
+            {t: "½ Ons", v: 0.05}, 
+            {t: "1 Ons", v: 0.1},
+            {t: "¼ Kg", v: 0.25}, 
+            {t: "½ Kg", v: 0.5}, 
+            {t: "¾ Kg", v: 0.75},
+            {t: "1 Kg", v: 1}, 
+            {t: "1,5 Kg", v: 1.5}, 
+            {t: "2 Kg", v: 2}, 
+            {t: "2,5 Kg", v: 2.5},
+            {t: "3 Kg", v: 3}, 
+            {t: "3,5 Kg", v: 3.5}, 
+            {t: "4 Kg", v: 4}, 
+            {t: "4,5 Kg", v: 4.5}, 
+            {t: "5 Kg", v: 5},
+            {t: "6 Kg", v: 6}, 
+            {t: "7 Kg", v: 7}, 
+            {t: "8 Kg", v: 8}, 
+            {t: "9 Kg", v: 9}, 
+            {t: "10 Kg", v: 10}
         ];
-        for (var i = 6; i <= 100; i++) {
-            berat.push({t: i + " Kg", v: i});
+        for (var i = 11; i <= 100; i++) { 
+            berat.push({t: i + " Kg", v: i}); 
         }
-        for (var i = 0; i < berat.length; i++) {
-            html += '<option value="' + berat[i].v + '">' + berat[i].t + '</option>';
+        for (var i = 0; i < berat.length; i++) { 
+            html += '<option value="' + berat[i].v + '">' + berat[i].t + '</option>'; 
         }
         html += '<option value="lainnya">Lainnya</option>';
-
-        var sel1 = document.getElementById('modalKgPilihan');
+        
+        var sel1 = document.getElementById('modalKgPilihan'); 
         var sel2 = document.getElementById('jualKgPilihan');
-        if (sel1) sel1.innerHTML = html;
+        if (sel1) sel1.innerHTML = html; 
         if (sel2) sel2.innerHTML = html;
     }
 
     function createParticles() {
-        var c = document.getElementById('particles');
+        var c = document.getElementById('particles'); 
         if (!c) return;
         var colors = ['#00f0ff', '#a855f7', '#f43f5e', '#10b981', '#f59e0b'];
         for (var i = 0; i < 40; i++) {
@@ -695,41 +687,43 @@
             s.style.animationDuration = (10 + Math.random() * 15) + 's';
             s.style.animationDelay = (Math.random() * 10) + 's';
             s.style.background = colors[Math.floor(Math.random() * colors.length)];
-            var sz = 2 + Math.random() * 3;
-            s.style.width = sz + 'px';
+            var sz = 2 + Math.random() * 3; 
+            s.style.width = sz + 'px'; 
             s.style.height = sz + 'px';
             c.appendChild(s);
         }
     }
 
-    function formatRp(angka) {
-        return 'Rp ' + Number(angka || 0).toLocaleString('id-ID');
+    function formatRp(angka) { 
+        return 'Rp ' + Number(angka || 0).toLocaleString('id-ID'); 
     }
-    function getToday() {
-        return new Date().toISOString().split('T')[0];
+    
+    function getToday() { 
+        return new Date().toISOString().split('T')[0]; 
     }
-
-    function formatNominal(el) {
-        var raw = el.value.replace(/[^0-9]/g, '');
-        if (raw === '') { el.value = ''; return; }
-        el.value = Number(raw).toLocaleString('id-ID');
+    
+    function formatNominal(el) { 
+        var raw = el.value.replace(/[^0-9]/g, ''); 
+        if (raw === '') { el.value = ''; return; } 
+        el.value = Number(raw).toLocaleString('id-ID'); 
     }
-    function parseNominal(el) {
-        return parseFloat(el.value.replace(/[^0-9]/g, '')) || 0;
+    
+    function parseNominal(el) { 
+        return parseFloat(el.value.replace(/[^0-9]/g, '')) || 0; 
     }
 
     function setJumlah(selectEl, inputId) {
         var input = document.getElementById(inputId);
-        if (selectEl.value === 'lainnya') {
-            input.style.display = 'block';
-            input.value = '';
-            input.focus();
-        } else if (selectEl.value === '') {
-            input.style.display = 'none';
-            input.value = '';
-        } else {
-            input.style.display = 'none';
-            input.value = selectEl.value;
+        if (selectEl.value === 'lainnya') { 
+            input.style.display = 'block'; 
+            input.value = ''; 
+            input.focus(); 
+        } else if (selectEl.value === '') { 
+            input.style.display = 'none'; 
+            input.value = ''; 
+        } else { 
+            input.style.display = 'none'; 
+            input.value = selectEl.value; 
         }
     }
 
@@ -737,118 +731,122 @@
         var kg = parseFloat(document.getElementById('jualKg').value) || 0;
         var harga = parseNominal(document.getElementById('jualHarga'));
         var potong = parseNominal(document.getElementById('jualPotong')) || 0;
-        var total = (harga * kg) - potong;
+        var total = (harga * kg) - potong; 
         if (total < 0) total = 0;
         document.getElementById('jualTotal').value = Number(total).toLocaleString('id-ID');
     }
 
-    function showLoginError(pesan) {
-        var el = document.getElementById('loginError');
-        el.innerText = pesan;
-        el.classList.remove('hidden');
-        el.style.display = 'block';
-    }
-    function hideLoginError() {
-        var el = document.getElementById('loginError');
-        el.classList.add('hidden');
-        el.style.display = 'none';
+    function hitungJualPcs() {
+        var jml = parseFloat(document.getElementById('pcsJumlah').value) || 0;
+        var harga = parseNominal(document.getElementById('pcsHarga'));
+        var potong = parseNominal(document.getElementById('pcsPotong')) || 0;
+        var total = (harga * jml) - potong; 
+        if (total < 0) total = 0;
+        document.getElementById('pcsTotal').value = Number(total).toLocaleString('id-ID');
     }
 
-    function toggleSidebar(open) {
-        var sidebar = document.getElementById('sidebar');
-        var overlay = document.getElementById('sidebarOverlay');
-        if (open) { sidebar.classList.add('open'); overlay.classList.add('open'); }
-        else { sidebar.classList.remove('open'); overlay.classList.remove('open'); }
+    function showLoginError(pesan) { 
+        var el = document.getElementById('loginError'); 
+        el.innerText = pesan; 
+        el.classList.remove('hidden'); 
+        el.style.display = 'block'; 
+    }
+    
+    function hideLoginError() { 
+        var el = document.getElementById('loginError'); 
+        el.classList.add('hidden'); 
+        el.style.display = 'none'; 
+    }
+    
+    function toggleSidebar(open) { 
+        var sidebar = document.getElementById('sidebar'); 
+        var overlay = document.getElementById('sidebarOverlay'); 
+        if (open) { 
+            sidebar.classList.add('open'); 
+            overlay.classList.add('open'); 
+        } else { 
+            sidebar.classList.remove('open'); 
+            overlay.classList.remove('open'); 
+        } 
     }
 
     window.onload = async function() {
-        createParticles();
+        createParticles(); 
         await populateDropdowns();
-
-        var mTgl = document.getElementById('modalTgl');
+        var mTgl = document.getElementById('modalTgl'); 
         if (mTgl) mTgl.value = getToday();
-        var jTgl = document.getElementById('jualTgl');
+        var jTgl = document.getElementById('jualTgl'); 
         if (jTgl) jTgl.value = getToday();
-
-        var yr = new Date().getFullYear();
+        var pcsTgl = document.getElementById('pcsTgl'); 
+        if (pcsTgl) pcsTgl.value = getToday();
+        var yr = new Date().getFullYear(); 
         var yrSelect = document.getElementById('filterTahun');
         if (yrSelect) {
-            for (var i = yr - 2; i <= yr + 1; i++) {
-                var opt = document.createElement('option');
-                opt.value = i;
-                opt.innerText = i;
-                if (i === yr) opt.selected = true;
-                yrSelect.appendChild(opt);
+            for (var i = yr - 2; i <= yr + 1; i++) { 
+                var opt = document.createElement('option'); 
+                opt.value = i; 
+                opt.innerText = i; 
+                if (i === yr) opt.selected = true; 
+                yrSelect.appendChild(opt); 
             }
             document.getElementById('filterBulan').value = String(new Date().getMonth() + 1).padStart(2, '0');
         }
-
-        var btnLogin = document.getElementById('btnLogin');
-        if (btnLogin) {
-            btnLogin.addEventListener('click', function(e) {
-                e.preventDefault();
-                doLogin();
-            });
+        var btnLogin = document.getElementById('btnLogin'); 
+        if (btnLogin) { 
+            btnLogin.addEventListener('click', function(e) { 
+                e.preventDefault(); 
+                doLogin(); 
+            }); 
         }
-
-        var passField = document.getElementById('password');
-        if (passField) {
-            passField.addEventListener('keydown', function(e) {
-                if (e.key === 'Enter') { e.preventDefault(); doLogin(); }
-            });
+        var passField = document.getElementById('password'); 
+        if (passField) { 
+            passField.addEventListener('keydown', function(e) { 
+                if (e.key === 'Enter') { e.preventDefault(); doLogin(); } 
+            }); 
         }
-
-        var userField = document.getElementById('username');
-        if (userField) {
-            userField.addEventListener('keydown', function(e) {
-                if (e.key === 'Enter') { e.preventDefault(); document.getElementById('password').focus(); }
-            });
+        var userField = document.getElementById('username'); 
+        if (userField) { 
+            userField.addEventListener('keydown', function(e) { 
+                if (e.key === 'Enter') { e.preventDefault(); document.getElementById('password').focus(); } 
+            }); 
         }
-
-        if (localStorage.getItem('bumbu_ganes_login') === 'true') {
-            masukDashboard();
-        } else {
-            document.getElementById('username').focus();
+        if (localStorage.getItem('bumbu_ganes_login') === 'true') { 
+            masukDashboard(); 
+        } else { 
+            document.getElementById('username').focus(); 
         }
     };
 
     function showPage(page, element) {
         document.querySelectorAll('.page-content').forEach(function(p) { p.classList.add('hidden'); });
         var target = document.getElementById('page-' + page);
-        if (target) {
-            target.classList.remove('hidden');
-            target.classList.remove('page-transition');
-            void target.offsetWidth;
-            target.classList.add('page-transition');
+        if (target) { 
+            target.classList.remove('hidden'); 
+            target.classList.remove('page-transition'); 
+            void target.offsetWidth; 
+            target.classList.add('page-transition'); 
         }
-        document.querySelectorAll('.sidebar-item').forEach(function(item) {
-            item.classList.remove('active');
-            item.classList.add('text-gray-400');
+        document.querySelectorAll('.sidebar-item').forEach(function(item) { 
+            item.classList.remove('active'); 
+            item.classList.add('text-gray-400'); 
         });
-        if (element) {
-            element.classList.add('active');
-            element.classList.remove('text-gray-400');
+        if (element) { 
+            element.classList.add('active'); 
+            element.classList.remove('text-gray-400'); 
         }
-
-        var bottomNavBtns = document.querySelectorAll('.bottom-nav button');
+        var bottomNavBtns = document.querySelectorAll('.bottom-nav button'); 
         bottomNavBtns.forEach(function(btn) { btn.classList.remove('active'); });
-        var navMap = {
-            'dashboard': 0, 'rekap': 1, 'catatJual': 2,
-            'catatModal': 3, 'stok': 4, 'laporan': 5, 'daftarHarga': 6, 'tambahBarang': 7
-        };
-        if (navMap[page] !== undefined && bottomNavBtns[navMap[page]]) {
-            bottomNavBtns[navMap[page]].classList.add('active');
+        var navMap = { 'dashboard': 0, 'rekap': 1, 'catatJual': 2, 'catatModal': 3, 'stok': 4, 'laporan': 5, 'daftarHarga': 6, 'tambahBarang': 7, 'catatJualPcs': 8 };
+        if (navMap[page] !== undefined && bottomNavBtns[navMap[page]]) { 
+            bottomNavBtns[navMap[page]].classList.add('active'); 
         }
-
         if (window.innerWidth <= 768) toggleSidebar(false);
-
         if (page === 'dashboard') loadDashboard();
         if (page === 'rekap') loadRekap();
         if (page === 'stok') loadStok();
         if (page === 'laporan') loadLaporan();
         if (page === 'daftarHarga') loadDaftarHarga();
         if (page === 'tambahBarang') loadDaftarBarang();
-
         document.getElementById('appBackground').scrollTop = 0;
     }
 
@@ -866,103 +864,90 @@
     function apiGet(sheet) {
         return new Promise(function(resolve, reject) {
             var now = Date.now();
-            if (dataCache[sheet] && (now - dataCache.lastUpdate < 30000)) {
-                resolve(dataCache[sheet]);
-                return;
+            if (dataCache[sheet] && (now - dataCache.lastUpdate < 30000)) { 
+                resolve(dataCache[sheet]); 
+                return; 
             }
-
             var cbName = '_jcb_' + Date.now() + '_' + Math.floor(Math.random() * 999999);
-            var script = document.createElement('script');
+            var script = document.createElement('script'); 
             var done = false;
-
-            window[cbName] = function(data) {
-                if (done) return;
-                done = true;
-                delete window[cbName];
-                if (script.parentNode) script.parentNode.removeChild(script);
-                dataCache[sheet] = data;
-                dataCache.lastUpdate = Date.now();
-                resolve(data);
+            window[cbName] = function(data) { 
+                if (done) return; 
+                done = true; 
+                delete window[cbName]; 
+                if (script.parentNode) script.parentNode.removeChild(script); 
+                dataCache[sheet] = data; 
+                dataCache.lastUpdate = Date.now(); 
+                resolve(data); 
             };
-
             script.src = API_URL + '?sheet=' + sheet + '&action=read&callback=' + cbName;
-            script.onerror = function() {
-                if (done) return;
-                done = true;
-                delete window[cbName];
-                if (script.parentNode) script.parentNode.removeChild(script);
-                reject(new Error('JSONP network error'));
+            script.onerror = function() { 
+                if (done) return; 
+                done = true; 
+                delete window[cbName]; 
+                if (script.parentNode) script.parentNode.removeChild(script); 
+                reject(new Error('JSONP network error')); 
             };
             document.head.appendChild(script);
-
-            setTimeout(function() {
-                if (done) return;
-                done = true;
-                delete window[cbName];
-                if (script.parentNode) script.parentNode.removeChild(script);
-                reject(new Error('JSONP timeout 15s'));
+            setTimeout(function() { 
+                if (done) return; 
+                done = true; 
+                delete window[cbName]; 
+                if (script.parentNode) script.parentNode.removeChild(script); 
+                reject(new Error('JSONP timeout 15s')); 
             }, 15000);
         });
     }
 
     function apiPost(sheet, data, actionType = 'write') {
+        clearCache();
         return new Promise(function(resolve, reject) {
             var cbName = '_jcb_' + Date.now() + '_' + Math.floor(Math.random() * 999999);
-            var script = document.createElement('script');
+            var script = document.createElement('script'); 
             var done = false;
-
-            window[cbName] = function(resp) {
-                if (done) return;
-                done = true;
-                delete window[cbName];
-                if (script.parentNode) script.parentNode.removeChild(script);
-                resolve(resp);
+            window[cbName] = function(resp) { 
+                if (done) return; 
+                done = true; 
+                delete window[cbName]; 
+                if (script.parentNode) script.parentNode.removeChild(script); 
+                resolve(resp); 
             };
-
             script.src = API_URL + '?sheet=' + sheet + '&action=' + actionType + '&data=' + encodeURIComponent(JSON.stringify(data)) + '&callback=' + cbName;
-            script.onerror = function() {
-                if (done) return;
-                done = true;
-                delete window[cbName];
-                if (script.parentNode) script.parentNode.removeChild(script);
-                reject(new Error('JSONP write error'));
+            script.onerror = function() { 
+                if (done) return; 
+                done = true; 
+                delete window[cbName]; 
+                if (script.parentNode) script.parentNode.removeChild(script); 
+                reject(new Error('JSONP write error')); 
             };
             document.head.appendChild(script);
-
-            setTimeout(function() {
-                if (done) return;
-                done = true;
-                delete window[cbName];
-                if (script.parentNode) script.parentNode.removeChild(script);
-                reject(new Error('JSONP write timeout'));
+            setTimeout(function() { 
+                if (done) return; 
+                done = true; 
+                delete window[cbName]; 
+                if (script.parentNode) script.parentNode.removeChild(script); 
+                reject(new Error('JSONP write timeout')); 
             }, 15000);
         });
     }
 
     function doLogin() {
-        var uField = document.getElementById('username');
+        var uField = document.getElementById('username'); 
         var pField = document.getElementById('password');
-        var u = uField ? uField.value.trim().toLowerCase() : '';
+        var u = uField ? uField.value.trim().toLowerCase() : ''; 
         var p = pField ? pField.value.trim() : '';
-
-        if (!u || !p) {
-            showLoginError('Lengkapi username dan password!');
-            return;
-        }
-
+        if (!u || !p) { showLoginError('Lengkapi username dan password!'); return; }
         var loginBerhasil = false;
-        for (var i = 0; i < VALID_USERS.length; i++) {
-            if (u === VALID_USERS[i].username.toLowerCase() && p === VALID_USERS[i].password) {
-                loginBerhasil = true;
-                break;
-            }
+        for (var i = 0; i < VALID_USERS.length; i++) { 
+            if (u === VALID_USERS[i].username.toLowerCase() && p === VALID_USERS[i].password) { 
+                loginBerhasil = true; break; 
+            } 
         }
-
-        if (loginBerhasil) {
-            localStorage.setItem('bumbu_ganes_login', 'true');
-            masukDashboard();
-        } else {
-            showLoginError('Username atau password salah!');
+        if (loginBerhasil) { 
+            localStorage.setItem('bumbu_ganes_login', 'true'); 
+            masukDashboard(); 
+        } else { 
+            showLoginError('Username atau password salah!'); 
         }
     }
 
@@ -970,11 +955,11 @@
         document.documentElement.classList.add('logged-in');
         document.getElementById('loginPage').style.display = 'none';
         document.getElementById('mainApp').style.display = 'flex';
-        var uField = document.getElementById('username');
+        var uField = document.getElementById('username'); 
         var pField = document.getElementById('password');
-        if (uField) uField.value = '';
+        if (uField) uField.value = ''; 
         if (pField) pField.value = '';
-        hideLoginError();
+        hideLoginError(); 
         loadDashboard();
     }
 
@@ -984,126 +969,137 @@
         document.getElementById('mainApp').style.display = 'none';
         document.getElementById('loginPage').style.display = 'flex';
         hideLoginError();
-        var uField = document.getElementById('username');
+        var uField = document.getElementById('username'); 
         var pField = document.getElementById('password');
-        if (uField) uField.value = '';
+        if (uField) uField.value = ''; 
         if (pField) pField.value = '';
-        toggleSidebar(false);
+        toggleSidebar(false); 
         clearCache();
         setTimeout(function() { if (uField) uField.focus(); }, 100);
     }
 
-    // ================= SIMPAN & HAPUS DATA =================
+    // ================= SIMPAN & HAPUS DATA (TANPA POPUP BERULANG) =================
     async function simpanModal() {
-        var tgl = document.getElementById('modalTgl').value;
+        var tgl = document.getElementById('modalTgl').value; 
         var nama = document.getElementById('modalNama').value.trim();
-        var kg = parseFloat(document.getElementById('modalKg').value);
+        var kg = parseFloat(document.getElementById('modalKg').value); 
         var harga = parseNominal(document.getElementById('modalHarga'));
-
         if (!tgl || !nama || !kg || !harga) return alert('Lengkapi semua data modal!');
         if (kg <= 0 || harga <= 0) return alert('Jumlah dan harga harus lebih dari 0!');
-
         try {
             await apiPost('Modal', [tgl, nama, kg, harga]);
-            alert('Modal berhasil dicatat & stok otomatis bertambah!');
-            document.getElementById('modalNama').value = '';
-            document.getElementById('modalKg').value = '';
-            document.getElementById('modalKgPilihan').value = '';
-            document.getElementById('modalKg').style.display = 'none';
+            document.getElementById('modalNama').value = ''; 
+            document.getElementById('modalKg').value = ''; 
+            document.getElementById('modalKgPilihan').value = ''; 
+            document.getElementById('modalKg').style.display = 'none'; 
             document.getElementById('modalHarga').value = '';
-            refreshActivePage(); // Langsung update dashboard
-        } catch (err) {
-            alert('Gagal menyimpan: ' + err.message);
-        }
+            refreshActivePage();
+        } catch (err) { alert('Gagal menyimpan: ' + err.message); }
     }
 
     async function simpanJual() {
-        var tgl = document.getElementById('jualTgl').value;
+        var tgl = document.getElementById('jualTgl').value; 
         var nama = document.getElementById('jualNama').value;
-        var kg = parseFloat(document.getElementById('jualKg').value);
+        var kg = parseFloat(document.getElementById('jualKg').value); 
         var hargaJual = parseNominal(document.getElementById('jualHarga'));
-        var potongan = parseNominal(document.getElementById('jualPotong')) || 0;
+        var potongan = parseNominal(document.getElementById('jualPotong')) || 0; 
         var totalBayar = parseNominal(document.getElementById('jualTotal'));
-
         if (!tgl || !nama || !kg || !totalBayar) return alert('Lengkapi semua data penjualan!');
         if (kg <= 0 || totalBayar <= 0) return alert('Jumlah dan total bayar harus lebih dari 0!');
-
         try {
-            var modalData = await apiGet('Modal');
+            var modalData = await apiGet('Modal'); 
             var hargaModalPerKg = 0;
             if (modalData && Array.isArray(modalData)) {
-                for (var i = modalData.length - 1; i >= 1; i--) {
-                    if (modalData[i] && String(modalData[i][1]).trim() === nama) {
-                        if (parseFloat(modalData[i][2]) > 0) {
-                           hargaModalPerKg = modalData[i][3] / modalData[i][2];
-                           break;
-                        }
-                    }
+                for (var i = modalData.length - 1; i >= 1; i--) { 
+                    if (modalData[i] && String(modalData[i][1]).trim() === nama) { 
+                        if (parseFloat(modalData[i][2]) > 0) { 
+                            hargaModalPerKg = modalData[i][3] / modalData[i][2]; 
+                            break; 
+                        } 
+                    } 
                 }
             }
             var untung = totalBayar - (hargaModalPerKg * kg);
-
             await apiPost('Penjualan', [tgl, nama, kg, hargaJual, potongan, totalBayar, untung]);
-            alert('Penjualan dicatat! Langsung masuk ke rekapan. Stok otomatis berkurang.');
-            document.getElementById('jualNama').value = '';
-            document.getElementById('jualKg').value = '';
-            document.getElementById('jualKgPilihan').value = '';
-            document.getElementById('jualKg').style.display = 'none';
-            document.getElementById('jualHarga').value = '';
-            document.getElementById('jualPotong').value = '0';
+            document.getElementById('jualNama').value = ''; 
+            document.getElementById('jualKg').value = ''; 
+            document.getElementById('jualKgPilihan').value = ''; 
+            document.getElementById('jualKg').style.display = 'none'; 
+            document.getElementById('jualHarga').value = ''; 
+            document.getElementById('jualPotong').value = '0'; 
             document.getElementById('jualTotal').value = '';
-            refreshActivePage(); // Langsung update dashboard
-        } catch (err) {
-            alert('Gagal menyimpan: ' + err.message);
-        }
+            refreshActivePage();
+        } catch (err) { alert('Gagal menyimpan: ' + err.message); }
+    }
+
+    async function simpanJualPcs() {
+        var tgl = document.getElementById('pcsTgl').value; 
+        var nama = document.getElementById('pcsNama').value;
+        var jml = parseFloat(document.getElementById('pcsJumlah').value); 
+        var hargaJual = parseNominal(document.getElementById('pcsHarga'));
+        var potongan = parseNominal(document.getElementById('pcsPotong')) || 0; 
+        var totalBayar = parseNominal(document.getElementById('pcsTotal'));
+        if (!tgl || !nama || !jml || !totalBayar) return alert('Lengkapi semua data penjualan Pcs/Botol!');
+        if (jml <= 0 || totalBayar <= 0) return alert('Jumlah dan total bayar harus lebih dari 0!');
+        try {
+            var modalData = await apiGet('Modal'); 
+            var hargaModalPerPcs = 0;
+            if (modalData && Array.isArray(modalData)) {
+                for (var i = modalData.length - 1; i >= 1; i--) { 
+                    if (modalData[i] && String(modalData[i][1]).trim() === nama) { 
+                        if (parseFloat(modalData[i][2]) > 0) { 
+                            hargaModalPerPcs = modalData[i][3] / modalData[i][2]; 
+                            break; 
+                        } 
+                    } 
+                }
+            }
+            var untung = totalBayar - (hargaModalPerPcs * jml);
+            await apiPost('Penjualan', [tgl, nama, jml, hargaJual, potongan, totalBayar, untung]);
+            document.getElementById('pcsNama').value = ''; 
+            document.getElementById('pcsJumlah').value = ''; 
+            document.getElementById('pcsHarga').value = ''; 
+            document.getElementById('pcsPotong').value = '0'; 
+            document.getElementById('pcsTotal').value = '';
+            refreshActivePage();
+            alert('Penjualan Pcs/Botol dicatat!');
+        } catch (err) { alert('Gagal menyimpan: ' + err.message); }
     }
 
     async function simpanBarang() {
         var nama = document.getElementById('namaBarangBaru').value.trim();
         if (!nama) return alert('Masukkan nama barang!');
-        
         try {
             await apiPost('Bumbu', [nama]);
-            alert('Barang berhasil ditambahkan!');
             document.getElementById('namaBarangBaru').value = '';
             await populateDropdowns(); 
             loadDaftarBarang();
-        } catch (err) {
-            alert('Gagal menyimpan: ' + err.message);
-        }
+        } catch (err) { alert('Gagal menyimpan: ' + err.message); }
     }
 
     async function hapusBarang(nama) {
-        if (!confirm('Yakin hapus "' + nama + '" dari daftar?')) return;
         try {
             await apiPost('Bumbu', [nama], 'delete');
-            alert('Barang dihapus!');
             await populateDropdowns(); 
             loadDaftarBarang();
-        } catch (err) {
-            alert('Gagal menghapus: ' + err.message);
-        }
+        } catch (err) { alert('Gagal menghapus: ' + err.message); }
     }
 
     async function hapusHarga(nama) {
-        if (!confirm('Yakin hapus data harga untuk "' + nama + '"?')) return;
         try {
             await apiPost('Harga', [nama], 'delete');
-            alert('Data harga dihapus!');
             loadDaftarHarga();
-        } catch (err) {
-            alert('Gagal menghapus: ' + err.message);
-        }
+        } catch (err) { alert('Gagal menghapus: ' + err.message); }
     }
 
     async function loadDaftarBarang() {
-        var container = document.getElementById('daftarBarangList');
+        var container = document.getElementById('daftarBarangList'); 
         if (!container) return;
         var html = '';
         for (var i = 0; i < DAFTAR_BUMBU.length; i++) {
             html += '<div class="bg-gray-800 p-3 rounded-xl text-sm flex items-center justify-between">' +
                     '<span class="flex items-center"><i class="fas fa-pepper-hot text-amber-400 mr-2"></i> ' + DAFTAR_BUMBU[i] + '</span>' +
-                    '<button onclick="hapusBarang(\'' + DAFTAR_BUMBU[i].replace(/'/g, "\\'") + '\')" class="text-red-400 hover:text-red-300 cursor-pointer ml-2"><i class="fas fa-trash"></i></button>' +
+                    '<button onclick="hapusBarang(\'' + DAFTAR_BUMBU[i].replace(/'/g, "\\'") + '\')" class="bg-red-600 hover:bg-red-500 text-white text-xs px-2 py-1 rounded cursor-pointer ml-2">Hapus</button>' +
                     '</div>';
         }
         container.innerHTML = html;
@@ -1111,115 +1107,110 @@
 
     async function loadDaftarHarga() {
         try {
-            var modalData = await apiGet('Modal');
+            var modalData = await apiGet('Modal'); 
             var hargaData = null;
-            try {
-                hargaData = await apiGet('Harga');
-            } catch (e) {}
-
+            try { hargaData = await apiGet('Harga'); } catch (e) {}
             var modalMap = {};
             if (modalData && Array.isArray(modalData)) {
                 for (var i = 1; i < modalData.length; i++) {
                     if (modalData[i] && modalData[i][1]) {
-                        var nama = String(modalData[i][1]).trim();
-                        var kg = parseFloat(modalData[i][2]);
+                        var nama = String(modalData[i][1]).trim(); 
+                        var kg = parseFloat(modalData[i][2]); 
                         var total = Number(modalData[i][3]);
-                        if (kg > 0 && total > 0) {
-                            modalMap[nama] = total / kg;
-                        }
+                        if (kg > 0 && total > 0) { modalMap[nama] = total / kg; }
                     }
                 }
             }
-
             var hargaMap = {};
             if (hargaData && Array.isArray(hargaData)) {
                 for (var i = 1; i < hargaData.length; i++) {
                     if (hargaData[i] && hargaData[i][0]) {
                         var n = String(hargaData[i][0]).trim();
                         hargaMap[n] = {
-                            ons: hargaData[i][1] || '',
-                            half: hargaData[i][2] || '',
-                            kg1: hargaData[i][3] || '',
-                            kg2: hargaData[i][4] || '',
-                            kg5: hargaData[i][5] || '',
-                            above5: hargaData[i][6] || ''
+                            halfOns: hargaData[i][1] || '', 
+                            ons: hargaData[i][2] || '', 
+                            halfKg: hargaData[i][3] || '',
+                            kg1: hargaData[i][4] || '', 
+                            kg2: hargaData[i][5] || '', 
+                            kg5: hargaData[i][6] || '',
+                            above6: hargaData[i][7] || '', 
+                            pcs: hargaData[i][8] || ''
                         };
                     }
                 }
             }
-
-            var tbody = document.getElementById('tabelDaftarHarga');
-            if (!tbody) return;
+            var tbody = document.getElementById('tabelDaftarHarga'); 
+            if (!tbody) return; 
             var html = '';
             for (var b = 0; b < DAFTAR_BUMBU.length; b++) {
-                var namaB = DAFTAR_BUMBU[b];
+                var namaB = DAFTAR_BUMBU[b]; 
                 var mPerKg = modalMap[namaB] || 0;
+                var savedHalfOns = (hargaMap[namaB] && hargaMap[namaB].halfOns) ? hargaMap[namaB].halfOns : '';
                 var savedOns = (hargaMap[namaB] && hargaMap[namaB].ons) ? hargaMap[namaB].ons : '';
-                var savedHalf = (hargaMap[namaB] && hargaMap[namaB].half) ? hargaMap[namaB].half : '';
+                var savedHalfKg = (hargaMap[namaB] && hargaMap[namaB].halfKg) ? hargaMap[namaB].halfKg : '';
                 var savedKg1 = (hargaMap[namaB] && hargaMap[namaB].kg1) ? hargaMap[namaB].kg1 : '';
                 var savedKg2 = (hargaMap[namaB] && hargaMap[namaB].kg2) ? hargaMap[namaB].kg2 : '';
                 var savedKg5 = (hargaMap[namaB] && hargaMap[namaB].kg5) ? hargaMap[namaB].kg5 : '';
-                var savedAbove5 = (hargaMap[namaB] && hargaMap[namaB].above5) ? hargaMap[namaB].above5 : '';
+                var savedAbove6 = (hargaMap[namaB] && hargaMap[namaB].above6) ? hargaMap[namaB].above6 : '';
+                var savedPcs = (hargaMap[namaB] && hargaMap[namaB].pcs) ? hargaMap[namaB].pcs : '';
 
                 html += '<tr>' +
-                    '<td><b>' + namaB + '</b></td>' +
+                    '<td class="left-align"><b>' + namaB + '</b></td>' +
                     '<td style="color:#f43f5e; font-weight:bold;">' + formatRp(mPerKg) + '</td>' +
-                    '<td><input type="text" inputmode="numeric" id="harga_ons_' + b + '" value="' + savedOns + '" placeholder="Rp 0" oninput="formatNominal(this)" class="table-input"></td>' +
-                    '<td><input type="text" inputmode="numeric" id="harga_half_' + b + '" value="' + savedHalf + '" placeholder="Rp 0" oninput="formatNominal(this)" class="table-input"></td>' +
-                    '<td><input type="text" inputmode="numeric" id="harga_1kg_' + b + '" value="' + savedKg1 + '" placeholder="Rp 0" oninput="formatNominal(this)" class="table-input"></td>' +
-                    '<td><input type="text" inputmode="numeric" id="harga_2kg_' + b + '" value="' + savedKg2 + '" placeholder="Rp 0" oninput="formatNominal(this)" class="table-input"></td>' +
-                    '<td><input type="text" inputmode="numeric" id="harga_5kg_' + b + '" value="' + savedKg5 + '" placeholder="Rp 0" oninput="formatNominal(this)" class="table-input"></td>' +
-                    '<td><input type="text" inputmode="numeric" id="harga_above5_' + b + '" value="' + savedAbove5 + '" placeholder="Rp 0" oninput="formatNominal(this)" class="table-input"></td>' +
-                    '<td><div class="flex gap-2">' +
-                        '<button onclick="simpanSatuHarga(' + b + ', \'' + namaB.replace(/'/g, "\\'") + '\')" class="bg-blue-600 hover:bg-blue-500 text-white p-3 rounded-lg text-base cursor-pointer"><i class="fas fa-save"></i></button>' +
-                        '<button onclick="hapusHarga(\'' + namaB.replace(/'/g, "\\'") + '\')" class="bg-red-600 hover:bg-red-500 text-white p-3 rounded-lg text-base cursor-pointer"><i class="fas fa-trash"></i></button>' +
+                    '<td><input type="text" inputmode="numeric" id="harga_halfOns_' + b + '" value="' + savedHalfOns + '" placeholder="0" oninput="formatNominal(this)" class="table-input"></td>' +
+                    '<td><input type="text" inputmode="numeric" id="harga_ons_' + b + '" value="' + savedOns + '" placeholder="0" oninput="formatNominal(this)" class="table-input"></td>' +
+                    '<td><input type="text" inputmode="numeric" id="harga_halfKg_' + b + '" value="' + savedHalfKg + '" placeholder="0" oninput="formatNominal(this)" class="table-input"></td>' +
+                    '<td><input type="text" inputmode="numeric" id="harga_1kg_' + b + '" value="' + savedKg1 + '" placeholder="0" oninput="formatNominal(this)" class="table-input"></td>' +
+                    '<td><input type="text" inputmode="numeric" id="harga_2kg_' + b + '" value="' + savedKg2 + '" placeholder="0" oninput="formatNominal(this)" class="table-input"></td>' +
+                    '<td><input type="text" inputmode="numeric" id="harga_5kg_' + b + '" value="' + savedKg5 + '" placeholder="0" oninput="formatNominal(this)" class="table-input"></td>' +
+                    '<td><input type="text" inputmode="numeric" id="harga_above6_' + b + '" value="' + savedAbove6 + '" placeholder="0" oninput="formatNominal(this)" class="table-input"></td>' +
+                    '<td><input type="text" inputmode="numeric" id="harga_pcs_' + b + '" value="' + savedPcs + '" placeholder="0" oninput="formatNominal(this)" class="table-input"></td>' +
+                    '<td><div class="flex gap-2 justify-center">' +
+                        '<button onclick="simpanSatuHarga(' + b + ', \'' + namaB.replace(/'/g, "\\'") + '\')" class="bg-blue-600 hover:bg-blue-500 text-white p-2 rounded-lg text-sm cursor-pointer w-full">Simpan</button>' +
+                        '<button onclick="hapusHarga(\'' + namaB.replace(/'/g, "\\'") + '\')" class="bg-red-600 hover:bg-red-500 text-white p-2 rounded-lg text-sm cursor-pointer w-full">Hapus</button>' +
                     '</div></td>' +
                     '</tr>';
             }
             tbody.innerHTML = html;
-        } catch (err) {
-            console.error('Error loadDaftarHarga:', err);
-        }
+        } catch (err) { console.error('Error loadDaftarHarga:', err); }
     }
 
     async function simpanSatuHarga(index, nama) {
+        var halfOns = parseNominal(document.getElementById('harga_halfOns_' + index));
         var ons = parseNominal(document.getElementById('harga_ons_' + index));
-        var half = parseNominal(document.getElementById('harga_half_' + index));
+        var halfKg = parseNominal(document.getElementById('harga_halfKg_' + index));
         var kg1 = parseNominal(document.getElementById('harga_1kg_' + index));
         var kg2 = parseNominal(document.getElementById('harga_2kg_' + index));
         var kg5 = parseNominal(document.getElementById('harga_5kg_' + index));
-        var above5 = parseNominal(document.getElementById('harga_above5_' + index));
-
+        var above6 = parseNominal(document.getElementById('harga_above6_' + index));
+        var pcs = parseNominal(document.getElementById('harga_pcs_' + index));
         try {
-            await apiPost('Harga', [nama, ons, half, kg1, kg2, kg5, above5]);
-            alert('Harga jual untuk ' + nama + ' disimpan!');
-        } catch (err) {
-            alert('Gagal menyimpan: ' + err.message);
-        }
+            await apiPost('Harga', [nama, halfOns, ons, halfKg, kg1, kg2, kg5, above6, pcs]);
+            alert('Harga untuk ' + nama + ' disimpan!');
+        } catch (err) { alert('Gagal menyimpan: ' + err.message); }
     }
 
     // ================= LOAD DASHBOARD =================
     async function loadDashboard() {
         try {
-            var jualData = await apiGet('Penjualan');
-            var modalData = await apiGet('Modal');
+            var jualData = await apiGet('Penjualan'); 
+            var modalData = await apiGet('Modal'); 
             var stokData = await apiGet('Stok');
             if (!jualData || !modalData) return;
-
-            var today = getToday();
+            var today = getToday(); 
             var bulanIni = today.substring(0, 7);
             var pemasukanHariIni = 0, pengeluaranHariIni = 0, untungHariIni = 0;
 
             for (var i = 1; i < jualData.length; i++) {
-                if (!jualData[i]) continue;
+                if (!jualData[i]) continue; 
                 var tgl = jualData[i][0], total = jualData[i][5], untung = jualData[i][6];
-                if (tgl == today) {
-                    pemasukanHariIni += Number(total);
-                    untungHariIni += Number(untung);
+                if (tgl == today) { 
+                    pemasukanHariIni += Number(total); 
+                    untungHariIni += Number(untung); 
                 }
             }
-            for (var i = 1; i < modalData.length; i++) {
-                if (modalData[i] && modalData[i][0] == today) pengeluaranHariIni += Number(modalData[i][3]);
+            for (var i = 1; i < modalData.length; i++) { 
+                if (modalData[i] && modalData[i][0] == today) pengeluaranHariIni += Number(modalData[i][3]); 
             }
 
             document.getElementById('dPemasukan').innerText = formatRp(pemasukanHariIni);
@@ -1227,20 +1218,20 @@
             document.getElementById('dUntung').innerText = formatRp(untungHariIni);
 
             var kasMasuk = 0, kasKeluar = 0, jmlJual = 0, jmlModal = 0;
-            for (var i = 1; i < jualData.length; i++) {
-                if (!jualData[i]) continue;
-                if (String(jualData[i][0]).substring(0, 7) == bulanIni) {
-                    kasMasuk += Number(jualData[i][5]);
-                    jmlJual++;
-                }
+            for (var i = 1; i < jualData.length; i++) { 
+                if (!jualData[i]) continue; 
+                if (String(jualData[i][0]).substring(0, 7) == bulanIni) { 
+                    kasMasuk += Number(jualData[i][5]); 
+                    jmlJual++; 
+                } 
             }
-            for (var i = 1; i < modalData.length; i++) {
-                if (modalData[i] && String(modalData[i][0]).substring(0, 7) == bulanIni) {
-                    kasKeluar += Number(modalData[i][3]);
-                    jmlModal++;
-                }
+            for (var i = 1; i < modalData.length; i++) { 
+                if (modalData[i] && String(modalData[i][0]).substring(0, 7) == bulanIni) { 
+                    kasKeluar += Number(modalData[i][3]); 
+                    jmlModal++; 
+                } 
             }
-            var kasBulanIni = kasMasuk - kasKeluar;
+            var kasBulanIni = kasMasuk - kasKeluar; 
             var margin = kasMasuk > 0 ? ((kasBulanIni / kasMasuk) * 100).toFixed(1) : 0;
 
             document.getElementById('dKasBulan').innerText = formatRp(kasBulanIni);
@@ -1248,306 +1239,236 @@
             document.getElementById('dJumlahModal').innerText = jmlModal;
             document.getElementById('dMargin').innerText = margin + '%';
 
-            var alertBox = document.getElementById('alertStok');
-            var alertContent = document.getElementById('alertStokIsi');
+            var alertBox = document.getElementById('alertStok'); 
+            var alertContent = document.getElementById('alertStokIsi'); 
             var lowStockList = [];
             if (stokData) {
                 for (var i = 1; i < stokData.length; i++) {
-                    if (!stokData[i]) continue;
+                    if (!stokData[i]) continue; 
                     var kgVal = parseFloat(stokData[i][1]);
-                    if (!isNaN(kgVal) && kgVal <= 2) {
-                        lowStockList.push(stokData[i][0] + " (Sisa: " + stokData[i][1] + " Kg)");
+                    if (!isNaN(kgVal) && kgVal <= 2) { 
+                        lowStockList.push(stokData[i][0] + " (Sisa: " + stokData[i][1] + " Kg)"); 
                     }
                 }
             }
-            if (lowStockList.length > 0) {
-                alertContent.innerHTML = "⚠️ Sisa stok dibawah 2Kg:<br> - " + lowStockList.join("<br> - ");
-                alertBox.classList.remove('hidden');
-            } else {
-                alertBox.classList.add('hidden');
+            if (lowStockList.length > 0) { 
+                alertContent.innerHTML = "⚠️ Sisa stok dibawah 2Kg:<br> - " + lowStockList.join("<br> - "); 
+                alertBox.classList.remove('hidden'); 
+            } else { 
+                alertBox.classList.add('hidden'); 
             }
 
-            var namaBulan = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Ags', 'Sep', 'Okt', 'Nov', 'Des'];
+            var namaBulan = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Ags', 'Sep', 'Okt', 'Nov', 'Des']; 
             var tahunChart = new Date().getFullYear();
-            var penjualanPerBulan = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+            var penjualanPerBulan = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]; 
             var untungPerBulan = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
-
-            for (var i = 1; i < jualData.length; i++) {
-                if (!jualData[i]) continue;
-                var tglStr = String(jualData[i][0]);
-                var thn = parseInt(tglStr.substring(0, 4));
-                var bln = parseInt(tglStr.substring(5, 7)) - 1;
-                if (thn == tahunChart && bln >= 0 && bln < 12) {
-                    penjualanPerBulan[bln] += Number(jualData[i][5]);
-                    untungPerBulan[bln] += Number(jualData[i][6]);
-                }
+            for (var i = 1; i < jualData.length; i++) { 
+                if (!jualData[i]) continue; 
+                var tglStr = String(jualData[i][0]); 
+                var thn = parseInt(tglStr.substring(0, 4)); 
+                var bln = parseInt(tglStr.substring(5, 7)) - 1; 
+                if (thn == tahunChart && bln >= 0 && bln < 12) { 
+                    penjualanPerBulan[bln] += Number(jualData[i][5]); 
+                    untungPerBulan[bln] += Number(jualData[i][6]); 
+                } 
             }
 
             if (salesChartInstance) salesChartInstance.destroy();
             var ctx1 = document.getElementById('salesChart').getContext('2d');
             salesChartInstance = new Chart(ctx1, {
-                type: 'bar',
-                data: {
-                    labels: namaBulan,
-                    datasets: [
-                        {
-                            label: 'Penjualan',
-                            data: penjualanPerBulan,
-                            backgroundColor: 'rgba(0,240,255,0.5)',
-                            borderColor: '#00f0ff',
-                            borderWidth: 2,
-                            borderRadius: 8,
-                            barPercentage: 0.6,
-                            categoryPercentage: 0.7
-                        },
-                        {
-                            label: 'Untung',
-                            data: untungPerBulan,
-                            backgroundColor: 'rgba(16,185,129,0.5)',
-                            borderColor: '#10b981',
-                            borderWidth: 2,
-                            borderRadius: 8,
-                            barPercentage: 0.6,
-                            categoryPercentage: 0.7
-                        }
-                    ]
+                type: 'bar', 
+                data: { 
+                    labels: namaBulan, 
+                    datasets: [ 
+                        { 
+                            label: 'Penjualan', 
+                            data: penjualanPerBulan, 
+                            backgroundColor: 'rgba(0,240,255,0.5)', 
+                            borderColor: '#00f0ff', 
+                            borderWidth: 2, 
+                            borderRadius: 8, 
+                            barPercentage: 0.6, 
+                            categoryPercentage: 0.7 
+                        }, 
+                        { 
+                            label: 'Untung', 
+                            data: untungPerBulan, 
+                            backgroundColor: 'rgba(16,185,129,0.5)', 
+                            borderColor: '#10b981', 
+                            borderWidth: 2, 
+                            borderRadius: 8, 
+                            barPercentage: 0.6, 
+                            categoryPercentage: 0.7 
+                        } 
+                    ] 
                 },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    animation: { duration: 400 },
-                    plugins: {
-                        legend: { labels: { color: '#94a3b8', font: { size: 14, weight: 'bold' } } },
-                        tooltip: {
-                            callbacks: {
-                                label: function(ctx) { return ctx.dataset.label + ': ' + formatRp(ctx.raw); }
-                            },
-                            backgroundColor: '#0f1629',
-                            titleColor: '#00f0ff',
-                            bodyColor: '#f1f5f9',
-                            borderColor: '#334155',
-                            borderWidth: 1
-                        }
-                    },
-                    scales: {
-                        x: {
-                            ticks: { color: '#94a3b8', font: { size: 14, weight: 'bold' } },
-                            grid: { display: false }
-                        },
-                        y: {
-                            beginAtZero: true,
-                            ticks: { color: '#64748b', callback: function(v) { return formatRp(v); } },
-                            grid: { color: '#1e293b55' }
-                        }
-                    }
+                options: { 
+                    responsive: true, 
+                    maintainAspectRatio: false, 
+                    animation: { duration: 400 }, 
+                    plugins: { 
+                        legend: { labels: { color: '#94a3b8', font: { size: 14, weight: 'bold' } } }, 
+                        tooltip: { 
+                            callbacks: { label: function(ctx) { return ctx.dataset.label + ': ' + formatRp(ctx.raw); } }, 
+                            backgroundColor: '#0f1629', titleColor: '#00f0ff', bodyColor: '#f1f5f9', borderColor: '#334155', borderWidth: 1 
+                        } 
+                    }, 
+                    scales: { 
+                        x: { ticks: { color: '#94a3b8', font: { size: 14, weight: 'bold' } }, grid: { display: false } }, 
+                        y: { beginAtZero: true, ticks: { color: '#64748b', callback: function(v) { return formatRp(v); } }, grid: { color: '#1e293b55' } } 
+                    } 
                 }
             });
 
             var modalPerBulan = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
-
-            for (var i = 1; i < modalData.length; i++) {
-                if (!modalData[i]) continue;
-                var tglStr = String(modalData[i][0]);
-                var thn = parseInt(tglStr.substring(0, 4));
-                var bln = parseInt(tglStr.substring(5, 7)) - 1;
-                if (thn == tahunChart && bln >= 0 && bln < 12) {
-                    modalPerBulan[bln] += Number(modalData[i][3]);
-                }
+            for (var i = 1; i < modalData.length; i++) { 
+                if (!modalData[i]) continue; 
+                var tglStr = String(modalData[i][0]); 
+                var thn = parseInt(tglStr.substring(0, 4)); 
+                var bln = parseInt(tglStr.substring(5, 7)) - 1; 
+                if (thn == tahunChart && bln >= 0 && bln < 12) { 
+                    modalPerBulan[bln] += Number(modalData[i][3]); 
+                } 
             }
 
             if (modalChartInstance) modalChartInstance.destroy();
             var ctx2 = document.getElementById('modalChart').getContext('2d');
             modalChartInstance = new Chart(ctx2, {
-                type: 'bar',
-                data: {
-                    labels: namaBulan,
-                    datasets: [{
-                        label: 'Modal',
-                        data: modalPerBulan,
-                        backgroundColor: 'rgba(244,63,94,0.5)',
-                        borderColor: '#f43f5e',
-                        borderWidth: 2,
-                        borderRadius: 8,
-                        barPercentage: 0.6,
-                        categoryPercentage: 0.7
-                    }]
+                type: 'bar', 
+                data: { 
+                    labels: namaBulan, 
+                    datasets: [{ 
+                        label: 'Modal', 
+                        data: modalPerBulan, 
+                        backgroundColor: 'rgba(244,63,94,0.5)', 
+                        borderColor: '#f43f5e', 
+                        borderWidth: 2, 
+                        borderRadius: 8, 
+                        barPercentage: 0.6, 
+                        categoryPercentage: 0.7 
+                    }] 
                 },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    animation: { duration: 400 },
-                    plugins: {
-                        legend: { labels: { color: '#94a3b8', font: { size: 14, weight: 'bold' } } },
-                        tooltip: {
-                            callbacks: {
-                                label: function(ctx) { return ctx.dataset.label + ': ' + formatRp(ctx.raw); }
-                            },
-                            backgroundColor: '#0f1629',
-                            titleColor: '#f43f5e',
-                            bodyColor: '#f1f5f9',
-                            borderColor: '#334155',
-                            borderWidth: 1
-                        }
-                    },
-                    scales: {
-                        x: {
-                            ticks: { color: '#94a3b8', font: { size: 14, weight: 'bold' } },
-                            grid: { display: false }
-                        },
-                        y: {
-                            beginAtZero: true,
-                            ticks: { color: '#64748b', callback: function(v) { return formatRp(v); } },
-                            grid: { color: '#1e293b55' }
-                        }
-                    }
+                options: { 
+                    responsive: true, 
+                    maintainAspectRatio: false, 
+                    animation: { duration: 400 }, 
+                    plugins: { 
+                        legend: { labels: { color: '#94a3b8', font: { size: 14, weight: 'bold' } } }, 
+                        tooltip: { 
+                            callbacks: { label: function(ctx) { return ctx.dataset.label + ': ' + formatRp(ctx.raw); } }, 
+                            backgroundColor: '#0f1629', titleColor: '#f43f5e', bodyColor: '#f1f5f9', borderColor: '#334155', borderWidth: 1 
+                        } 
+                    }, 
+                    scales: { 
+                        x: { ticks: { color: '#94a3b8', font: { size: 14, weight: 'bold' } }, grid: { display: false } }, 
+                        y: { beginAtZero: true, ticks: { color: '#64748b', callback: function(v) { return formatRp(v); } }, grid: { color: '#1e293b55' } } 
+                    } 
                 }
             });
-        } catch (err) {
-            console.error('Error loadDashboard:', err);
-        }
+        } catch (err) { console.error('Error loadDashboard:', err); }
     }
 
     async function loadRekap() {
         try {
-            var jualData = await apiGet('Penjualan');
-            if (!jualData) return;
-
-            var today = getToday();
-            var tbody = document.getElementById('rekapJual');
+            var jualData = await apiGet('Penjualan'); 
+            if (!jualData) return; 
+            var today = getToday(); 
+            var tbody = document.getElementById('rekapJual'); 
             if (!tbody) return;
-
-            var html = '';
+            var html = ''; 
             var totalJual = 0, totalUntung = 0, adaData = false;
-
             for (var i = 1; i < jualData.length; i++) {
-                if (!jualData[i]) continue;
+                if (!jualData[i]) continue; 
                 if (jualData[i][0] == today) {
-                    adaData = true;
-                    var totalBayar = Number(jualData[i][5]);
+                    adaData = true; 
+                    var totalBayar = Number(jualData[i][5]); 
                     var untung = Number(jualData[i][6]);
-                    totalJual += totalBayar;
+                    totalJual += totalBayar; 
                     totalUntung += untung;
-                    html += '<tr>' +
-                        '<td>' + jualData[i][0] + '</td>' +
-                        '<td>' + jualData[i][1] + '</td>' +
-                        '<td>' + jualData[i][2] + ' Kg</td>' +
-                        '<td>' + formatRp(totalBayar) + '</td>' +
-                        '<td style="color:#10b981;font-weight:bold;">' + formatRp(untung) + '</td>' +
-                        '</tr>';
+                    html += '<tr><td>' + jualData[i][0] + '</td><td>' + jualData[i][1] + '</td><td>' + jualData[i][2] + ' Kg</td><td>' + formatRp(totalBayar) + '</td><td style="color:#10b981;font-weight:bold;">' + formatRp(untung) + '</td></tr>';
                 }
             }
-
-            if (!adaData) {
-                html = '<tr><td colspan="5" style="text-align:center;padding:30px;color:#64748b;">Belum ada penjualan hari ini.</td></tr>';
-            } else {
-                html += '<tr style="background:#1e1b4b;font-weight:bold;border-top:2px solid #10b98144;">' +
-                    '<td colspan="3" style="color:#10b981;text-align:right;">TOTAL HARI INI</td>' +
-                    '<td style="color:#00f0ff;">' + formatRp(totalJual) + '</td>' +
-                    '<td style="color:#10b981;">' + formatRp(totalUntung) + '</td>' +
-                    '</tr>';
+            if (!adaData) { 
+                html = '<tr><td colspan="5" style="text-align:center;padding:30px;color:#64748b;">Belum ada penjualan hari ini.</td></tr>'; 
+            } else { 
+                html += '<tr style="background:#1e1b4b;font-weight:bold;border-top:2px solid #10b98144;"><td colspan="3" style="color:#10b981;text-align:right;">TOTAL HARI INI</td><td style="color:#00f0ff;">' + formatRp(totalJual) + '</td><td style="color:#10b981;">' + formatRp(totalUntung) + '</td></tr>'; 
             }
             tbody.innerHTML = html;
-        } catch (err) {
-            console.error('Error loadRekap:', err);
-        }
+        } catch (err) { console.error('Error loadRekap:', err); }
     }
 
     async function loadStok() {
         try {
-            var stokData = await apiGet('Stok');
-            if (!stokData) return;
-            var tbody = document.getElementById('tabelStok');
-            if (!tbody) return;
+            var stokData = await apiGet('Stok'); 
+            if (!stokData) return; 
+            var tbody = document.getElementById('tabelStok'); 
+            if (!tbody) return; 
             var html = '';
             for (var i = 1; i < stokData.length; i++) {
-                if (!stokData[i]) continue;
-                var kgVal = parseFloat(stokData[i][1]);
-                var warnaStok = kgVal <= 2 ? 'style="color:#f43f5e;font-weight:bold;"' : '';
+                if (!stokData[i]) continue; 
+                var kgVal = parseFloat(stokData[i][1]); 
+                var warnaStok = kgVal <= 2 ? 'style="color:#f43f5e;font-weight:bold;"' : ''; 
                 var warning = kgVal <= 2 ? ' ⚠️' : '';
                 html += '<tr><td>' + stokData[i][0] + '</td><td ' + warnaStok + '>' + stokData[i][1] + ' Kg' + warning + '</td></tr>';
             }
             tbody.innerHTML = html;
-        } catch (err) {
-            console.error('Error loadStok:', err);
-        }
+        } catch (err) { console.error('Error loadStok:', err); }
     }
 
     async function loadLaporan() {
         try {
-            var bulan = document.getElementById('filterBulan').value;
-            var tahun = document.getElementById('filterTahun').value;
+            var bulan = document.getElementById('filterBulan').value; 
+            var tahun = document.getElementById('filterTahun').value; 
             var filterStr = tahun + '-' + bulan;
-
-            var jualData = await apiGet('Penjualan');
-            var modalData = await apiGet('Modal');
+            var jualData = await apiGet('Penjualan'); 
+            var modalData = await apiGet('Modal'); 
             if (!jualData || !modalData) return;
-
-            var totalPemasukan = 0, totalModal = 0, totalUntung = 0;
-            var html = '';
+            var totalPemasukan = 0, totalModal = 0, totalUntung = 0; 
+            var html = ''; 
             var dailyMap = {};
-
             for (var i = 1; i < jualData.length; i++) {
-                if (!jualData[i]) continue;
+                if (!jualData[i]) continue; 
                 if (String(jualData[i][0]).substring(0, 7) == filterStr) {
-                    var tglJual = jualData[i][0];
-                    var jualTotal = Number(jualData[i][5]);
+                    var tglJual = jualData[i][0]; 
+                    var jualTotal = Number(jualData[i][5]); 
                     var untungTotal = Number(jualData[i][6]);
-                    
-                    totalPemasukan += jualTotal;
+                    totalPemasukan += jualTotal; 
                     totalUntung += untungTotal;
-
-                    if (!dailyMap[tglJual]) {
-                        dailyMap[tglJual] = { jual: 0, untung: 0 };
+                    if (!dailyMap[tglJual]) { 
+                        dailyMap[tglJual] = { jual: 0, untung: 0 }; 
                     }
-                    dailyMap[tglJual].jual += jualTotal;
+                    dailyMap[tglJual].jual += jualTotal; 
                     dailyMap[tglJual].untung += untungTotal;
-
-                    html += '<tr>' +
-                        '<td>' + tglJual + '</td>' +
-                        '<td>' + jualData[i][1] + '</td>' +
-                        '<td>' + jualData[i][2] + ' Kg</td>' +
-                        '<td>' + formatRp(jualTotal) + '</td>' +
-                        '<td style="color:#10b981;">' + formatRp(untungTotal) + '</td>' +
-                        '</tr>';
+                    html += '<tr><td>' + tglJual + '</td><td>' + jualData[i][1] + '</td><td>' + jualData[i][2] + ' Kg</td><td>' + formatRp(jualTotal) + '</td><td style="color:#10b981;">' + formatRp(untungTotal) + '</td></tr>';
                 }
             }
-
-            for (var i = 1; i < modalData.length; i++) {
-                if (!modalData[i]) continue;
-                if (String(modalData[i][0]).substring(0, 7) == filterStr) {
-                    totalModal += Number(modalData[i][3]);
-                }
+            for (var i = 1; i < modalData.length; i++) { 
+                if (!modalData[i]) continue; 
+                if (String(modalData[i][0]).substring(0, 7) == filterStr) { 
+                    totalModal += Number(modalData[i][3]); 
+                } 
             }
-
-            document.getElementById('lPemasukan').innerText = formatRp(totalPemasukan);
-            document.getElementById('lModal').innerText = formatRp(totalModal);
+            document.getElementById('lPemasukan').innerText = formatRp(totalPemasukan); 
+            document.getElementById('lModal').innerText = formatRp(totalModal); 
             document.getElementById('lUntung').innerText = formatRp(totalUntung);
-
-            var dailyTbody = document.getElementById('tabelLaporanHarian');
-            var htmlDaily = '';
+            var dailyTbody = document.getElementById('tabelLaporanHarian'); 
+            var htmlDaily = ''; 
             var dates = Object.keys(dailyMap).sort();
-            for (var d = 0; d < dates.length; d++) {
-                var dt = dates[d];
-                htmlDaily += '<tr>' +
-                    '<td>' + dt + '</td>' +
-                    '<td style="color:#00f0ff;font-weight:bold;">' + formatRp(dailyMap[dt].jual) + '</td>' +
-                    '<td style="color:#10b981;font-weight:bold;">' + formatRp(dailyMap[dt].untung) + '</td>' +
-                    '</tr>';
+            for (var d = 0; d < dates.length; d++) { 
+                var dt = dates[d]; 
+                htmlDaily += '<tr><td>' + dt + '</td><td style="color:#00f0ff;font-weight:bold;">' + formatRp(dailyMap[dt].jual) + '</td><td style="color:#10b981;font-weight:bold;">' + formatRp(dailyMap[dt].untung) + '</td></tr>'; 
             }
-            if (htmlDaily === '') {
-                htmlDaily = '<tr><td colspan="3" style="text-align:center;padding:30px;color:#64748b;">Belum ada data harian bulan ini.</td></tr>';
+            if (htmlDaily === '') { 
+                htmlDaily = '<tr><td colspan="3" style="text-align:center;padding:30px;color:#64748b;">Belum ada data harian bulan ini.</td></tr>'; 
             }
             dailyTbody.innerHTML = htmlDaily;
-
-            var tbody = document.getElementById('tabelLaporan');
-            if (!tbody) return;
-            if (html === '') {
-                html = '<tr><td colspan="5" style="text-align:center;padding:30px;color:#64748b;">Belum ada data bulan ini.</td></tr>';
+            var tbody = document.getElementById('tabelLaporan'); 
+            if (!tbody) return; 
+            if (html === '') { 
+                html = '<tr><td colspan="5" style="text-align:center;padding:30px;color:#64748b;">Belum ada data bulan ini.</td></tr>'; 
             }
             tbody.innerHTML = html;
-        } catch (err) {
-            console.error('Error loadLaporan:', err);
-        }
+        } catch (err) { console.error('Error loadLaporan:', err); }
     }
     </script>
 </body>
