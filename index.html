@@ -110,7 +110,9 @@
         select:focus, input:focus { border-color: #00f0ff !important; box-shadow: 0 0 12px #00f0ff33 !important; }
         select option { background: #1a1a2e !important; color: #f1f5f9 !important; padding: 8px; }
         input[readonly] { background: #111827 !important; color: #10b981 !important; font-weight: 800; cursor: not-allowed; }
-        .table-input { padding: 10px !important; font-size: 16px !important; width: 110px !important; border-radius: 8px !important; box-sizing: border-box !important; text-align: center; }
+        
+        /* Anti Lag: Disable transition for table inputs */
+        .table-input { padding: 10px !important; font-size: 16px !important; width: 110px !important; border-radius: 8px !important; box-sizing: border-box !important; text-align: center; transition: none !important; }
 
         /* ===== SCROLLBAR ===== */
         ::-webkit-scrollbar { width: 8px; height: 8px; }
@@ -122,7 +124,7 @@
         .dark-table { width: 100%; border-collapse: collapse; table-layout: auto; }
         .dark-table thead tr { background: #1e1b4b; }
         .dark-table th { padding: 16px 20px; text-align: center; color: #00f0ff; font-weight: 700; border-bottom: 2px solid #00f0ff44; font-size: 16px; white-space: normal; word-wrap: break-word; }
-        .dark-table tbody tr { border-bottom: 1px solid #1e293b; transition: all 0.2s; }
+        .dark-table tbody tr { border-bottom: 1px solid #1e293b; transition: background 0.2s; }
         .dark-table tbody tr:hover { background: #1e1b4b66; }
         .dark-table td { padding: 12px 16px; color: #e2e8f0; font-size: 16px; vertical-align: middle; white-space: normal; word-wrap: break-word; word-break: break-word; font-weight: 500; text-align: center; }
         .dark-table td.left-align { text-align: left; }
@@ -366,16 +368,19 @@
                 </div>
             </div>
 
-            <!-- DAFTAR HARGA JUAL -->
+            <!-- DAFTAR HARGA JUAL (DIPISAH) -->
             <div id="page-daftarHarga" class="page-content hidden">
                 <h2 class="text-4xl font-extrabold mb-2 text-white mt-12 sm:mt-0"><i class="fas fa-tags text-amber-400 mr-3"></i> Daftar Harga & Perhitungan</h2>
                 <p class="text-gray-400 mb-8 text-lg">Klik tombol "Edit" untuk mengubah harga, lalu klik "Simpan". Klik "Hapus" untuk menghapus data.</p>
-                <div class="bg-[#0f1629] p-6 sm:p-8 rounded-3xl container-full border border-amber-500/20 card-glow-amber overflow-x-auto">
+                
+                <!-- TABEL BUMBU KG/ONS -->
+                <div class="bg-[#0f1629] p-6 sm:p-8 rounded-3xl container-full border border-amber-500/20 card-glow-amber overflow-x-auto mb-8">
+                    <h3 class="text-xl font-extrabold mb-4 text-amber-300"><i class="fas fa-pepper-hot mr-2"></i>Harga Bumbu (Kg/Ons)</h3>
                     <table class="dark-table" style="width:100%; min-width: 1800px;">
                         <thead>
                             <tr>
                                 <th>Nama Bumbu</th>
-                                <th>Modal/Pcs (Auto)</th>
+                                <th>Modal/Kg (Auto)</th>
                                 <th>Harga ½ Ons</th>
                                 <th>Harga 1 Ons</th>
                                 <th>Harga ½ Kg</th>
@@ -389,11 +394,26 @@
                                 <th>Harga 8 Kg</th>
                                 <th>Harga 9 Kg</th>
                                 <th>Harga 10 Kg</th>
-                                <th>Harga Pcs/Btl</th>
                                 <th>Aksi</th>
                             </tr>
                         </thead>
-                        <tbody id="tabelDaftarHarga"></tbody>
+                        <tbody id="tabelDaftarHargaKg"></tbody>
+                    </table>
+                </div>
+
+                <!-- TABEL BARANG PCS/BOTOL -->
+                <div class="bg-[#0f1629] p-6 sm:p-8 rounded-3xl container-full border border-purple-500/20 card-glow-purple overflow-x-auto">
+                    <h3 class="text-xl font-extrabold mb-4 text-purple-300"><i class="fas fa-prescription-bottle mr-2"></i>Harga Barang (Pcs/Botol/Bungkus)</h3>
+                    <table class="dark-table" style="width:100%; min-width: 800px;">
+                        <thead>
+                            <tr>
+                                <th>Nama Barang</th>
+                                <th>Modal/Pcs (Auto)</th>
+                                <th>Harga per Pcs/Btl</th>
+                                <th>Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabelDaftarHargaPcs"></tbody>
                     </table>
                 </div>
             </div>
@@ -457,8 +477,12 @@
 
     // ================= CACHE =================
     var dataCache = { Penjualan: null, Modal: null, Stok: null, Harga: null, Bumbu: null, lastUpdate: 0 };
-    function clearCache() { 
-        dataCache = { Penjualan: null, Modal: null, Stok: null, Harga: null, Bumbu: null, lastUpdate: 0 }; 
+    function clearCache(sheetName) { 
+        if (sheetName) {
+            dataCache[sheetName] = null;
+        } else {
+            dataCache = { Penjualan: null, Modal: null, Stok: null, Harga: null, Bumbu: null, lastUpdate: 0 }; 
+        }
     }
 
     // ================= KREDENSIAL LOGIN =================
@@ -492,6 +516,12 @@
         "Kecap Manis 1L", "Saos Tomat Botol", "Garam Halus 1Kg", "Garam Kasar"
     ];
     var DAFTAR_BUMBU = DAFTAR_BUMBU_DEFAULT.slice();
+
+    // ====== CEK APAKAH ITEM PCS ATAU KG ======
+    function isPcsItem(nama) {
+        var lowerNama = nama.toLowerCase();
+        return lowerNama.includes('kecap') || lowerNama.includes('saos') || lowerNama.includes('saus') || lowerNama.includes('garam') || lowerNama.includes('botol') || lowerNama.includes('btl') || lowerNama.includes('pcs') || lowerNama.includes('bungkus');
+    }
 
     // ====== ISI DROPDOWN BUMBU & BERAT ======
     async function populateDropdowns() {
@@ -635,8 +665,7 @@
 
     // ===== AUTO SWITCH MODE JUALAN =====
     function autoSwitchJualMode(nama) {
-        var lowerNama = nama.toLowerCase();
-        if (lowerNama.includes('kecap') || lowerNama.includes('saos') || lowerNama.includes('saus') || lowerNama.includes('garam') || lowerNama.includes('botol') || lowerNama.includes('btl') || lowerNama.includes('pcs')) {
+        if (isPcsItem(nama)) {
             toggleJualMode('pcs');
             if (document.getElementById('pcsNama')) document.getElementById('pcsNama').value = nama;
         } else {
@@ -770,7 +799,6 @@
 
     // ================= AUTO REFRESH HALAMAN AKTIF =================
     function refreshActivePage() {
-        clearCache();
         if (!document.getElementById('page-dashboard').classList.contains('hidden')) loadDashboard();
         if (!document.getElementById('page-rekap').classList.contains('hidden')) loadRekap();
         if (!document.getElementById('page-stok').classList.contains('hidden')) loadStok();
@@ -818,7 +846,7 @@
     }
 
     function apiPost(sheet, data, actionType = 'write') {
-        clearCache();
+        clearCache(sheet); // Bersihkan cache spesifik agar tidak ngelag
         return new Promise(function(resolve, reject) {
             var cbName = '_jcb_' + Date.now() + '_' + Math.floor(Math.random() * 999999);
             var script = document.createElement('script'); 
@@ -1045,44 +1073,60 @@
                 for (var i = 1; i < hargaData.length; i++) {
                     if (hargaData[i] && hargaData[i][0]) {
                         var n = String(hargaData[i][0]).trim();
-                        hargaMap[n] = hargaData[i]; // Simpan seluruh array
+                        hargaMap[n] = hargaData[i]; 
                     }
                 }
             }
             
-            var tbody = document.getElementById('tabelDaftarHarga'); 
-            if (!tbody) return; 
-            var html = '';
-            var fields = ['halfOns', 'ons', 'halfKg', 'kg1', 'kg2', 'kg3', 'kg4', 'kg5', 'kg6', 'kg7', 'kg8', 'kg9', 'kg10', 'pcs'];
-            // Index di Sheet Harga:
-            // 0: NamaBumbu
-            // 1: halfOns, 2: ons, 3: halfKg
-            // 4: kg1, 5: kg2, 6: kg3, 7: kg4, 8: kg5, 9: kg6, 10: kg7, 11: kg8, 12: kg9, 13: kg10
-            // 14: pcs
+            var tbodyKg = document.getElementById('tabelDaftarHargaKg'); 
+            var tbodyPcs = document.getElementById('tabelDaftarHargaPcs'); 
+            if (!tbodyKg || !tbodyPcs) return; 
+
+            var htmlKg = '';
+            var htmlPcs = '';
+            var fieldsKg = ['halfOns', 'ons', 'halfKg', 'kg1', 'kg2', 'kg3', 'kg4', 'kg5', 'kg6', 'kg7', 'kg8', 'kg9', 'kg10'];
             
             for (var b = 0; b < DAFTAR_BUMBU.length; b++) {
                 var namaB = DAFTAR_BUMBU[b]; 
                 var mPerKg = modalMap[namaB] || 0;
                 var hMap = hargaMap[namaB] || [];
+                var safeName = namaB.replace(/'/g, "\\'");
                 
-                html += '<tr>' +
-                    '<td class="left-align"><b>' + namaB + '</b></td>' +
-                    '<td style="color:#f43f5e; font-weight:bold;">' + formatRp(mPerKg) + '</td>';
+                if (isPcsItem(namaB)) {
+                    var valPcs = hMap[14] || ''; // Index 14 for HargaPcs
+                    htmlPcs += '<tr>' +
+                        '<td class="left-align"><b>' + namaB + '</b></td>' +
+                        '<td style="color:#f43f5e; font-weight:bold;">' + formatRp(mPerKg) + '</td>' +
+                        '<td><input type="text" inputmode="numeric" id="harga_pcs_' + b + '" value="' + valPcs + '" placeholder="0" oninput="formatNominal(this)" class="table-input" readonly></td>' +
+                        '<td><div class="flex gap-1 justify-center">' +
+                            '<button onclick="editHarga(this)" class="bg-yellow-600 hover:bg-yellow-500 text-white p-2 rounded-lg text-xs cursor-pointer flex-1">Edit</button>' +
+                            '<button onclick="simpanHargaPcs(' + b + ', \'' + safeName + '\', this)" class="bg-blue-600 hover:bg-blue-500 text-white p-2 rounded-lg text-xs cursor-pointer flex-1">Simpan</button>' +
+                            '<button onclick="hapusHarga(\'' + safeName + '\')" class="bg-red-600 hover:bg-red-500 text-white p-2 rounded-lg text-xs cursor-pointer flex-1">Hapus</button>' +
+                        '</div></td>' +
+                        '</tr>';
+                } else {
+                    htmlKg += '<tr>' +
+                        '<td class="left-align"><b>' + namaB + '</b></td>' +
+                        '<td style="color:#f43f5e; font-weight:bold;">' + formatRp(mPerKg) + '</td>';
+                        
+                    for (var f = 0; f < fieldsKg.length; f++) {
+                        var val = hMap[f + 1] || '';
+                        htmlKg += '<td><input type="text" inputmode="numeric" id="harga_' + fieldsKg[f] + '_' + b + '" value="' + val + '" placeholder="0" oninput="formatNominal(this)" class="table-input" readonly></td>';
+                    }
                     
-                for (var f = 0; f < fields.length; f++) {
-                    var val = hMap[f + 1] || ''; // Ambil dari index 1 sampai 14
-                    html += '<td><input type="text" inputmode="numeric" id="harga_' + fields[f] + '_' + b + '" value="' + val + '" placeholder="0" oninput="formatNominal(this)" class="table-input" readonly></td>';
+                    htmlKg += '<td><div class="flex gap-1 justify-center">' +
+                        '<button onclick="editHarga(this)" class="bg-yellow-600 hover:bg-yellow-500 text-white p-2 rounded-lg text-xs cursor-pointer flex-1">Edit</button>' +
+                        '<button onclick="simpanSatuHarga(' + b + ', \'' + safeName + '\', this)" class="bg-blue-600 hover:bg-blue-500 text-white p-2 rounded-lg text-xs cursor-pointer flex-1">Simpan</button>' +
+                        '<button onclick="hapusHarga(\'' + safeName + '\')" class="bg-red-600 hover:bg-red-500 text-white p-2 rounded-lg text-xs cursor-pointer flex-1">Hapus</button>' +
+                        '</div></td>' +
+                        '</tr>';
                 }
-                
-                html += '<td><div class="flex gap-1 justify-center">' +
-                    '<button onclick="editHarga(this)" class="bg-yellow-600 hover:bg-yellow-500 text-white p-2 rounded-lg text-xs cursor-pointer flex-1">Edit</button>' +
-                    '<button onclick="simpanSatuHarga(' + b + ', \'' + namaB.replace(/'/g, "\\'") + '\', this)" class="bg-blue-600 hover:bg-blue-500 text-white p-2 rounded-lg text-xs cursor-pointer flex-1">Simpan</button>' +
-                    '<button onclick="hapusHarga(\'' + namaB.replace(/'/g, "\\'") + '\')" class="bg-red-600 hover:bg-red-500 text-white p-2 rounded-lg text-xs cursor-pointer flex-1">Hapus</button>' +
-                    '</div></td>' +
-                    '</tr>';
             }
-            tbody.innerHTML = html;
-        } catch (err) { console.error('Error loadDaftarHarga:', err); }
+            tbodyKg.innerHTML = htmlKg;
+            tbodyPcs.innerHTML = htmlPcs;
+        } catch (err) { 
+            console.error('Error loadDaftarHarga:', err); 
+        }
     }
 
     function editHarga(btn) {
@@ -1095,11 +1139,30 @@
     }
 
     async function simpanSatuHarga(index, nama, btn) {
-        var data = [nama];
-        var fields = ['halfOns', 'ons', 'halfKg', 'kg1', 'kg2', 'kg3', 'kg4', 'kg5', 'kg6', 'kg7', 'kg8', 'kg9', 'kg10', 'pcs'];
+        var data = new Array(15).fill(0);
+        data[0] = nama;
+        var fields = ['halfOns', 'ons', 'halfKg', 'kg1', 'kg2', 'kg3', 'kg4', 'kg5', 'kg6', 'kg7', 'kg8', 'kg9', 'kg10'];
         for (var i = 0; i < fields.length; i++) {
-            data.push(parseNominal(document.getElementById('harga_' + fields[i] + '_' + index)));
+            var el = document.getElementById('harga_' + fields[i] + '_' + index);
+            data[i + 1] = el ? parseNominal(el) : 0;
         }
+        try {
+            await apiPost('Harga', data);
+            if (btn) {
+                var row = btn.parentNode.parentNode;
+                var inputs = row.querySelectorAll('input.table-input');
+                inputs.forEach(function(input) { input.setAttribute('readonly', true); });
+            }
+        } catch (err) { 
+            alert('Gagal menyimpan: ' + err.message); 
+        }
+    }
+
+    async function simpanHargaPcs(index, nama, btn) {
+        var data = new Array(15).fill(0);
+        data[0] = nama;
+        var el = document.getElementById('harga_pcs_' + index);
+        data[14] = el ? parseNominal(el) : 0; // Index 14 for Pcs
         try {
             await apiPost('Harga', data);
             if (btn) {
