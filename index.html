@@ -369,7 +369,7 @@
             <!-- DAFTAR HARGA JUAL -->
             <div id="page-daftarHarga" class="page-content hidden">
                 <h2 class="text-4xl font-extrabold mb-2 text-white mt-12 sm:mt-0"><i class="fas fa-tags text-amber-400 mr-3"></i> Daftar Harga & Perhitungan</h2>
-                <p class="text-gray-400 mb-8 text-lg">Ketik harga langsung di kolom, lalu klik tombol "Simpan". Klik "Hapus" untuk menghapus data.</p>
+                <p class="text-gray-400 mb-8 text-lg">Klik tombol "Edit" untuk mengubah harga, lalu klik "Simpan". Klik "Hapus" untuk menghapus data.</p>
                 <div class="bg-[#0f1629] p-6 sm:p-8 rounded-3xl container-full border border-amber-500/20 card-glow-amber overflow-x-auto">
                     <table class="dark-table" style="width:100%; min-width: 1800px;">
                         <thead>
@@ -488,7 +488,8 @@
         "Jeruk Purut Kering", "Kulit Jeruk Kering", "Ebi Kering", "Udang Kering",
         "Rebon Kering", "Teri Kering", "Jamur Kering", "Kelapa Kering", "Kacang Tanah",
         "Kacang Hijau", "Kacang Kedelai", "Kacang Merah", "Biji Labu",
-        "Biji Bunga Matahari", "Flaxseed", "Chia Seed", "Bumbu Babas"
+        "Biji Bunga Matahari", "Flaxseed", "Chia Seed", "Bumbu Babas",
+        "Kecap Manis 1L", "Saos Tomat Botol", "Garam Halus 1Kg", "Garam Kasar"
     ];
     var DAFTAR_BUMBU = DAFTAR_BUMBU_DEFAULT.slice();
 
@@ -1070,12 +1071,13 @@
                     
                 for (var f = 0; f < fields.length; f++) {
                     var val = hMap[f + 1] || ''; // Ambil dari index 1 sampai 14
-                    html += '<td><input type="text" inputmode="numeric" id="harga_' + fields[f] + '_' + b + '" value="' + val + '" placeholder="0" oninput="formatNominal(this)" class="table-input"></td>';
+                    html += '<td><input type="text" inputmode="numeric" id="harga_' + fields[f] + '_' + b + '" value="' + val + '" placeholder="0" oninput="formatNominal(this)" class="table-input" readonly></td>';
                 }
                 
-                html += '<td><div class="flex gap-2 justify-center">' +
-                    '<button onclick="simpanSatuHarga(' + b + ', \'' + namaB.replace(/'/g, "\\'") + '\')" class="bg-blue-600 hover:bg-blue-500 text-white p-2 rounded-lg text-xs cursor-pointer w-full">Simpan</button>' +
-                    '<button onclick="hapusHarga(\'' + namaB.replace(/'/g, "\\'") + '\')" class="bg-red-600 hover:bg-red-500 text-white p-2 rounded-lg text-xs cursor-pointer w-full">Hapus</button>' +
+                html += '<td><div class="flex gap-1 justify-center">' +
+                    '<button onclick="editHarga(this)" class="bg-yellow-600 hover:bg-yellow-500 text-white p-2 rounded-lg text-xs cursor-pointer flex-1">Edit</button>' +
+                    '<button onclick="simpanSatuHarga(' + b + ', \'' + namaB.replace(/'/g, "\\'") + '\', this)" class="bg-blue-600 hover:bg-blue-500 text-white p-2 rounded-lg text-xs cursor-pointer flex-1">Simpan</button>' +
+                    '<button onclick="hapusHarga(\'' + namaB.replace(/'/g, "\\'") + '\')" class="bg-red-600 hover:bg-red-500 text-white p-2 rounded-lg text-xs cursor-pointer flex-1">Hapus</button>' +
                     '</div></td>' +
                     '</tr>';
             }
@@ -1083,7 +1085,16 @@
         } catch (err) { console.error('Error loadDaftarHarga:', err); }
     }
 
-    async function simpanSatuHarga(index, nama) {
+    function editHarga(btn) {
+        var row = btn.parentNode.parentNode;
+        var inputs = row.querySelectorAll('input.table-input');
+        inputs.forEach(function(input) {
+            input.removeAttribute('readonly');
+            input.focus();
+        });
+    }
+
+    async function simpanSatuHarga(index, nama, btn) {
         var data = [nama];
         var fields = ['halfOns', 'ons', 'halfKg', 'kg1', 'kg2', 'kg3', 'kg4', 'kg5', 'kg6', 'kg7', 'kg8', 'kg9', 'kg10', 'pcs'];
         for (var i = 0; i < fields.length; i++) {
@@ -1091,7 +1102,11 @@
         }
         try {
             await apiPost('Harga', data);
-            alert('Harga untuk ' + nama + ' disimpan!');
+            if (btn) {
+                var row = btn.parentNode.parentNode;
+                var inputs = row.querySelectorAll('input.table-input');
+                inputs.forEach(function(input) { input.setAttribute('readonly', true); });
+            }
         } catch (err) { 
             alert('Gagal menyimpan: ' + err.message); 
         }
