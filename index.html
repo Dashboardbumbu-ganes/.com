@@ -109,7 +109,7 @@
         input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(1) brightness(1.5); cursor: pointer; opacity: 0.9; }
         select:focus, input:focus { border-color: #00f0ff !important; box-shadow: 0 0 12px #00f0ff33 !important; }
         select option { background: #1a1a2e !important; color: #f1f5f9 !important; padding: 8px; }
-        input[readonly] { background: #111827 !important; color: #10b981 !important; font-weight: 800; cursor: not-allowed; }
+        input[readonly] { background: #111827 !important; color: #10b981 !important; font-weight: 800; cursor: not-allowed; border-color: #334155 !important; }
         
         /* Anti Lag: Disable transition for table inputs */
         .table-input { padding: 10px !important; font-size: 16px !important; width: 110px !important; border-radius: 8px !important; box-sizing: border-box !important; text-align: center; transition: none !important; }
@@ -207,7 +207,6 @@
                     <li onclick="showPage('catatJual',this)" class="sidebar-item cursor-pointer p-4 rounded-xl text-lg font-semibold flex items-center transition text-gray-400"><i class="fas fa-cash-register w-8 text-xl"></i> Catat Penjualan</li>
                     <li onclick="showPage('daftarHarga',this)" class="sidebar-item cursor-pointer p-4 rounded-xl text-lg font-semibold flex items-center transition text-gray-400"><i class="fas fa-tags w-8 text-xl"></i> Daftar Harga Jual</li>
                     <li onclick="showPage('stok',this)" class="sidebar-item cursor-pointer p-4 rounded-xl text-lg font-semibold flex items-center transition text-gray-400"><i class="fas fa-boxes-stacked w-8 text-xl"></i> Stok Bumbu</li>
-                    <li onclick="showPage('tambahBarang',this)" class="sidebar-item cursor-pointer p-4 rounded-xl text-lg font-semibold flex items-center transition text-gray-400"><i class="fas fa-plus-circle w-8 text-xl"></i> Tambah Barang</li>
                     <li onclick="showPage('laporan',this)" class="sidebar-item cursor-pointer p-4 rounded-xl text-lg font-semibold flex items-center transition text-gray-400"><i class="fas fa-file-invoice-dollar w-8 text-xl"></i> Kas Keuangan</li>
                 </ul>
             </div>
@@ -365,11 +364,20 @@
                 </div>
             </div>
 
-            <!-- DAFTAR HARGA JUAL (DIPISAH) -->
+            <!-- DAFTAR HARGA JUAL (GABUNG TAMBAH BARANG) -->
             <div id="page-daftarHarga" class="page-content hidden">
                 <h2 class="text-4xl font-extrabold mb-2 text-white mt-12 sm:mt-0"><i class="fas fa-tags text-amber-400 mr-3"></i> Daftar Harga & Perhitungan</h2>
-                <p class="text-gray-400 mb-8 text-lg">Ketik harga langsung di kolom, lalu klik tombol "Simpan". Klik "Hapus" untuk menghapus data.</p>
+                <p class="text-gray-400 mb-8 text-lg">Klik "Edit" untuk mengubah harga, lalu klik "Simpan". Klik "Hapus" untuk menghapus data.</p>
                 
+                <!-- FORM TAMBAH BARANG DIGABUNG DISINI -->
+                <div class="bg-[#0f1629] p-6 rounded-3xl container-full border border-emerald-500/20 card-glow-emerald mb-8">
+                    <h3 class="text-xl font-extrabold mb-4 text-emerald-300"><i class="fas fa-plus-circle mr-2"></i>Tambah Barang / Bumbu Baru</h3>
+                    <div class="flex flex-col md:flex-row gap-4">
+                        <input type="text" id="namaBarangBaru" placeholder="Ketik nama barang (Contoh: Kecap Manis 1L)" class="w-full md:flex-1">
+                        <button onclick="simpanBarang()" class="bg-emerald-600 hover:bg-emerald-500 text-white p-4 rounded-xl text-lg font-bold cursor-pointer whitespace-nowrap">Tambah Barang</button>
+                    </div>
+                </div>
+
                 <!-- TABEL BARANG PCS/BOTOL DI ATAS -->
                 <div class="bg-[#0f1629] p-6 sm:p-8 rounded-3xl container-full border border-purple-500/20 card-glow-purple overflow-x-auto mb-8">
                     <h3 class="text-xl font-extrabold mb-4 text-purple-300"><i class="fas fa-prescription-bottle mr-2"></i>Harga Barang (Pcs/Botol/Bungkus)</h3>
@@ -420,20 +428,6 @@
                 <h2 class="text-4xl font-extrabold mb-8 text-white mt-12 sm:mt-0"><i class="fas fa-boxes-stacked text-amber-400 mr-3"></i> Sisa Stok Bumbu</h2>
                 <div class="bg-[#0f1629] p-8 rounded-3xl container-full border border-amber-500/20 card-glow-amber overflow-x-auto">
                     <table class="dark-table"><thead><tr><th><i class="fas fa-pepper-hot mr-2"></i>Nama Bumbu</th><th><i class="fas fa-weight-hanging mr-2"></i>Sisa Stok (Kg)</th></tr></thead><tbody id="tabelStok"></tbody></table>
-                </div>
-            </div>
-
-            <!-- TAMBAH BARANG -->
-            <div id="page-tambahBarang" class="page-content hidden">
-                <h2 class="text-4xl font-extrabold mb-8 text-white mt-12 sm:mt-0"><i class="fas fa-plus-circle text-green-400 mr-3"></i> Tambah Barang / Bumbu</h2>
-                <div class="bg-[#0f1629] p-6 sm:p-10 rounded-3xl container-full border border-emerald-500/20 card-glow-emerald mb-8">
-                    <label class="block text-lg font-bold mb-2 text-emerald-400">Nama Barang Baru</label>
-                    <input type="text" id="namaBarangBaru" placeholder="Contoh: Lada Hitam Super / Kecap 1L" class="w-full mb-6">
-                    <button onclick="simpanBarang()" class="w-full bg-gradient-to-r from-emerald-500 to-teal-600 text-white p-4 rounded-xl text-xl font-bold hover:from-emerald-400 hover:to-teal-500 transition transform hover:scale-105 shadow-lg active:scale-95 cursor-pointer"><i class="fas fa-save mr-2"></i> Simpan Barang</button>
-                </div>
-                <div class="bg-[#0f1629] p-8 rounded-3xl container-full border border-gray-700">
-                    <h3 class="text-xl font-extrabold mb-4 text-white">Daftar Barang Tersimpan</h3>
-                    <div id="daftarBarangList" class="grid grid-cols-1 md:grid-cols-3 gap-4 text-white"></div>
                 </div>
             </div>
 
@@ -776,7 +770,7 @@
         }
         var bottomNavBtns = document.querySelectorAll('.bottom-nav button'); 
         bottomNavBtns.forEach(function(btn) { btn.classList.remove('active'); });
-        var navMap = { 'dashboard': 0, 'rekap': 1, 'catatJual': 2, 'catatModal': 3, 'stok': 4, 'laporan': 5, 'daftarHarga': 6, 'tambahBarang': 7 };
+        var navMap = { 'dashboard': 0, 'rekap': 1, 'catatJual': 2, 'catatModal': 3, 'stok': 4, 'laporan': 5, 'daftarHarga': 6 };
         if (navMap[page] !== undefined && bottomNavBtns[navMap[page]]) { 
             bottomNavBtns[navMap[page]].classList.add('active'); 
         }
@@ -786,7 +780,6 @@
         if (page === 'stok') loadStok();
         if (page === 'laporan') loadLaporan();
         if (page === 'daftarHarga') loadDaftarHarga();
-        if (page === 'tambahBarang') loadDaftarBarang();
         if (page === 'catatJual') toggleJualMode('kg');
         document.getElementById('appBackground').scrollTop = 0;
     }
@@ -797,7 +790,6 @@
         if (!document.getElementById('page-stok').classList.contains('hidden')) loadStok();
         if (!document.getElementById('page-laporan').classList.contains('hidden')) loadLaporan();
         if (!document.getElementById('page-daftarHarga').classList.contains('hidden')) loadDaftarHarga();
-        if (!document.getElementById('page-tambahBarang').classList.contains('hidden')) loadDaftarBarang();
     }
 
     function apiGet(sheet) {
@@ -1010,19 +1002,8 @@
             await apiPost('Bumbu', [nama]);
             document.getElementById('namaBarangBaru').value = '';
             await populateDropdowns(); 
-            loadDaftarBarang();
+            loadDaftarHarga(); // LANGSUNG RELOAD TABEL HARGA AGAR MUNCUL DI LIST
         } catch (err) { alert('Gagal menyimpan: ' + err.message); }
-    }
-
-    // PERBAIKAN: Menggunakan Index agar tidak ada error kutipan
-    async function hapusBarang(index) {
-        var nama = DAFTAR_BUMBU[index];
-        if (!confirm('Yakin hapus barang "' + nama + '" dari daftar?')) return;
-        try {
-            await apiPost('Bumbu', [nama], 'delete');
-            await populateDropdowns(); 
-            loadDaftarBarang();
-        } catch (err) { alert('Gagal menghapus: ' + err.message); }
     }
 
     async function hapusHarga(index) {
@@ -1034,25 +1015,11 @@
         } catch (err) { alert('Gagal menghapus: ' + err.message); }
     }
 
-    async function loadDaftarBarang() {
-        var container = document.getElementById('daftarBarangList'); 
-        if (!container) return;
-        var html = '';
-        for (var i = 0; i < DAFTAR_BUMBU.length; i++) {
-            html += '<div class="bg-gray-800 p-3 rounded-xl text-sm flex items-center justify-between">' +
-                    '<span class="flex items-center"><i class="fas fa-pepper-hot text-amber-400 mr-2"></i> ' + DAFTAR_BUMBU[i] + '</span>' +
-                    '<button onclick="hapusBarang(' + i + ')" class="bg-red-600 hover:bg-red-500 text-white text-xs px-2 py-1 rounded cursor-pointer ml-2">Hapus</button>' +
-                    '</div>';
-        }
-        container.innerHTML = html;
-    }
-
     async function loadDaftarHarga() {
         var tbodyKg = document.getElementById('tabelDaftarHargaKg'); 
         var tbodyPcs = document.getElementById('tabelDaftarHargaPcs'); 
         if (!tbodyKg || !tbodyPcs) return; 
 
-        // Tampilkan Loading
         tbodyKg.innerHTML = '<tr><td colspan="16" style="text-align:center;padding:20px;">Memuat data bumbu...</td></tr>';
         tbodyPcs.innerHTML = '<tr><td colspan="4" style="text-align:center;padding:20px;">Memuat data barang...</td></tr>';
 
@@ -1097,9 +1064,10 @@
                     htmlPcs += '<tr>' +
                         '<td class="left-align"><b>' + namaB + '</b></td>' +
                         '<td style="color:#f43f5e; font-weight:bold;">' + formatRp(mPerKg) + '</td>' +
-                        '<td><input type="text" inputmode="numeric" id="harga_pcs_' + b + '" value="' + valPcs + '" placeholder="0" oninput="formatNominal(this)" class="table-input"></td>' +
+                        '<td><input type="text" inputmode="numeric" id="harga_pcs_' + b + '" value="' + valPcs + '" placeholder="0" oninput="formatNominal(this)" class="table-input" readonly></td>' +
                         '<td><div class="flex gap-1 justify-center">' +
-                            '<button onclick="simpanHargaPcs(' + b + ')" class="bg-blue-600 hover:bg-blue-500 text-white p-2 rounded-lg text-xs cursor-pointer flex-1">Simpan</button>' +
+                            '<button onclick="editHarga(this)" class="bg-yellow-600 hover:bg-yellow-500 text-white p-2 rounded-lg text-xs cursor-pointer flex-1">Edit</button>' +
+                            '<button onclick="simpanHargaPcs(' + b + ', this)" class="bg-blue-600 hover:bg-blue-500 text-white p-2 rounded-lg text-xs cursor-pointer flex-1">Simpan</button>' +
                             '<button onclick="hapusHarga(' + b + ')" class="bg-red-600 hover:bg-red-500 text-white p-2 rounded-lg text-xs cursor-pointer flex-1">Hapus</button>' +
                         '</div></td>' +
                         '</tr>';
@@ -1110,11 +1078,12 @@
                         
                     for (var f = 0; f < fieldsKg.length; f++) {
                         var val = hMap[f + 1] || '';
-                        htmlKg += '<td><input type="text" inputmode="numeric" id="harga_' + fieldsKg[f] + '_' + b + '" value="' + val + '" placeholder="0" oninput="formatNominal(this)" class="table-input"></td>';
+                        htmlKg += '<td><input type="text" inputmode="numeric" id="harga_' + fieldsKg[f] + '_' + b + '" value="' + val + '" placeholder="0" oninput="formatNominal(this)" class="table-input" readonly></td>';
                     }
                     
                     htmlKg += '<td><div class="flex gap-1 justify-center">' +
-                        '<button onclick="simpanSatuHarga(' + b + ')" class="bg-blue-600 hover:bg-blue-500 text-white p-2 rounded-lg text-xs cursor-pointer flex-1">Simpan</button>' +
+                        '<button onclick="editHarga(this)" class="bg-yellow-600 hover:bg-yellow-500 text-white p-2 rounded-lg text-xs cursor-pointer flex-1">Edit</button>' +
+                        '<button onclick="simpanSatuHarga(' + b + ', this)" class="bg-blue-600 hover:bg-blue-500 text-white p-2 rounded-lg text-xs cursor-pointer flex-1">Simpan</button>' +
                         '<button onclick="hapusHarga(' + b + ')" class="bg-red-600 hover:bg-red-500 text-white p-2 rounded-lg text-xs cursor-pointer flex-1">Hapus</button>' +
                         '</div></td>' +
                         '</tr>';
@@ -1127,7 +1096,18 @@
         }
     }
 
-    async function simpanSatuHarga(index) {
+    function editHarga(btn) {
+        var tr = btn.closest('tr'); 
+        if (!tr) return;
+        var inputs = tr.querySelectorAll('input.table-input');
+        inputs.forEach(function(input) {
+            input.removeAttribute('readonly');
+            input.classList.add('border-cyan-500');
+            input.focus();
+        });
+    }
+
+    async function simpanSatuHarga(index, btn) {
         var nama = DAFTAR_BUMBU[index];
         var data = new Array(15).fill(0);
         data[0] = nama;
@@ -1139,12 +1119,20 @@
         try {
             await apiPost('Harga', data);
             alert('Harga untuk ' + nama + ' disimpan!');
+            if (btn) {
+                var tr = btn.closest('tr');
+                var inputs = tr.querySelectorAll('input.table-input');
+                inputs.forEach(function(input) {
+                    input.setAttribute('readonly', true);
+                    input.classList.remove('border-cyan-500');
+                });
+            }
         } catch (err) { 
             alert('Gagal menyimpan: ' + err.message); 
         }
     }
 
-    async function simpanHargaPcs(index) {
+    async function simpanHargaPcs(index, btn) {
         var nama = DAFTAR_BUMBU[index];
         var data = new Array(15).fill(0);
         data[0] = nama;
@@ -1153,6 +1141,14 @@
         try {
             await apiPost('Harga', data);
             alert('Harga untuk ' + nama + ' disimpan!');
+            if (btn) {
+                var tr = btn.closest('tr');
+                var inputs = tr.querySelectorAll('input.table-input');
+                inputs.forEach(function(input) {
+                    input.setAttribute('readonly', true);
+                    input.classList.remove('border-cyan-500');
+                });
+            }
         } catch (err) { 
             alert('Gagal menyimpan: ' + err.message); 
         }
