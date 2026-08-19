@@ -111,8 +111,8 @@
         select option { background: #1a1a2e !important; color: #f1f5f9 !important; padding: 8px; }
         input[readonly] { background: #111827 !important; color: #10b981 !important; font-weight: 800; cursor: not-allowed; border-color: #334155 !important; }
         
-        /* Anti Lag: Disable transition for table inputs */
         .table-input { padding: 10px !important; font-size: 16px !important; width: 110px !important; border-radius: 8px !important; box-sizing: border-box !important; text-align: center; transition: none !important; }
+        .table-input.editing { border-color: #f59e0b !important; color: #fbbf24 !important; background: #1a1a2e !important; cursor: text !important; }
 
         /* ===== SCROLLBAR ===== */
         ::-webkit-scrollbar { width: 8px; height: 8px; }
@@ -124,7 +124,7 @@
         .dark-table { width: 100%; border-collapse: collapse; table-layout: auto; }
         .dark-table thead tr { background: #1e1b4b; }
         .dark-table th { padding: 16px 20px; text-align: center; color: #00f0ff; font-weight: 700; border-bottom: 2px solid #00f0ff44; font-size: 16px; white-space: normal; word-wrap: break-word; }
-        .dark-table tbody tr { border-bottom: 1px solid #1e293b; transition: background 0.2s; }
+        .dark-table tbody tr { border-bottom: 1px solid #1e293b; }
         .dark-table tbody tr:hover { background: #1e1b4b66; }
         .dark-table td { padding: 12px 16px; color: #e2e8f0; font-size: 16px; vertical-align: middle; white-space: normal; word-wrap: break-word; word-break: break-word; font-weight: 500; text-align: center; }
         .dark-table td.left-align { text-align: left; }
@@ -465,15 +465,45 @@
     var API_URL = 'https://script.google.com/macros/s/AKfycbzDmMJFAxEbSc-66g16wdn6lIW3BCNJeqZaYsI8R6LpBieAoTdt49S3yYu3HQQvmluBUg/exec';
     var salesChartInstance = null;
     var modalChartInstance = null;
+    var lastHargaRenderSignature = '';
 
-    // ================= CACHE =================
-    var dataCache = { Penjualan: null, Modal: null, Stok: null, Harga: null, Bumbu: null, lastUpdate: 0 };
+    // ================= CACHE MEMORY + LOCALSTORAGE (ANTI LAG SUPER CEPAT) =================
+    var dataCache = { Penjualan: null, Modal: null, Stok: null, Harga: null, Bumbu: null, lastUpdate: {} };
+    
     function clearCache(sheetName) { 
         if (sheetName) {
             dataCache[sheetName] = null;
+            dataCache.lastUpdate[sheetName] = 0;
+            try { localStorage.removeItem('bg_cache_' + sheetName); } catch (e) {}
         } else {
-            dataCache = { Penjualan: null, Modal: null, Stok: null, Harga: null, Bumbu: null, lastUpdate: 0 }; 
+            dataCache = { Penjualan: null, Modal: null, Stok: null, Harga: null, Bumbu: null, lastUpdate: {} };
+            try {
+                localStorage.removeItem('bg_cache_Penjualan');
+                localStorage.removeItem('bg_cache_Modal');
+                localStorage.removeItem('bg_cache_Stok');
+                localStorage.removeItem('bg_cache_Harga');
+                localStorage.removeItem('bg_cache_Bumbu');
+            } catch (e) {}
         }
+    }
+    
+    // Ambil data dari localStorage (INSTAN, tanpa tunggu internet)
+    function getLocalCache(sheet) {
+        try {
+            var raw = localStorage.getItem('bg_cache_' + sheet);
+            if (raw) {
+                var parsed = JSON.parse(raw);
+                if (parsed && parsed.data) return parsed.data;
+            }
+        } catch (e) {}
+        return null;
+    }
+    
+    // Simpan data ke localStorage supaya buka menu langsung muncul
+    function setLocalCache(sheet, data) {
+        try {
+            localStorage.setItem('bg_cache_' + sheet, JSON.stringify({ data: data, time: Date.now() }));
+        } catch (e) {}
     }
 
     // ================= KREDENSIAL LOGIN =================
@@ -795,7 +825,7 @@
     function apiGet(sheet) {
         return new Promise(function(resolve, reject) {
             var now = Date.now();
-            if (dataCache[sheet] && (now - dataCache.lastUpdate < 30000)) { 
+            if (dataCache[sheet] && dataCache.lastUpdate[sheet] && (now - dataCache.lastUpdate[sheet] < 30000)) { 
                 resolve(dataCache[sheet]); 
                 return; 
             }
@@ -808,7 +838,8 @@
                 delete window[cbName]; 
                 if (script.parentNode) script.parentNode.removeChild(script); 
                 dataCache[sheet] = data; 
-                dataCache.lastUpdate = Date.now(); 
+                dataCache.lastUpdate[sheet] = Date.now(); 
+                setLocalCache(sheet, data); 
                 resolve(data); 
             };
             script.src = API_URL + '?sheet=' + sheet + '&action=read&callback=' + cbName;
@@ -830,7 +861,8 @@
         });
     }
 
-    function apiPost(sheet, data, actionType = 'write') {
+    function apiPost(sheet, data, actionType) {
+        actionType = actionType || 'write';
         clearCache(sheet); 
         return new Promise(function(resolve, reject) {
             var cbName = '_jcb_' + Date.now() + '_' + Math.floor(Math.random() * 999999);
@@ -892,6 +924,8 @@
         if (pField) pField.value = '';
         hideLoginError(); 
         loadDashboard();
+        // PRELOAD DATA DI BELAKANG LAYAR supaya semua menu langsung muncul tanpa delay
+        apiGet('Harga').catch(function(){}); 
     }
 
     function logout() {
@@ -1002,12 +1036,13 @@
             await apiPost('Bumbu', [nama]);
             document.getElementById('namaBarangBaru').value = '';
             await populateDropdowns(); 
-            loadDaftarHarga(); // LANGSUNG RELOAD TABEL HARGA AGAR MUNCUL DI LIST
+            loadDaftarHarga(); 
         } catch (err) { alert('Gagal menyimpan: ' + err.message); }
     }
 
     async function hapusHarga(index) {
         var nama = DAFTAR_BUMBU[index];
+        if (!nama) return;
         if (!confirm('Yakin hapus data harga untuk "' + nama + '"?')) return;
         try {
             await apiPost('Harga', [nama], 'delete');
@@ -1015,85 +1050,114 @@
         } catch (err) { alert('Gagal menghapus: ' + err.message); }
     }
 
+    // ================= LOAD DAFTAR HARGA (INSTAN + UPDATE DI BELAKANG) =================
     async function loadDaftarHarga() {
         var tbodyKg = document.getElementById('tabelDaftarHargaKg'); 
         var tbodyPcs = document.getElementById('tabelDaftarHargaPcs'); 
         if (!tbodyKg || !tbodyPcs) return; 
 
-        tbodyKg.innerHTML = '<tr><td colspan="16" style="text-align:center;padding:20px;">Memuat data bumbu...</td></tr>';
-        tbodyPcs.innerHTML = '<tr><td colspan="4" style="text-align:center;padding:20px;">Memuat data barang...</td></tr>';
+        // ===== LANGKAH 1: LANGSUNG TAMPIL DARI CACHE (INSTAN, 0 DETIK) =====
+        var cachedModal = getLocalCache('Modal');
+        var cachedHarga = getLocalCache('Harga');
+        if (cachedModal && cachedHarga) {
+            var cachedSig = JSON.stringify(cachedModal) + '||' + JSON.stringify(cachedHarga);
+            if (cachedSig !== lastHargaRenderSignature) {
+                lastHargaRenderSignature = cachedSig;
+                renderDaftarHarga(cachedModal, cachedHarga);
+            }
+        } else {
+            tbodyKg.innerHTML = '<tr><td colspan="16" style="text-align:center;padding:20px;color:#64748b;">Memuat data bumbu...</td></tr>';
+            tbodyPcs.innerHTML = '<tr><td colspan="4" style="text-align:center;padding:20px;color:#64748b;">Memuat data barang...</td></tr>';
+        }
 
+        // ===== LANGKAH 2: AMBIL DATA TERBARU DI BELAKANG LAYAR (PARALEL BIAR CEPAT) =====
         try {
-            var modalData = await apiGet('Modal'); 
-            var hargaData = null;
-            try { hargaData = await apiGet('Harga'); } catch (e) {}
+            var modalPromise = apiGet('Modal').catch(function() { return null; });
+            var hargaPromise = apiGet('Harga').catch(function() { return null; });
+            var modalData = await modalPromise;
+            var hargaData = await hargaPromise;
             
-            var modalMap = {};
-            if (modalData && Array.isArray(modalData)) {
-                for (var i = 1; i < modalData.length; i++) {
-                    if (modalData[i] && modalData[i][1]) {
-                        var nama = String(modalData[i][1]).trim(); 
-                        var kg = parseFloat(modalData[i][2]); 
-                        var total = Number(modalData[i][3]);
-                        if (kg > 0 && total > 0) { modalMap[nama] = total / kg; }
-                    }
+            if (modalData || hargaData) {
+                var freshSig = JSON.stringify(modalData) + '||' + JSON.stringify(hargaData);
+                // Render ulang HANYA kalau data server berbeda (supaya yang sedang diketik tidak hilang)
+                if (freshSig !== lastHargaRenderSignature) {
+                    lastHargaRenderSignature = freshSig;
+                    renderDaftarHarga(modalData, hargaData);
                 }
             }
-            
-            var hargaMap = {};
-            if (hargaData && Array.isArray(hargaData)) {
-                for (var i = 1; i < hargaData.length; i++) {
-                    if (hargaData[i] && hargaData[i][0]) {
-                        var n = String(hargaData[i][0]).trim();
-                        hargaMap[n] = hargaData[i]; 
-                    }
-                }
-            }
-            
-            var htmlKg = '';
-            var htmlPcs = '';
-            var fieldsKg = ['halfOns', 'ons', 'halfKg', 'kg1', 'kg2', 'kg3', 'kg4', 'kg5', 'kg6', 'kg7', 'kg8', 'kg9', 'kg10'];
-            
-            for (var b = 0; b < DAFTAR_BUMBU.length; b++) {
-                var namaB = DAFTAR_BUMBU[b]; 
-                var mPerKg = modalMap[namaB] || 0;
-                var hMap = hargaMap[namaB] || [];
-                
-                if (isPcsItem(namaB)) {
-                    var valPcs = hMap[14] || ''; 
-                    htmlPcs += '<tr>' +
-                        '<td class="left-align"><b>' + namaB + '</b></td>' +
-                        '<td style="color:#f43f5e; font-weight:bold;">' + formatRp(mPerKg) + '</td>' +
-                        '<td><input type="text" inputmode="numeric" id="harga_pcs_' + b + '" value="' + valPcs + '" placeholder="0" oninput="formatNominal(this)" class="table-input" readonly></td>' +
-                        '<td><div class="flex gap-1 justify-center">' +
-                            '<button onclick="editHarga(this)" class="bg-yellow-600 hover:bg-yellow-500 text-white p-2 rounded-lg text-xs cursor-pointer flex-1">Edit</button>' +
-                            '<button onclick="simpanHargaPcs(' + b + ', this)" class="bg-blue-600 hover:bg-blue-500 text-white p-2 rounded-lg text-xs cursor-pointer flex-1">Simpan</button>' +
-                            '<button onclick="hapusHarga(' + b + ')" class="bg-red-600 hover:bg-red-500 text-white p-2 rounded-lg text-xs cursor-pointer flex-1">Hapus</button>' +
-                        '</div></td>' +
-                        '</tr>';
-                } else {
-                    htmlKg += '<tr>' +
-                        '<td class="left-align"><b>' + namaB + '</b></td>' +
-                        '<td style="color:#f43f5e; font-weight:bold;">' + formatRp(mPerKg) + '</td>';
-                        
-                    for (var f = 0; f < fieldsKg.length; f++) {
-                        var val = hMap[f + 1] || '';
-                        htmlKg += '<td><input type="text" inputmode="numeric" id="harga_' + fieldsKg[f] + '_' + b + '" value="' + val + '" placeholder="0" oninput="formatNominal(this)" class="table-input" readonly></td>';
-                    }
-                    
-                    htmlKg += '<td><div class="flex gap-1 justify-center">' +
-                        '<button onclick="editHarga(this)" class="bg-yellow-600 hover:bg-yellow-500 text-white p-2 rounded-lg text-xs cursor-pointer flex-1">Edit</button>' +
-                        '<button onclick="simpanSatuHarga(' + b + ', this)" class="bg-blue-600 hover:bg-blue-500 text-white p-2 rounded-lg text-xs cursor-pointer flex-1">Simpan</button>' +
-                        '<button onclick="hapusHarga(' + b + ')" class="bg-red-600 hover:bg-red-500 text-white p-2 rounded-lg text-xs cursor-pointer flex-1">Hapus</button>' +
-                        '</div></td>' +
-                        '</tr>';
-                }
-            }
-            tbodyKg.innerHTML = htmlKg;
-            tbodyPcs.innerHTML = htmlPcs;
         } catch (err) { 
             console.error('Error loadDaftarHarga:', err); 
         }
+    }
+
+    function renderDaftarHarga(modalData, hargaData) {
+        var tbodyKg = document.getElementById('tabelDaftarHargaKg'); 
+        var tbodyPcs = document.getElementById('tabelDaftarHargaPcs'); 
+        if (!tbodyKg || !tbodyPcs) return; 
+        
+        var modalMap = {};
+        if (modalData && Array.isArray(modalData)) {
+            for (var i = 1; i < modalData.length; i++) {
+                if (modalData[i] && modalData[i][1]) {
+                    var nama = String(modalData[i][1]).trim(); 
+                    var kg = parseFloat(modalData[i][2]); 
+                    var total = Number(modalData[i][3]);
+                    if (kg > 0 && total > 0) { modalMap[nama] = total / kg; }
+                }
+            }
+        }
+        
+        var hargaMap = {};
+        if (hargaData && Array.isArray(hargaData)) {
+            for (var i = 1; i < hargaData.length; i++) {
+                if (hargaData[i] && hargaData[i][0]) {
+                    var n = String(hargaData[i][0]).trim();
+                    hargaMap[n] = hargaData[i]; 
+                }
+            }
+        }
+        
+        var htmlKg = '';
+        var htmlPcs = '';
+        var fieldsKg = ['halfOns', 'ons', 'halfKg', 'kg1', 'kg2', 'kg3', 'kg4', 'kg5', 'kg6', 'kg7', 'kg8', 'kg9', 'kg10'];
+        
+        for (var b = 0; b < DAFTAR_BUMBU.length; b++) {
+            var namaB = DAFTAR_BUMBU[b]; 
+            var mPerKg = modalMap[namaB] || 0;
+            var hMap = hargaMap[namaB] || [];
+            
+            if (isPcsItem(namaB)) {
+                var valPcs = hMap[14] || ''; 
+                htmlPcs += '<tr>' +
+                    '<td class="left-align"><b>' + namaB + '</b></td>' +
+                    '<td style="color:#f43f5e; font-weight:bold;">' + formatRp(mPerKg) + '</td>' +
+                    '<td><input type="text" inputmode="numeric" id="harga_pcs_' + b + '" value="' + valPcs + '" placeholder="0" oninput="formatNominal(this)" class="table-input" readonly></td>' +
+                    '<td><div class="flex gap-1 justify-center">' +
+                        '<button onclick="editHarga(this)" class="bg-yellow-600 hover:bg-yellow-500 text-white p-2 rounded-lg text-xs cursor-pointer flex-1">Edit</button>' +
+                        '<button onclick="simpanHargaPcs(' + b + ', this)" class="bg-blue-600 hover:bg-blue-500 text-white p-2 rounded-lg text-xs cursor-pointer flex-1">Simpan</button>' +
+                        '<button onclick="hapusHarga(' + b + ')" class="bg-red-600 hover:bg-red-500 text-white p-2 rounded-lg text-xs cursor-pointer flex-1">Hapus</button>' +
+                    '</div></td>' +
+                    '</tr>';
+            } else {
+                htmlKg += '<tr>' +
+                    '<td class="left-align"><b>' + namaB + '</b></td>' +
+                    '<td style="color:#f43f5e; font-weight:bold;">' + formatRp(mPerKg) + '</td>';
+                    
+                for (var f = 0; f < fieldsKg.length; f++) {
+                    var val = hMap[f + 1] || '';
+                    htmlKg += '<td><input type="text" inputmode="numeric" id="harga_' + fieldsKg[f] + '_' + b + '" value="' + val + '" placeholder="0" oninput="formatNominal(this)" class="table-input" readonly></td>';
+                }
+                
+                htmlKg += '<td><div class="flex gap-1 justify-center">' +
+                    '<button onclick="editHarga(this)" class="bg-yellow-600 hover:bg-yellow-500 text-white p-2 rounded-lg text-xs cursor-pointer flex-1">Edit</button>' +
+                    '<button onclick="simpanSatuHarga(' + b + ', this)" class="bg-blue-600 hover:bg-blue-500 text-white p-2 rounded-lg text-xs cursor-pointer flex-1">Simpan</button>' +
+                    '<button onclick="hapusHarga(' + b + ')" class="bg-red-600 hover:bg-red-500 text-white p-2 rounded-lg text-xs cursor-pointer flex-1">Hapus</button>' +
+                    '</div></td>' +
+                    '</tr>';
+            }
+        }
+        tbodyKg.innerHTML = htmlKg;
+        tbodyPcs.innerHTML = htmlPcs;
     }
 
     function editHarga(btn) {
@@ -1102,14 +1166,15 @@
         var inputs = tr.querySelectorAll('input.table-input');
         inputs.forEach(function(input) {
             input.removeAttribute('readonly');
-            input.classList.add('border-cyan-500');
+            input.classList.add('editing');
             input.focus();
         });
     }
 
     async function simpanSatuHarga(index, btn) {
         var nama = DAFTAR_BUMBU[index];
-        var data = new Array(15).fill(0);
+        if (!nama) return;
+        var data = new Array(14).fill(0);
         data[0] = nama;
         var fields = ['halfOns', 'ons', 'halfKg', 'kg1', 'kg2', 'kg3', 'kg4', 'kg5', 'kg6', 'kg7', 'kg8', 'kg9', 'kg10'];
         for (var i = 0; i < fields.length; i++) {
@@ -1121,11 +1186,13 @@
             alert('Harga untuk ' + nama + ' disimpan!');
             if (btn) {
                 var tr = btn.closest('tr');
-                var inputs = tr.querySelectorAll('input.table-input');
-                inputs.forEach(function(input) {
-                    input.setAttribute('readonly', true);
-                    input.classList.remove('border-cyan-500');
-                });
+                if (tr) {
+                    var inputs = tr.querySelectorAll('input.table-input');
+                    inputs.forEach(function(input) {
+                        input.setAttribute('readonly', true);
+                        input.classList.remove('editing');
+                    });
+                }
             }
         } catch (err) { 
             alert('Gagal menyimpan: ' + err.message); 
@@ -1134,6 +1201,7 @@
 
     async function simpanHargaPcs(index, btn) {
         var nama = DAFTAR_BUMBU[index];
+        if (!nama) return;
         var data = new Array(15).fill(0);
         data[0] = nama;
         var el = document.getElementById('harga_pcs_' + index);
@@ -1143,11 +1211,13 @@
             alert('Harga untuk ' + nama + ' disimpan!');
             if (btn) {
                 var tr = btn.closest('tr');
-                var inputs = tr.querySelectorAll('input.table-input');
-                inputs.forEach(function(input) {
-                    input.setAttribute('readonly', true);
-                    input.classList.remove('border-cyan-500');
-                });
+                if (tr) {
+                    var inputs = tr.querySelectorAll('input.table-input');
+                    inputs.forEach(function(input) {
+                        input.setAttribute('readonly', true);
+                        input.classList.remove('editing');
+                    });
+                }
             }
         } catch (err) { 
             alert('Gagal menyimpan: ' + err.message); 
