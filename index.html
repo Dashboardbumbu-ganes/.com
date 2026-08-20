@@ -130,13 +130,21 @@
         .table-input { padding: 10px !important; font-size: 16px !important; width: 110px !important; border-radius: 8px !important; box-sizing: border-box !important; text-align: center; transition: none !important; white-space: nowrap; }
         .table-input.editing { border-color: #f59e0b !important; color: #fbbf24 !important; background: #1a1a2e !important; cursor: text !important; }
 
-        /* ===== TOMBOL MODE (TULISAN SATU BARIS, TIDAK PATAH) ===== */
         .mode-btn { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-        /* ===== PREVIEW SATUAN ===== */
         .preview-box { padding: 14px 18px; border-radius: 14px; background: #111827; border: 2px dashed #334155; text-align: center; }
         .preview-box .label { color: #94a3b8; font-size: 14px; }
         .preview-box .value { color: #22d3ee; font-size: 22px; font-weight: 800; }
+
+        /* ===== BILL BERJALAN ===== */
+        .bill-box { background: #0f1629; border: 2px solid #10b98166; border-radius: 20px; padding: 24px; }
+        .bill-item-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 10px 12px; background: #111827; border: 1px solid #1e293b; border-radius: 12px; margin-bottom: 8px; }
+        .bill-item-row .nm { font-weight: 700; color: #e2e8f0; }
+        .bill-item-row .dt { color: #94a3b8; font-size: 14px; }
+        .bill-item-row .pr { color: #10b981; font-weight: 800; }
+        .btn-hapus-item { background: #7f1d1d; color: #fecaca; border: none; border-radius: 8px; padding: 8px 12px; cursor: pointer; font-weight: 700; }
+        .btn-print { background: linear-gradient(90deg, #f59e0b, #d97706); color: #fff; }
+        .btn-print:hover { filter: brightness(1.1); }
 
         /* ===== SCROLLBAR ===== */
         ::-webkit-scrollbar { width: 8px; height: 10px; }
@@ -145,8 +153,6 @@
         ::-webkit-scrollbar-thumb:hover { background: #00f0ff; }
 
         /* ===== DARK TABLE ===== */
-        /* PERBAIKAN UTAMA: white-space: nowrap supaya tulisan memanjang ke samping
-           satu baris, tidak pecah ke bawah. Tabel di-scroll ke kiri-kanan. */
         .dark-table { width: 100%; border-collapse: collapse; table-layout: auto; }
         .dark-table thead tr { background: #1e1b4b; }
         .dark-table th { padding: 16px 20px; text-align: center; color: #00f0ff; font-weight: 700; border-bottom: 2px solid #00f0ff44; font-size: 16px; white-space: nowrap; }
@@ -155,10 +161,9 @@
         .dark-table td { padding: 12px 16px; color: #e2e8f0; font-size: 16px; vertical-align: middle; white-space: nowrap; font-weight: 500; text-align: center; }
         .dark-table td.left-align { text-align: left; }
 
-        /* ===== CONTAINER FULL WIDTH ===== */
         .container-full { width: 100% !important; max-width: 100% !important; }
 
-        /* ===== MOBILE SIDEBAR BAWAH ===== */
+        /* ===== MOBILE ===== */
         #sidebar { transition: transform 0.3s ease; }
         .bottom-nav { display: none; position: fixed; bottom: 0; left: 0; right: 0; background: #0f1629; border-top: 2px solid #00f0ff33; z-index: 60; box-shadow: 0 -4px 25px #00000088; padding: 8px 4px; justify-content: space-around; align-items: center; }
         .bottom-nav button { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 8px 2px; color: #64748b; font-size: 10px; font-weight: 600; background: transparent; border: none; cursor: pointer; transition: all 0.2s; border-radius: 10px; margin: 0 2px; white-space: nowrap; overflow: hidden; }
@@ -186,7 +191,6 @@
             .bumbu-ganes-text-login { font-size: 1.8rem !important; }
             .dark-table th { font-size: 13px !important; }
             .dark-table td { font-size: 13px !important; }
-            /* Tabel TIDAK menyempit: biarkan lebar asli, digeser scroll kiri-kanan */
             .table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
         }
         #hamburgerBtn { display: none; }
@@ -315,7 +319,7 @@
                 </div>
             </div>
 
-            <!-- CATAT MODAL (2 MODE: BUMBU KG & BARANG PCS/BOTOL) -->
+            <!-- CATAT MODAL -->
             <div id="page-catatModal" class="page-content hidden">
                 <h2 class="text-4xl font-extrabold mb-8 text-white mt-12 sm:mt-0"><i class="fas fa-truck-loading text-cyan-400 mr-3"></i> Catat Belanja Modal</h2>
                 
@@ -324,7 +328,6 @@
                     <button type="button" id="btnModalModePcs" onclick="toggleModalMode('pcs')" class="mode-btn p-4 rounded-xl text-base sm:text-lg font-bold border-2 border-gray-700 text-gray-500 transition cursor-pointer">Belanja Barang (Pcs/Botol)</button>
                 </div>
 
-                <!-- FORM MODAL BUMBU (KG/ONS) -->
                 <div id="formModalKg" class="bg-[#0f1629] p-6 sm:p-10 rounded-3xl container-full border border-cyan-500/20 card-glow-cyan mb-8">
                     <div class="grid grid-cols-2 gap-6 mb-6">
                         <div><label class="block text-lg font-bold mb-2 text-cyan-400">Tanggal Belanja</label><input type="date" id="modalTgl" class="w-full"></div>
@@ -344,7 +347,6 @@
                     <button onclick="simpanModal()" class="w-full bg-gradient-to-r from-cyan-500 to-blue-600 text-white p-4 rounded-xl text-xl font-bold hover:from-cyan-400 hover:to-blue-500 transition transform hover:scale-105 shadow-lg active:scale-95 cursor-pointer"><i class="fas fa-save mr-2"></i> Simpan Modal Bumbu</button>
                 </div>
 
-                <!-- FORM MODAL BARANG (PCS/BOTOL) -->
                 <div id="formModalPcs" class="hidden bg-[#0f1629] p-6 sm:p-10 rounded-3xl container-full border border-cyan-500/20 card-glow-cyan mb-8">
                     <div class="grid grid-cols-2 gap-6 mb-6">
                         <div><label class="block text-lg font-bold mb-2 text-cyan-400">Tanggal Belanja</label><input type="date" id="modalPcsTgl" class="w-full"></div>
@@ -378,7 +380,7 @@
                 </div>
             </div>
 
-            <!-- CATAT PENJUALAN (2 MODE, DROPDOWN TERPISAH) -->
+            <!-- CATAT PENJUALAN -->
             <div id="page-catatJual" class="page-content hidden">
                 <h2 class="text-4xl font-extrabold mb-8 text-white mt-12 sm:mt-0"><i class="fas fa-cash-register text-emerald-400 mr-3"></i> Catat Penjualan</h2>
                 
@@ -387,7 +389,7 @@
                     <button type="button" id="btnModePcs" onclick="toggleJualMode('pcs')" class="mode-btn p-4 rounded-xl text-base sm:text-lg font-bold border-2 border-gray-700 text-gray-500 transition cursor-pointer">Mode: Barang (Pcs/Btl)</button>
                 </div>
 
-                <!-- FORM KG (HANYA BUMBU) -->
+                <!-- FORM KG -->
                 <div id="formKg" class="bg-[#0f1629] p-6 sm:p-10 rounded-3xl container-full border border-emerald-500/20 card-glow-emerald mb-8">
                     <div class="grid grid-cols-2 gap-6 mb-6">
                         <div><label class="block text-lg font-bold mb-2 text-emerald-400">Tanggal Jual</label><input type="date" id="jualTgl" class="w-full"></div>
@@ -417,10 +419,13 @@
                             <p class="text-xs text-gray-400 mt-1">*= (Harga per Kg × Jumlah Kg) − Diskon. Terisi sendiri.</p>
                         </div>
                     </div>
-                    <button onclick="simpanJual()" class="w-full bg-gradient-to-r from-emerald-500 to-teal-600 text-white p-4 rounded-xl text-xl font-bold hover:from-emerald-400 hover:to-teal-500 transition transform hover:scale-105 shadow-lg active:scale-95 cursor-pointer"><i class="fas fa-receipt mr-2"></i> Simpan Penjualan Bumbu</button>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <button onclick="simpanJual()" class="w-full bg-gradient-to-r from-emerald-500 to-teal-600 text-white p-4 rounded-xl text-lg font-bold hover:from-emerald-400 hover:to-teal-500 transition transform hover:scale-105 shadow-lg active:scale-95 cursor-pointer"><i class="fas fa-receipt mr-2"></i> Simpan Saja (Tanpa Cetak)</button>
+                        <button onclick="tambahKeBillKg()" class="w-full bg-gradient-to-r from-amber-500 to-orange-600 text-white p-4 rounded-xl text-lg font-bold hover:from-amber-400 hover:to-orange-500 transition transform hover:scale-105 shadow-lg active:scale-95 cursor-pointer"><i class="fas fa-cart-plus mr-2"></i> + Masukkan ke Bill (Cetak Nanti)</button>
+                    </div>
                 </div>
 
-                <!-- FORM PCS (HANYA KECAP/SAOS/GARAM, DENGAN SATUAN) -->
+                <!-- FORM PCS -->
                 <div id="formPcs" class="hidden bg-[#0f1629] p-6 sm:p-10 rounded-3xl container-full border border-emerald-500/20 card-glow-emerald mb-8">
                     <div class="grid grid-cols-2 gap-6 mb-6">
                         <div><label class="block text-lg font-bold mb-2 text-emerald-400">Tanggal Jual</label><input type="date" id="pcsTgl" class="w-full"></div>
@@ -463,16 +468,41 @@
                             <p class="text-xs text-gray-400 mt-1">*= (Harga per satuan × Jumlah) − Diskon. Terisi sendiri.</p>
                         </div>
                     </div>
-                    <button onclick="simpanJualPcs()" class="w-full bg-gradient-to-r from-emerald-500 to-teal-600 text-white p-4 rounded-xl text-xl font-bold hover:from-emerald-400 hover:to-teal-500 transition transform hover:scale-105 shadow-lg active:scale-95 cursor-pointer"><i class="fas fa-receipt mr-2"></i> Simpan Penjualan Barang</button>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <button onclick="simpanJualPcs()" class="w-full bg-gradient-to-r from-emerald-500 to-teal-600 text-white p-4 rounded-xl text-lg font-bold hover:from-emerald-400 hover:to-teal-500 transition transform hover:scale-105 shadow-lg active:scale-95 cursor-pointer"><i class="fas fa-receipt mr-2"></i> Simpan Saja (Tanpa Cetak)</button>
+                        <button onclick="tambahKeBillPcs()" class="w-full bg-gradient-to-r from-amber-500 to-orange-600 text-white p-4 rounded-xl text-lg font-bold hover:from-amber-400 hover:to-orange-500 transition transform hover:scale-105 shadow-lg active:scale-95 cursor-pointer"><i class="fas fa-cart-plus mr-2"></i> + Masukkan ke Bill (Cetak Nanti)</button>
+                    </div>
+                </div>
+
+                <!-- ===== BILL BERJALAN ===== -->
+                <div id="billBox" class="bill-box mb-8">
+                    <h3 class="text-2xl font-extrabold mb-4 text-amber-300"><i class="fas fa-receipt mr-2"></i>🧾 BILL BERJALAN (Struk Cetak)</h3>
+                    <div id="billItems">
+                        <p class="text-gray-500 text-base mb-4">Belum ada item. Isi form di atas lalu klik "+ Masukkan ke Bill". Bisa banyak barang dalam 1 bill!</p>
+                    </div>
+                    <div class="text-right text-2xl font-extrabold text-emerald-300 mb-6">TOTAL: <span id="billTotal">Rp 0</span></div>
+                    <div class="grid grid-cols-2 gap-6 mb-6">
+                        <div>
+                            <label class="block text-lg font-bold mb-2 text-amber-400">💵 Uang Bayar (Tunai)</label>
+                            <input type="text" inputmode="numeric" id="billTunai" placeholder="Contoh: 250.000" oninput="formatNominal(this); updateKembalian()" class="w-full" style="border-color:#f59e0b66 !important;">
+                        </div>
+                        <div>
+                            <label class="block text-lg font-bold mb-2 text-emerald-400">🔁 Kembalian (Otomatis)</label>
+                            <input type="text" id="billKembali" readonly class="w-full" value="Rp 0">
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <button onclick="kosongkanBill()" class="w-full bg-red-900/40 text-red-300 p-4 rounded-xl text-lg font-bold border border-red-800/40 hover:bg-red-900/60 transition cursor-pointer"><i class="fas fa-trash mr-2"></i> Kosongkan Bill</button>
+                        <button onclick="simpanDanCetakBill()" class="w-full btn-print text-white p-4 rounded-xl text-xl font-bold transition transform hover:scale-105 shadow-lg active:scale-95 cursor-pointer"><i class="fas fa-print mr-2"></i> 💾 Simpan & 🖨️ Cetak Bill</button>
+                    </div>
                 </div>
             </div>
 
-            <!-- DAFTAR HARGA JUAL (GABUNG TAMBAH BARANG) -->
+            <!-- DAFTAR HARGA JUAL -->
             <div id="page-daftarHarga" class="page-content hidden">
                 <h2 class="text-4xl font-extrabold mb-2 text-white mt-12 sm:mt-0"><i class="fas fa-tags text-amber-400 mr-3"></i> Daftar Harga & Perhitungan</h2>
-                <p class="text-gray-400 mb-8 text-lg">Klik "Edit" untuk mengubah harga, lalu "Simpan". Klik "Hapus" untuk menghapus barang. Barang baru langsung masuk ke dropdown Catat Modal & Catat Penjualan.</p>
+                <p class="text-gray-400 mb-8 text-lg">Klik "Edit" untuk mengubah harga, lalu "Simpan". Klik "Hapus" untuk menghapus barang.</p>
                 
-                <!-- FORM TAMBAH BARANG -->
                 <div class="bg-[#0f1629] p-6 rounded-3xl container-full border border-emerald-500/20 card-glow-emerald mb-8">
                     <h3 class="text-xl font-extrabold mb-4 text-emerald-300"><i class="fas fa-plus-circle mr-2"></i>Tambah Barang / Bumbu Baru</h3>
                     <div class="flex flex-col md:flex-row gap-4">
@@ -482,7 +512,6 @@
                     <p class="text-xs text-gray-500 mt-3">*Nama yang ada kata "Kecap/Saos/Garam/Botol/Bungkus" otomatis masuk kategori Pcs/Botol. Selain itu masuk kategori Bumbu (Kg).</p>
                 </div>
 
-                <!-- TABEL BARANG PCS/BOTOL DI ATAS -->
                 <div class="bg-[#0f1629] p-6 sm:p-8 rounded-3xl container-full border border-purple-500/20 card-glow-purple table-scroll mb-8">
                     <h3 class="text-xl font-extrabold mb-4 text-purple-300"><i class="fas fa-prescription-bottle mr-2"></i>Harga Barang (Pcs/Botol/Bungkus)</h3>
                     <table class="dark-table" style="width:100%; min-width: 800px;">
@@ -498,7 +527,6 @@
                     </table>
                 </div>
 
-                <!-- TABEL BUMBU KG/ONS DI BAWAH -->
                 <div class="bg-[#0f1629] p-6 sm:p-8 rounded-3xl container-full border border-amber-500/20 card-glow-amber table-scroll">
                     <h3 class="text-xl font-extrabold mb-4 text-amber-300"><i class="fas fa-pepper-hot mr-2"></i>Harga Bumbu (Kg/Ons)</h3>
                     <table class="dark-table" style="width:100%; min-width: 1800px;">
@@ -535,7 +563,7 @@
                 </div>
             </div>
 
-            <!-- LAPORAN / KAS KEUNGAN -->
+            <!-- LAPORAN -->
             <div id="page-laporan" class="page-content hidden">
                 <h2 class="text-4xl font-extrabold mb-8 text-white mt-12 sm:mt-0"><i class="fas fa-file-invoice-dollar text-purple-400 mr-3"></i> Kas Keuangan</h2>
                 <div class="flex gap-4 mb-8 items-center flex-wrap">
@@ -571,6 +599,32 @@
     var modalChartInstance = null;
     var lastHargaRenderSignature = '';
 
+    // ================= INFO TOKO UNTUK STRUK (EDIT DI SINI) =================
+    var TOKO_NAMA  = "BUMBU GANES";
+    var TOKO_SUB1  = "BUMBU BASAH & REMPAH KERING";
+    var TOKO_SUB2  = "TERLENGKAP";
+    var TOKO_INFO1 = "SIAP TERIMA PESANAN :";
+    var TOKO_INFO2 = "PESTA, ULANG TAHUN, DSB.";
+    var TOKO_HUBUNGI = "HUBUNGI : 083198051792";
+
+    // ================= FORMAT ANGKA STRUK (140000 -> 140.000) =================
+    function fmtNum(angka) {
+        var n = Math.round(Number(angka) || 0);
+        var neg = n < 0;
+        n = Math.abs(n);
+        var s = String(n);
+        var out = '';
+        var count = 0;
+        for (var i = s.length - 1; i >= 0; i--) {
+            out = s.charAt(i) + out;
+            count++;
+            if (count % 3 === 0 && i > 0) {
+                out = '.' + out;
+            }
+        }
+        return (neg ? '-' : '') + out;
+    }
+
     // ================= NOTIFIKASI TOAST =================
     var toastTimer = null;
     function showToast(msg, isError) {
@@ -585,7 +639,7 @@
         }, 2500);
     }
 
-    // ================= CACHE MEMORY + LOCALSTORAGE =================
+    // ================= CACHE =================
     var dataCache = { Penjualan: null, Modal: null, Stok: null, Harga: null, Bumbu: null, lastUpdate: {} };
     
     function clearCache(sheetName) { 
@@ -669,7 +723,6 @@
         return lowerNama.includes('kecap') || lowerNama.includes('saos') || lowerNama.includes('saus') || lowerNama.includes('garam') || lowerNama.includes('botol') || lowerNama.includes('btl') || lowerNama.includes('pcs') || lowerNama.includes('bungkus');
     }
 
-    // ====== FORMAT JUMLAH JELAS ======
     function formatJumlah(val) {
         if (val === null || val === undefined) return '';
         var s = String(val).trim();
@@ -678,14 +731,12 @@
         return s + ' Kg';
     }
 
-    // ====== LABEL STOK JELAS ======
     function stockLabel(nama, val) {
         var n = parseFloat(val);
         if (isNaN(n)) n = 0;
         return n + (isPcsItem(nama) ? ' Pcs' : ' Kg');
     }
 
-    // ====== ISI DROPDOWN (DIPISAH: KG vs PCS) ======
     function fillSelectWithOptions(id, list, label) {
         var sel = document.getElementById(id);
         if (!sel) return;
@@ -832,7 +883,6 @@
         }
     }
 
-    // ===== PREVIEW SATUAN =====
     function updateModalKgPreview() {
         var el = document.getElementById('modalKgPreview');
         if (!el) return;
@@ -969,6 +1019,7 @@
         updateModalPcsPreview();
         updatePcsPreview();
         updateModalKgPreview();
+        renderBill();
         var yr = new Date().getFullYear(); 
         var yrSelect = document.getElementById('filterTahun');
         if (yrSelect) {
@@ -1202,7 +1253,7 @@
         });
     }
 
-    // ============ SIMPAN MODAL BARANG PCS/BOTOL ============
+    // ============ SIMPAN MODAL BARANG PCS ============
     function simpanModalPcs() {
         var tgl = document.getElementById('modalPcsTgl').value; 
         var nama = document.getElementById('modalPcsNama').value;
@@ -1313,6 +1364,312 @@
             showToast('GAGAL: ' + err.message, true);
         });
     }
+
+    // ============================================================
+    // ============ BILL BERJALAN + CETAK STRUK ============
+    // ============================================================
+    var billCart = [];
+
+    function tambahKeBillKg() {
+        var tgl = document.getElementById('jualTgl').value;
+        var nama = document.getElementById('jualNama').value;
+        var kg = parseFloat(document.getElementById('jualKg').value);
+        var harga = parseNominal(document.getElementById('jualHarga'));
+        var potong = parseNominal(document.getElementById('jualPotong')) || 0;
+        var total = parseNominal(document.getElementById('jualTotal'));
+        if (!tgl || !nama || !kg || !total) { showToast('Lengkapi dulu datanya sebelum masuk ke bill!', true); return; }
+        if (kg <= 0 || total <= 0) { showToast('Jumlah dan total harus lebih dari 0!', true); return; }
+
+        billCart.push({
+            tgl: tgl,
+            nama: nama,
+            jumlahLabel: kg + ' Kg',
+            qtyNum: kg,
+            hargaSatuan: harga,
+            potongan: potong,
+            subtotal: total
+        });
+
+        document.getElementById('jualNama').value = '';
+        document.getElementById('jualKg').value = '';
+        document.getElementById('jualKgPilihan').value = '';
+        document.getElementById('jualKg').style.display = 'none';
+        document.getElementById('jualHarga').value = '';
+        document.getElementById('jualPotong').value = '0';
+        document.getElementById('jualTotal').value = '';
+        renderBill();
+        showToast('✓ Masuk bill: ' + nama);
+    }
+
+    function tambahKeBillPcs() {
+        var tgl = document.getElementById('pcsTgl').value;
+        var nama = document.getElementById('pcsNama').value;
+        var satuan = document.getElementById('pcsSatuan').value;
+        var jml = parseFloat(document.getElementById('pcsJumlah').value);
+        var harga = parseNominal(document.getElementById('pcsHarga'));
+        var potong = parseNominal(document.getElementById('pcsPotong')) || 0;
+        var total = parseNominal(document.getElementById('pcsTotal'));
+        if (!tgl || !nama || !jml || !total) { showToast('Lengkapi dulu datanya sebelum masuk ke bill!', true); return; }
+        if (jml <= 0 || total <= 0) { showToast('Jumlah dan total harus lebih dari 0!', true); return; }
+
+        billCart.push({
+            tgl: tgl,
+            nama: nama,
+            jumlahLabel: jml + ' ' + satuan,
+            qtyNum: jml,
+            hargaSatuan: harga,
+            potongan: potong,
+            subtotal: total
+        });
+
+        document.getElementById('pcsNama').value = '';
+        document.getElementById('pcsJumlah').value = '';
+        document.getElementById('pcsHarga').value = '';
+        document.getElementById('pcsPotong').value = '0';
+        document.getElementById('pcsTotal').value = '';
+        updatePcsPreview();
+        renderBill();
+        showToast('✓ Masuk bill: ' + nama);
+    }
+
+    function billTotalNilai() {
+        var t = 0;
+        for (var i = 0; i < billCart.length; i++) t += billCart[i].subtotal;
+        return t;
+    }
+
+    function renderBill() {
+        var wrap = document.getElementById('billItems');
+        var totEl = document.getElementById('billTotal');
+        if (!wrap || !totEl) return;
+        if (billCart.length === 0) {
+            wrap.innerHTML = '<p class="text-gray-500 text-base mb-4">Belum ada item. Isi form di atas lalu klik "+ Masukkan ke Bill". Bisa banyak barang dalam 1 bill!</p>';
+        } else {
+            var h = '';
+            for (var i = 0; i < billCart.length; i++) {
+                var it = billCart[i];
+                h += '<div class="bill-item-row">' +
+                    '<div><div class="nm">' + it.nama + '</div>' +
+                    '<div class="dt">' + it.jumlahLabel + ' x ' + formatRp(it.hargaSatuan) + (it.potongan > 0 ? ' (diskon ' + formatRp(it.potongan) + ')' : '') + '</div></div>' +
+                    '<div class="flex items-center gap-3">' +
+                    '<span class="pr">' + formatRp(it.subtotal) + '</span>' +
+                    '<button class="btn-hapus-item" onclick="hapusBillItem(' + i + ')">✕</button>' +
+                    '</div></div>';
+            }
+            wrap.innerHTML = h;
+        }
+        totEl.textContent = formatRp(billTotalNilai());
+        updateKembalian();
+    }
+
+    function hapusBillItem(i) {
+        billCart.splice(i, 1);
+        renderBill();
+    }
+
+    function kosongkanBill() {
+        if (billCart.length === 0) return;
+        if (!confirm('Kosongkan semua item di bill?')) return;
+        billCart = [];
+        document.getElementById('billTunai').value = '';
+        renderBill();
+        showToast('Bill dikosongkan');
+    }
+
+    function updateKembalian() {
+        var tunai = parseNominal(document.getElementById('billTunai'));
+        var kembali = tunai - billTotalNilai();
+        if (isNaN(kembali) || kembali < 0) kembali = 0;
+        document.getElementById('billKembali').value = formatRp(kembali);
+    }
+
+    async function simpanDanCetakBill() {
+        if (billCart.length === 0) { showToast('Bill masih kosong! Masukkan item dulu.', true); return; }
+        var tunai = parseNominal(document.getElementById('billTunai'));
+        var totalBill = billTotalNilai();
+        if (tunai <= 0) { showToast('Isi dulu Uang Bayar (Tunai)!', true); return; }
+        if (tunai < totalBill) { showToast('Uang tunai kurang dari total!', true); return; }
+
+        var modalData = dataCache['Modal'] || getLocalCache('Modal');
+        var snapshot = billCart.slice();
+        var gagal = 0;
+
+        for (var i = 0; i < billCart.length; i++) {
+            var it = billCart[i];
+            var hargaModalPer = 0;
+            if (modalData && Array.isArray(modalData)) {
+                for (var m = modalData.length - 1; m >= 1; m--) {
+                    if (modalData[m] && String(modalData[m][1]).trim() === it.nama) {
+                        if (parseFloat(modalData[m][2]) > 0) {
+                            hargaModalPer = modalData[m][3] / parseFloat(modalData[m][2]);
+                            break;
+                        }
+                    }
+                }
+            }
+            var untung = it.subtotal - (hargaModalPer * it.qtyNum);
+            var rowData = [it.tgl, it.nama, it.jumlahLabel, it.hargaSatuan, it.potongan, it.subtotal, untung];
+            try {
+                await apiPost('Penjualan', rowData);
+            } catch (err) {
+                gagal++;
+            }
+        }
+
+        var kembali = tunai - totalBill;
+        billCart = [];
+        document.getElementById('billTunai').value = '';
+        renderBill();
+
+        if (gagal > 0) {
+            showToast('Sebagian gagal simpan (' + gagal + ' item). Cek koneksi!', true);
+        } else {
+            showToast('✓ Bill tersimpan! Menyiapkan cetak...');
+        }
+
+        refreshActivePage();
+        cetakStruk(snapshot, totalBill, tunai, kembali);
+    }
+
+    // ====== NOMOR BILL OTOMATIS ======
+    function getBillNumber() {
+        var n = 0;
+        try { n = parseInt(localStorage.getItem('bg_bill_no') || '0', 10) || 0; } catch (e) { n = 0; }
+        n = n + 1;
+        try { localStorage.setItem('bg_bill_no', String(n)); } catch (e) {}
+        var s = String(n);
+        while (s.length < 4) s = '0' + s;
+        return s;
+    }
+
+    // ====== STRUK: TANGGAL & JAM HANYA 1X (DI ATAS), SEMUA RAPI ======
+    function cetakStruk(items, total, tunai, kembali) {
+        var now = new Date();
+        var dd = String(now.getDate()).padStart(2, '0');
+        var mm = String(now.getMonth() + 1).padStart(2, '0');
+        var yyyy = now.getFullYear();
+        var hh = String(now.getHours()).padStart(2, '0');
+        var mi = String(now.getMinutes()).padStart(2, '0');
+        var tglStruk = dd + '-' + mm + '-' + yyyy;
+        var jamStruk = hh + ':' + mi;
+        var noBill = getBillNumber();
+
+        var rows = '';
+        for (var i = 0; i < items.length; i++) {
+            var it = items[i];
+            rows += '<tr>' +
+                '<td class="l"><b>' + it.nama.toUpperCase() + '</b></td>' +
+                '<td class="c">' + it.jumlahLabel + '</td>' +
+                '<td class="r">' + fmtNum(it.hargaSatuan) + '</td>' +
+                '<td class="r">' + fmtNum(it.subtotal) + '</td>' +
+                '</tr>';
+            if (it.potongan > 0) {
+                rows += '<tr><td class="l disc">- Diskon</td><td class="c disc"></td><td class="r disc"></td><td class="r disc">' + fmtNum(it.potongan) + '</td></tr>';
+            }
+        }
+
+        var html = '<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Bill No.' + noBill + '</title>' +
+            '<style>' +
+            '@page { size: 80mm auto; margin: 2mm; }' +
+            'body { font-family: "Courier New", monospace; color:#000; background:#fff; margin:0 auto; padding:8px 6px; width: 72mm; }' +
+            '.stars { text-align:center; font-size:12px; letter-spacing:2px; margin:2px 0; }' +
+            '.headbox { border:2.5px solid #000; border-radius:8px; padding:8px 6px; text-align:center; margin:4px 0; }' +
+            '.toko { font-size:19px; font-weight:900; letter-spacing:2px; line-height:1.2; }' +
+            '.sub1 { font-size:11px; font-weight:bold; margin-top:2px; }' +
+            '.sub2 { font-size:11px; font-weight:bold; letter-spacing:3px; margin-top:1px; }' +
+            '.info { font-size:9.5px; margin-top:4px; line-height:1.35; }' +
+            '.hub { font-size:11px; font-weight:900; margin-top:5px; border-top:1px dashed #000; padding-top:4px; }' +
+            '.hr1 { border-top:2px solid #000; margin:7px 0 3px 0; }' +
+            '.hr2 { border-top:1.5px dashed #000; margin:5px 0; }' +
+            '.meta { width:100%; font-size:10.5px; font-weight:bold; table-layout:fixed; }' +
+            '.meta td { padding:1px 0; }' +
+            '.meta td.mk { width:38%; }' +
+            '.meta td.mv { width:62%; text-align:right; }' +
+            'table.items { width:100%; border-collapse:collapse; font-size:11px; table-layout:fixed; }' +
+            'table.items th { border-top:1.5px solid #000; border-bottom:1.5px solid #000; padding:4px 0; font-size:10px; text-align:center; }' +
+            'table.items th.ci1 { width:34%; text-align:left; }' +
+            'table.items th.ci2 { width:18%; text-align:center; }' +
+            'table.items th.ci3 { width:24%; text-align:right; }' +
+            'table.items th.ci4 { width:24%; text-align:right; }' +
+            'table.items td { padding:3.5px 0; vertical-align:top; overflow:hidden; }' +
+            'table.items td.i1 { width:34%; text-align:left; }' +
+            'table.items td.i2 { width:18%; text-align:center; }' +
+            'table.items td.i3 { width:24%; text-align:right; }' +
+            'table.items td.i4 { width:24%; text-align:right; }' +
+            '.l { text-align:left; } .c { text-align:center; } .r { text-align:right; }' +
+            '.disc { font-size:10px; font-style:italic; }' +
+            'table.pay { width:100%; border-collapse:collapse; font-size:12.5px; margin-top:4px; table-layout:fixed; }' +
+            'table.pay td { padding:2.5px 0; }' +
+            'table.pay td.pl { width:50%; text-align:left; }' +
+            'table.pay td.pr { width:50%; text-align:right; }' +
+            '.totrow td { border-top:2px solid #000; border-bottom:2px solid #000; font-size:15px; font-weight:900; padding:5px 0; }' +
+            '.thanksbox { border:2px solid #000; border-radius:8px; text-align:center; padding:6px 4px; margin-top:8px; }' +
+            '.thanks { font-size:14px; font-weight:900; letter-spacing:1px; }' +
+            '.thanks2 { font-size:9.5px; margin-top:1px; }' +
+            '@media print { body { width:72mm; } }' +
+            '</style></head><body>' +
+            '<div class="stars">✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦</div>' +
+            '<div class="headbox">' +
+            '<div class="toko">' + TOKO_NAMA + '</div>' +
+            '<div class="sub1">' + TOKO_SUB1 + '</div>' +
+            '<div class="sub2">' + TOKO_SUB2 + '</div>' +
+            '<div class="info">' + TOKO_INFO1 + '<br>' + TOKO_INFO2 + '</div>' +
+            '<div class="hub">' + TOKO_HUBUNGI + '</div>' +
+            '</div>' +
+            '<div class="stars">✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦</div>' +
+            '<div class="hr1"></div>' +
+            '<table class="meta">' +
+            '<tr><td class="mk">NO. BILL</td><td class="mv">: ' + noBill + '</td></tr>' +
+            '<tr><td class="mk">TANGGAL</td><td class="mv">: ' + tglStruk + '</td></tr>' +
+            '<tr><td class="mk">JAM</td><td class="mv">: ' + jamStruk + '</td></tr>' +
+            '</table>' +
+            '<div class="hr1"></div>' +
+            '<table class="items">' +
+            '<thead><tr><th class="ci1">ITEM</th><th class="ci2">QTY</th><th class="ci3">HARGA</th><th class="ci4">JUMLAH</th></tr></thead>' +
+            '<tbody>' + rows + '</tbody>' +
+            '</table>' +
+            '<div class="hr2"></div>' +
+            '<table class="pay">' +
+            '<tr class="totrow"><td class="pl">TOTAL</td><td class="pr">' + fmtNum(total) + '</td></tr>' +
+            '<tr><td class="pl">TUNAI</td><td class="pr">' + fmtNum(tunai) + '</td></tr>' +
+            '<tr><td class="pl"><b>KEMBALI</b></td><td class="pr"><b>' + fmtNum(kembali) + '</b></td></tr>' +
+            '</table>' +
+            '<div class="hr2"></div>' +
+            '<div class="thanksbox">' +
+            '<div class="thanks">✿ TERIMA KASIH ✿</div>' +
+            '<div class="thanks2">Atas Kunjungan Anda 🙏</div>' +
+            '</div>' +
+            '<div class="stars">✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦</div>' +
+            '</body></html>';
+
+        var w = window.open('', '_blank', 'width=380,height=640');
+        if (w) {
+            w.document.open();
+            w.document.write(html);
+            w.document.close();
+            w.focus();
+            setTimeout(function() { w.print(); }, 300);
+        } else {
+            var iframe = document.createElement('iframe');
+            iframe.style.position = 'fixed';
+            iframe.style.right = '0';
+            iframe.style.bottom = '0';
+            iframe.style.width = '0';
+            iframe.style.height = '0';
+            iframe.style.border = '0';
+            document.body.appendChild(iframe);
+            var doc = iframe.contentWindow.document;
+            doc.open();
+            doc.write(html);
+            doc.close();
+            setTimeout(function() {
+                iframe.contentWindow.focus();
+                iframe.contentWindow.print();
+                setTimeout(function() { document.body.removeChild(iframe); }, 2000);
+            }, 300);
+        }
+    }
+    // ============ AKHIR FITUR BILL ============
 
     // ============ TAMBAH BARANG ============
     function simpanBarang() {
