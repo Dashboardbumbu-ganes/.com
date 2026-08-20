@@ -53,7 +53,7 @@
             z-index: 1;
         }
 
-        /* ===== NOTIFIKASI TOAST (PENGGANTI ALERT, TIDAK BISA DOUBLE) ===== */
+        /* ===== NOTIFIKASI TOAST ===== */
         #toastNotif {
             position: fixed; bottom: 100px; left: 50%;
             transform: translateX(-50%) translateY(20px);
@@ -484,7 +484,7 @@
     var modalChartInstance = null;
     var lastHargaRenderSignature = '';
 
-    // ================= NOTIFIKASI TOAST (SATU-SATUNYA, TIDAK BISA DOUBLE) =================
+    // ================= NOTIFIKASI TOAST =================
     var toastTimer = null;
     function showToast(msg, isError) {
         var t = document.getElementById('toastNotif');
@@ -495,7 +495,7 @@
         if (toastTimer) clearTimeout(toastTimer);
         toastTimer = setTimeout(function() {
             t.classList.remove('show');
-        }, 1500);
+        }, 2500);
     }
 
     // ================= CACHE MEMORY + LOCALSTORAGE =================
@@ -535,10 +535,10 @@
         } catch (e) {}
     }
 
-    // ================= OPTIMISTIC WRITE (SIMPAN INSTAN) =================
-    var pendingHargaWrites = {};   // nama -> array data harga yang belum tersinkron ke server
-    var pendingBumbuAdds = [];     // nama barang baru yang belum tersinkron
-    var pendingBumbuDeletes = {};  // nama barang yang dihapus (belum tersinkron)
+    // ================= SIMPAN OPTIMISTIK =================
+    var pendingHargaWrites = {};
+    var pendingBumbuAdds = [];
+    var pendingBumbuDeletes = {};
     var removedDefaults = [];
     try { removedDefaults = JSON.parse(localStorage.getItem('bg_removed_defaults') || '[]'); } catch (e) { removedDefaults = []; }
     function saveRemovedDefaults() {
@@ -582,7 +582,6 @@
         return lowerNama.includes('kecap') || lowerNama.includes('saos') || lowerNama.includes('saus') || lowerNama.includes('garam') || lowerNama.includes('botol') || lowerNama.includes('btl') || lowerNama.includes('pcs') || lowerNama.includes('bungkus');
     }
 
-    // Isi ulang dropdown TANPA internet (instan)
     function rebuildSelects() {
         var ids = ['modalNama', 'jualNama', 'pcsNama'];
         for (var s = 0; s < ids.length; s++) {
@@ -608,7 +607,6 @@
         DAFTAR_BUMBU = DAFTAR_BUMBU_DEFAULT.filter(function(n) {
             return removedDefaults.indexOf(n) === -1 && !pendingBumbuDeletes[n];
         }).slice();
-        // Gabungkan tambahan optimistik (belum tersinkron)
         for (var p = 0; p < pendingBumbuAdds.length; p++) {
             if (DAFTAR_BUMBU.indexOf(pendingBumbuAdds[p]) === -1) DAFTAR_BUMBU.push(pendingBumbuAdds[p]);
         }
@@ -877,6 +875,7 @@
         if (!document.getElementById('page-daftarHarga').classList.contains('hidden')) loadDaftarHarga(true);
     }
 
+    // ============ API BACA (cepat, cache 30 detik) ============
     function apiGet(sheet) {
         return new Promise(function(resolve, reject) {
             var now = Date.now();
@@ -903,7 +902,7 @@
                 done = true; 
                 delete window[cbName]; 
                 if (script.parentNode) script.parentNode.removeChild(script); 
-                reject(new Error('JSONP network error')); 
+                reject(new Error('Koneksi ke server gagal')); 
             };
             document.head.appendChild(script);
             setTimeout(function() { 
@@ -911,11 +910,12 @@
                 done = true; 
                 delete window[cbName]; 
                 if (script.parentNode) script.parentNode.removeChild(script); 
-                reject(new Error('JSONP timeout 15s')); 
-            }, 15000);
+                reject(new Error('Server lambat / tidak merespon')); 
+            }, 20000);
         });
     }
 
+    // ============ API TULIS (timeout 60 detik + deteksi error server) ============
     function apiPost(sheet, data, actionType) {
         actionType = actionType || 'write';
         clearCache(sheet); 
@@ -928,7 +928,12 @@
                 done = true; 
                 delete window[cbName]; 
                 if (script.parentNode) script.parentNode.removeChild(script); 
-                resolve(resp); 
+                // PENTING: jika server balas {status:"error"}, tampilkan pesan aslinya
+                if (resp && typeof resp === 'object' && resp.status === 'error') {
+                    reject(new Error(resp.message || 'Error dari server'));
+                } else {
+                    resolve(resp);
+                }
             };
             script.src = API_URL + '?sheet=' + sheet + '&action=' + actionType + '&data=' + encodeURIComponent(JSON.stringify(data)) + '&callback=' + cbName;
             script.onerror = function() { 
@@ -936,7 +941,7 @@
                 done = true; 
                 delete window[cbName]; 
                 if (script.parentNode) script.parentNode.removeChild(script); 
-                reject(new Error('JSONP write error')); 
+                reject(new Error('Koneksi gagal. Cek internet / Apps Script belum di-DEPLOY ulang!')); 
             };
             document.head.appendChild(script);
             setTimeout(function() { 
@@ -944,8 +949,8 @@
                 done = true; 
                 delete window[cbName]; 
                 if (script.parentNode) script.parentNode.removeChild(script); 
-                reject(new Error('JSONP write timeout')); 
-            }, 15000);
+                reject(new Error('Server tidak merespon (timeout). Deploy ulang Apps Script!')); 
+            }, 60000);
         });
     }
 
@@ -1008,7 +1013,6 @@
         
         var rowData = [tgl, nama, kg, harga];
         
-        // INSTAN: bersihkan form + notifikasi
         document.getElementById('modalNama').value = ''; 
         document.getElementById('modalKg').value = ''; 
         document.getElementById('modalKgPilihan').value = ''; 
@@ -1016,11 +1020,10 @@
         document.getElementById('modalHarga').value = '';
         showToast('✓ Modal dicatat: ' + nama);
         
-        // Kirim ke server di belakang layar
         apiPost('Modal', rowData).then(function() {
             refreshActivePage();
         }).catch(function(err) {
-            showToast('Gagal simpan, ulangi: ' + err.message, true);
+            showToast('GAGAL: ' + err.message, true);
         });
     }
 
@@ -1035,7 +1038,6 @@
         if (!tgl || !nama || !kg || !totalBayar) { showToast('Lengkapi semua data penjualan!', true); return; }
         if (kg <= 0 || totalBayar <= 0) { showToast('Jumlah dan total bayar harus lebih dari 0!', true); return; }
         
-        // Hitung untung dari data yang sudah ada di cache (INSTAN, tanpa tunggu server)
         var modalData = dataCache['Modal'] || getLocalCache('Modal');
         var hargaModalPerKg = 0;
         if (modalData && Array.isArray(modalData)) {
@@ -1051,7 +1053,6 @@
         var untung = totalBayar - (hargaModalPerKg * kg);
         var rowData = [tgl, nama, kg, hargaJual, potongan, totalBayar, untung];
         
-        // INSTAN: bersihkan form + notifikasi
         document.getElementById('jualNama').value = ''; 
         document.getElementById('jualKg').value = ''; 
         document.getElementById('jualKgPilihan').value = ''; 
@@ -1064,7 +1065,7 @@
         apiPost('Penjualan', rowData).then(function() {
             refreshActivePage();
         }).catch(function(err) {
-            showToast('Gagal simpan, ulangi: ' + err.message, true);
+            showToast('GAGAL: ' + err.message, true);
         });
     }
 
@@ -1094,7 +1095,6 @@
         var untung = totalBayar - (hargaModalPerPcs * jml);
         var rowData = [tgl, nama, jml, hargaJual, potongan, totalBayar, untung];
         
-        // INSTAN: bersihkan form + notifikasi
         document.getElementById('pcsNama').value = ''; 
         document.getElementById('pcsJumlah').value = ''; 
         document.getElementById('pcsHarga').value = ''; 
@@ -1105,7 +1105,7 @@
         apiPost('Penjualan', rowData).then(function() {
             refreshActivePage();
         }).catch(function(err) {
-            showToast('Gagal simpan, ulangi: ' + err.message, true);
+            showToast('GAGAL: ' + err.message, true);
         });
     }
 
@@ -1116,7 +1116,6 @@
         if (!nama) { showToast('Masukkan nama barang!', true); return; }
         if (DAFTAR_BUMBU.indexOf(nama) !== -1) { showToast('Barang sudah ada!', true); return; }
         
-        // INSTAN: langsung tambah ke daftar & render tabel + dropdown
         input.value = '';
         pendingBumbuAdds.push(nama);
         DAFTAR_BUMBU.push(nama);
@@ -1125,12 +1124,11 @@
         loadDaftarHarga(true);
         showToast('✓ Ditambahkan: ' + nama);
         
-        // Kirim ke server di belakang layar
         apiPost('Bumbu', [nama]).then(function() {
             var idx = pendingBumbuAdds.indexOf(nama);
             if (idx !== -1) pendingBumbuAdds.splice(idx, 1);
         }).catch(function(err) {
-            showToast('Gagal tambah, ulangi: ' + err.message, true);
+            showToast('GAGAL: ' + err.message, true);
         });
     }
 
@@ -1140,7 +1138,6 @@
         if (!nama) return;
         if (!confirm('Yakin hapus "' + nama + '"? (Harga & stok juga akan dihapus)')) return;
         
-        // INSTAN: langsung hilangkan dari layar
         pendingBumbuDeletes[nama] = true;
         delete pendingHargaWrites[nama];
         if (DAFTAR_BUMBU_DEFAULT.indexOf(nama) !== -1 && removedDefaults.indexOf(nama) === -1) {
@@ -1152,7 +1149,6 @@
         loadDaftarHarga(true);
         showToast('✓ Dihapus: ' + nama);
         
-        // Hapus di server di belakang layar (Bumbu + Harga + Stok)
         apiPost('Bumbu', [nama], 'delete')
             .then(function() { return apiPost('Harga', [nama], 'delete'); })
             .then(function() { return apiPost('Stok', [nama], 'delete'); })
@@ -1160,17 +1156,16 @@
                 delete pendingBumbuDeletes[nama];
             })
             .catch(function(err) {
-                showToast('Gagal hapus di server: ' + err.message, true);
+                showToast('GAGAL: ' + err.message, true);
             });
     }
 
-    // ============ LOAD DAFTAR HARGA (INSTAN DARI CACHE + UPDATE DI BELAKANG) ============
+    // ============ LOAD DAFTAR HARGA (INSTAN + UPDATE BELAKANG LAYAR) ============
     async function loadDaftarHarga(force) {
         var tbodyKg = document.getElementById('tabelDaftarHargaKg'); 
         var tbodyPcs = document.getElementById('tabelDaftarHargaPcs'); 
         if (!tbodyKg || !tbodyPcs) return; 
 
-        // LANGKAH 1: LANGSUNG RENDER DARI CACHE (0 DETIK)
         var cachedModal = getLocalCache('Modal');
         var cachedHarga = getLocalCache('Harga');
         if (cachedModal && cachedHarga) {
@@ -1186,7 +1181,6 @@
             tbodyPcs.innerHTML = '<tr><td colspan="4" style="text-align:center;padding:20px;color:#64748b;">Memuat data barang...</td></tr>';
         }
 
-        // LANGKAH 2: AMBIL DATA TERBARU DI BELAKANG (PARALEL)
         try {
             var modalPromise = apiGet('Modal').catch(function() { return null; });
             var hargaPromise = apiGet('Harga').catch(function() { return null; });
@@ -1231,7 +1225,6 @@
                 }
             }
         }
-        // Gabungkan data yang barusan disimpan (optimistic)
         for (var k in pendingHargaWrites) {
             if (!pendingBumbuDeletes[k]) hargaMap[k] = pendingHargaWrites[k];
         }
@@ -1279,7 +1272,6 @@
         tbodyPcs.innerHTML = htmlPcs;
     }
 
-    // EDIT: INSTAN (murni DOM, tanpa server)
     function editHarga(btn) {
         var tr = btn.closest('tr'); 
         if (!tr) return;
@@ -1302,7 +1294,17 @@
         });
     }
 
-    // Update cache lokal INSTAN (tanpa tunggu server)
+    function unlockRowInputs(btn) {
+        if (!btn) return;
+        var tr = btn.closest('tr');
+        if (!tr) return;
+        var inputs = tr.querySelectorAll('input.table-input');
+        inputs.forEach(function(input) {
+            input.removeAttribute('readonly');
+            input.classList.add('editing');
+        });
+    }
+
     function updateHargaCacheRow(data) {
         var arr = getLocalCache('Harga');
         if (!arr || !Array.isArray(arr) || arr.length < 1) {
@@ -1329,7 +1331,7 @@
         if (btn && btn.dataset.busy === '1') return;
         if (btn) { btn.dataset.busy = '1'; btn.textContent = '...'; btn.disabled = true; }
         
-        var data = new Array(14).fill(0);
+        var data = new Array(15).fill(0);
         data[0] = nama;
         var fields = ['halfOns', 'ons', 'halfKg', 'kg1', 'kg2', 'kg3', 'kg4', 'kg5', 'kg6', 'kg7', 'kg8', 'kg9', 'kg10'];
         for (var i = 0; i < fields.length; i++) {
@@ -1337,19 +1339,18 @@
             data[i + 1] = el ? parseNominal(el) : 0;
         }
         
-        // ===== INSTAN: kunci baris + simpan cache + notifikasi =====
         lockRowInputs(btn);
         pendingHargaWrites[nama] = data;
         updateHargaCacheRow(data);
         showToast('✓ Tersimpan: ' + nama);
         
-        // Kirim ke server di belakang layar
         apiPost('Harga', data).then(function() {
             delete pendingHargaWrites[nama];
             if (btn) { btn.dataset.busy = '0'; btn.textContent = 'Simpan'; btn.disabled = false; }
         }).catch(function(err) {
             if (btn) { btn.dataset.busy = '0'; btn.textContent = 'Simpan'; btn.disabled = false; }
-            showToast('Gagal simpan: ' + err.message, true);
+            unlockRowInputs(btn);
+            showToast('GAGAL: ' + err.message, true);
         });
     }
 
@@ -1365,7 +1366,6 @@
         var el = document.getElementById('harga_pcs_' + index);
         data[14] = el ? parseNominal(el) : 0; 
         
-        // ===== INSTAN: kunci baris + simpan cache + notifikasi =====
         lockRowInputs(btn);
         pendingHargaWrites[nama] = data;
         updateHargaCacheRow(data);
@@ -1376,7 +1376,8 @@
             if (btn) { btn.dataset.busy = '0'; btn.textContent = 'Simpan'; btn.disabled = false; }
         }).catch(function(err) {
             if (btn) { btn.dataset.busy = '0'; btn.textContent = 'Simpan'; btn.disabled = false; }
-            showToast('Gagal simpan: ' + err.message, true);
+            unlockRowInputs(btn);
+            showToast('GAGAL: ' + err.message, true);
         });
     }
 
