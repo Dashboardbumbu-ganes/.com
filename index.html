@@ -126,6 +126,7 @@
         select:focus, input:focus { border-color: #00f0ff !important; box-shadow: 0 0 12px #00f0ff33 !important; }
         select option { background: #1a1a2e !important; color: #f1f5f9 !important; padding: 8px; }
         input[readonly] { background: #111827 !important; color: #10b981 !important; font-weight: 800; cursor: not-allowed; border-color: #334155 !important; }
+        input.auto-filled { border-color: #10b98188 !important; background: #0d1f1a !important; color: #34d399 !important; }
         
         .table-input { padding: 10px !important; font-size: 16px !important; width: 110px !important; border-radius: 8px !important; box-sizing: border-box !important; text-align: center; transition: none !important; white-space: nowrap; }
         .table-input.editing { border-color: #f59e0b !important; color: #fbbf24 !important; background: #1a1a2e !important; cursor: text !important; }
@@ -393,23 +394,23 @@
                 <div id="formKg" class="bg-[#0f1629] p-6 sm:p-10 rounded-3xl container-full border border-emerald-500/20 card-glow-emerald mb-8">
                     <div class="grid grid-cols-2 gap-6 mb-6">
                         <div><label class="block text-lg font-bold mb-2 text-emerald-400">Tanggal Jual</label><input type="date" id="jualTgl" class="w-full"></div>
-                        <div><label class="block text-lg font-bold mb-2 text-emerald-400">Nama Bumbu</label><select id="jualNama" class="w-full" onchange="autoSwitchJualMode(this.value)"><option value="">-- Pilih Bumbu --</option></select></div>
+                        <div><label class="block text-lg font-bold mb-2 text-emerald-400">Nama Bumbu</label><select id="jualNama" class="w-full" onchange="autoSwitchJualMode(this.value); autoFillHargaJual();"><option value="">-- Pilih Bumbu --</option></select></div>
                     </div>
                     <div class="grid grid-cols-3 gap-6 mb-6">
                         <div>
                             <label class="block text-lg font-bold mb-2 text-emerald-400">Jumlah Jual (Kg)</label>
-                            <select id="jualKgPilihan" class="w-full mb-2" onchange="setJumlah(this, 'jualKg'); hitungJual();"></select>
-                            <input type="number" id="jualKg" step="any" placeholder="0.25 / 0.5 / 1 / 10" class="w-full" style="display:none;" oninput="hitungJual()">
+                            <select id="jualKgPilihan" class="w-full mb-2" onchange="setJumlah(this, 'jualKg'); autoFillHargaJual();"></select>
+                            <input type="number" id="jualKg" step="any" placeholder="0.25 / 0.5 / 1 / 10" class="w-full" style="display:none;" oninput="autoFillHargaJual()">
                         </div>
                         <div>
-                            <label class="block text-lg font-bold mb-2 text-emerald-400">Harga Jual per Kg (Rp)</label>
-                            <input type="text" inputmode="numeric" id="jualHarga" placeholder="Contoh: 50.000" oninput="formatNominal(this); hitungJual()" class="w-full">
-                            <p class="text-xs text-gray-500 mt-1">*Harga 1 Kg. Jual 10Kg otomatis: 10 x harga ini.</p>
+                            <label class="block text-lg font-bold mb-2 text-emerald-400">Harga Jual per Kg (Rp) ⚡Auto</label>
+                            <input type="text" inputmode="numeric" id="jualHarga" placeholder="Otomatis dari Daftar Harga" oninput="formatNominal(this); hitungJual()" class="w-full">
+                            <p class="text-xs text-gray-500 mt-1">*Terisi otomatis dari Daftar Harga Jual.</p>
                         </div>
                         <div>
                             <label class="block text-lg font-bold mb-2 text-rose-400">Potongan / Diskon (Rp)</label>
                             <input type="text" inputmode="numeric" id="jualPotong" value="0" placeholder="Contoh: 5.000" oninput="formatNominal(this); hitungJual()" class="w-full" style="border-color:#f43f5e44 !important;">
-                            <p class="text-xs text-gray-500 mt-1">*Kosongkan / 0 kalau tidak ada diskon.</p>
+                            <p class="text-xs text-gray-500 mt-1">*Ini saja yang diketik kalau ada diskon.</p>
                         </div>
                     </div>
                     <div class="grid grid-cols-2 gap-6 mb-8">
@@ -429,7 +430,7 @@
                 <div id="formPcs" class="hidden bg-[#0f1629] p-6 sm:p-10 rounded-3xl container-full border border-emerald-500/20 card-glow-emerald mb-8">
                     <div class="grid grid-cols-2 gap-6 mb-6">
                         <div><label class="block text-lg font-bold mb-2 text-emerald-400">Tanggal Jual</label><input type="date" id="pcsTgl" class="w-full"></div>
-                        <div><label class="block text-lg font-bold mb-2 text-emerald-400">Nama Barang (Kecap/Saos/Garam)</label><select id="pcsNama" class="w-full"><option value="">-- Pilih Barang --</option></select></div>
+                        <div><label class="block text-lg font-bold mb-2 text-emerald-400">Nama Barang (Kecap/Saos/Garam)</label><select id="pcsNama" class="w-full" onchange="autoFillHargaPcs()"><option value="">-- Pilih Barang --</option></select></div>
                     </div>
                     <div class="grid grid-cols-4 gap-6 mb-6">
                         <div>
@@ -448,9 +449,9 @@
                             <input type="number" id="pcsJumlah" placeholder="Contoh: 2" oninput="hitungJualPcs(); updatePcsPreview()" class="w-full">
                         </div>
                         <div>
-                            <label class="block text-lg font-bold mb-2 text-emerald-400">Harga Jual per Satuan (Rp)</label>
-                            <input type="text" inputmode="numeric" id="pcsHarga" placeholder="Contoh: 20.000" oninput="formatNominal(this); hitungJualPcs()" class="w-full">
-                            <p class="text-xs text-gray-500 mt-1">*Harga 1 Pcs/Botol.</p>
+                            <label class="block text-lg font-bold mb-2 text-emerald-400">Harga per Satuan (Rp) ⚡Auto</label>
+                            <input type="text" inputmode="numeric" id="pcsHarga" placeholder="Otomatis dari Daftar Harga" oninput="formatNominal(this); hitungJualPcs()" class="w-full">
+                            <p class="text-xs text-gray-500 mt-1">*Terisi otomatis dari Daftar Harga.</p>
                         </div>
                         <div>
                             <label class="block text-lg font-bold mb-2 text-rose-400">Potongan / Diskon (Rp)</label>
@@ -501,7 +502,7 @@
             <!-- DAFTAR HARGA JUAL -->
             <div id="page-daftarHarga" class="page-content hidden">
                 <h2 class="text-4xl font-extrabold mb-2 text-white mt-12 sm:mt-0"><i class="fas fa-tags text-amber-400 mr-3"></i> Daftar Harga & Perhitungan</h2>
-                <p class="text-gray-400 mb-8 text-lg">Klik "Edit" untuk mengubah harga, lalu "Simpan". Klik "Hapus" untuk menghapus barang.</p>
+                <p class="text-gray-400 mb-8 text-lg">Harga di sini otomatis terpakai di Catat Penjualan. Klik "Edit" untuk mengubah harga, lalu "Simpan". Klik "Hapus" untuk menghapus barang.</p>
                 
                 <div class="bg-[#0f1629] p-6 rounded-3xl container-full border border-emerald-500/20 card-glow-emerald mb-8">
                     <h3 class="text-xl font-extrabold mb-4 text-emerald-300"><i class="fas fa-plus-circle mr-2"></i>Tambah Barang / Bumbu Baru</h3>
@@ -599,7 +600,7 @@
     var modalChartInstance = null;
     var lastHargaRenderSignature = '';
 
-    // ================= INFO TOKO UNTUK STRUK (EDIT DI SINI) =================
+    // ================= INFO TOKO UNTUK STRUK =================
     var TOKO_NAMA  = "BUMBU GANES";
     var TOKO_SUB1  = "BUMBU BASAH & REMPAH KERING";
     var TOKO_SUB2  = "TERLENGKAP";
@@ -607,7 +608,7 @@
     var TOKO_INFO2 = "PESTA, ULANG TAHUN, DSB.";
     var TOKO_HUBUNGI = "HUBUNGI : 083198051792";
 
-    // ================= FORMAT ANGKA STRUK (140000 -> 140.000) =================
+    // ================= FORMAT ANGKA STRUK =================
     function fmtNum(angka) {
         var n = Math.round(Number(angka) || 0);
         var neg = n < 0;
@@ -638,6 +639,16 @@
             t.classList.remove('show');
         }, 2500);
     }
+
+    // ================= KUNCI F12 / DEVTOOLS / KLIK KANAN =================
+    document.addEventListener('keydown', function(e) {
+        var k = (e.key || '').toLowerCase();
+        if (e.key === 'F12') { e.preventDefault(); return false; }
+        if (e.ctrlKey && e.shiftKey && (k === 'i' || k === 'j' || k === 'c')) { e.preventDefault(); return false; }
+        if (e.ctrlKey && (k === 'u' || k === 's')) { e.preventDefault(); return false; }
+        if (e.metaKey && e.altKey && (k === 'i' || k === 'j' || k === 'c')) { e.preventDefault(); return false; }
+    });
+    document.addEventListener('contextmenu', function(e) { e.preventDefault(); return false; });
 
     // ================= CACHE =================
     var dataCache = { Penjualan: null, Modal: null, Stok: null, Harga: null, Bumbu: null, lastUpdate: {} };
@@ -687,7 +698,7 @@
     }
 
     // ================= KREDENSIAL LOGIN =================
-    var VALID_USERS = [{ username: 'admin', password: 'admin123' }];
+    var VALID_USERS = [{ username: 'ganes', password: 'ganes1809' }];
 
     // ================= DAFTAR BUMBU AWAL =================
     var DAFTAR_BUMBU_DEFAULT = [
@@ -881,6 +892,139 @@
             input.style.display = 'none'; 
             input.value = selectEl.value; 
         }
+    }
+
+    // ============================================================
+    // ===== HARGA OTOMATIS DARI DAFTAR HARGA JUAL (AUTO-FILL) =====
+    // ============================================================
+    function getHargaJual(nama, qty) {
+        if (!nama) return 0;
+        var hargaData = dataCache['Harga'] || getLocalCache('Harga');
+        if (!hargaData || !Array.isArray(hargaData)) return 0;
+        var row = null;
+        for (var i = 1; i < hargaData.length; i++) {
+            if (hargaData[i] && String(hargaData[i][0]).trim() === String(nama).trim()) { 
+                row = hargaData[i]; 
+                // gabung pending optimistik kalau ada
+                if (pendingHargaWrites[nama]) row = pendingHargaWrites[nama];
+                break; 
+            }
+        }
+        if (!row && pendingHargaWrites[nama]) row = pendingHargaWrites[nama];
+        if (!row) return 0;
+        
+        var q = parseFloat(qty) || 0;
+        // Index: 1=½Ons, 2=1Ons, 3=½Kg, 4..13=1..10Kg, 14=Pcs
+        var halfOns = Number(row[1]) || 0;
+        var ons = Number(row[2]) || 0;
+        var halfKg = Number(row[3]) || 0;
+        var kg1 = Number(row[4]) || 0;
+        
+        if (isPcsItem(nama)) return Number(row[14]) || 0;
+        
+        // Cocokan persis dengan kolom
+        if (q === 0.05 && halfOns > 0) return halfOns;
+        if (q === 0.025 && halfOns > 0) return Math.round(halfOns / 2);
+        if (q === 0.1 && ons > 0) return ons;
+        if (q === 0.5 && halfKg > 0) return halfKg;
+        if (q === 0.25 && halfKg > 0) return Math.round(halfKg / 2);
+        if (q === 0.75 && halfKg > 0) return Math.round(halfKg * 1.5);
+        if (q >= 1 && q <= 10 && q === Math.floor(q) && Number(row[3 + q]) > 0) return Number(row[3 + q]);
+        
+        // Fallback: hitung proporsional dari harga 1 Kg
+        var perKg = kg1 > 0 ? kg1 : (halfKg > 0 ? halfKg * 2 : (ons > 0 ? ons * 10 : 0));
+        if (perKg > 0) return Math.round(perKg * q);
+        return 0;
+    }
+
+    function autoFillHargaJual() {
+        var nama = document.getElementById('jualNama').value;
+        var kg = parseFloat(document.getElementById('jualKg').value);
+        var el = document.getElementById('jualHarga');
+        if (nama && kg && kg > 0) {
+            var h = getHargaJual(nama, kg);
+            if (h > 0) {
+                el.value = h.toLocaleString('id-ID');
+                el.classList.add('auto-filled');
+            } else {
+                el.value = '';
+                el.classList.remove('auto-filled');
+            }
+        }
+        hitungJual();
+    }
+
+    function autoFillHargaPcs() {
+        var nama = document.getElementById('pcsNama').value;
+        var el = document.getElementById('pcsHarga');
+        if (nama) {
+            var h = getHargaJual(nama, 1);
+            if (h > 0) {
+                el.value = h.toLocaleString('id-ID');
+                el.classList.add('auto-filled');
+            } else {
+                el.value = '';
+                el.classList.remove('auto-filled');
+            }
+        }
+        hitungJualPcs();
+    }
+
+    // ============================================================
+    // ===== UPDATE DATA LOKAL INSTAN (PENJUALAN + STOK + MODAL) =====
+    // ============================================================
+    function pushPenjualanLokal(rowData) {
+        var arr = getLocalCache('Penjualan');
+        if (!arr || !Array.isArray(arr) || arr.length < 1) {
+            arr = [["Tanggal","NamaBumbu","JualKg","HargaJual","Potongan","TotalBayar","Untung"]];
+        }
+        arr.push(rowData);
+        setLocalCache('Penjualan', arr);
+        dataCache['Penjualan'] = arr;
+        dataCache.lastUpdate['Penjualan'] = Date.now();
+    }
+
+    function pushModalLokal(rowData) {
+        var arr = getLocalCache('Modal');
+        if (!arr || !Array.isArray(arr) || arr.length < 1) {
+            arr = [["Tanggal","NamaBumbu","BeliKg","HargaTotal"]];
+        }
+        arr.push(rowData);
+        setLocalCache('Modal', arr);
+        dataCache['Modal'] = arr;
+        dataCache.lastUpdate['Modal'] = Date.now();
+    }
+
+    function ubahStokLokal(nama, delta) {
+        var arr = getLocalCache('Stok');
+        if (!arr || !Array.isArray(arr) || arr.length < 1) return;
+        var found = false;
+        for (var i = 1; i < arr.length; i++) {
+            if (arr[i] && String(arr[i][0]).trim() === String(nama).trim()) {
+                arr[i][1] = (parseFloat(arr[i][1]) || 0) + delta;
+                found = true;
+                break;
+            }
+        }
+        if (!found && delta > 0) {
+            arr.push([nama, delta]);
+        }
+        setLocalCache('Stok', arr);
+        dataCache['Stok'] = arr;
+        dataCache.lastUpdate['Stok'] = Date.now();
+    }
+
+    function hitungModalPerSatuan(nama) {
+        var modalData = dataCache['Modal'] || getLocalCache('Modal');
+        if (!modalData || !Array.isArray(modalData)) return 0;
+        for (var i = modalData.length - 1; i >= 1; i--) {
+            if (modalData[i] && String(modalData[i][1]).trim() === String(nama).trim()) {
+                if (parseFloat(modalData[i][2]) > 0) {
+                    return Number(modalData[i][3]) / parseFloat(modalData[i][2]);
+                }
+            }
+        }
+        return 0;
     }
 
     function updateModalKgPreview() {
@@ -1140,10 +1284,9 @@
         });
     }
 
-    // ============ API TULIS ============
+    // ============ API TULIS (kirim di belakang layar, TANPA hapus cache lokal) ============
     function apiPost(sheet, data, actionType) {
         actionType = actionType || 'write';
-        clearCache(sheet); 
         return new Promise(function(resolve, reject) {
             var cbName = '_jcb_' + Date.now() + '_' + Math.floor(Math.random() * 999999);
             var script = document.createElement('script'); 
@@ -1165,7 +1308,7 @@
                 done = true; 
                 delete window[cbName]; 
                 if (script.parentNode) script.parentNode.removeChild(script); 
-                reject(new Error('Koneksi gagal. Cek internet / Apps Script belum di-DEPLOY ulang!')); 
+                reject(new Error('Koneksi gagal ke server')); 
             };
             document.head.appendChild(script);
             setTimeout(function() { 
@@ -1173,7 +1316,7 @@
                 done = true; 
                 delete window[cbName]; 
                 if (script.parentNode) script.parentNode.removeChild(script); 
-                reject(new Error('Server tidak merespon (timeout). Deploy ulang Apps Script!')); 
+                reject(new Error('Server tidak merespon (timeout)')); 
             }, 60000);
         });
     }
@@ -1226,7 +1369,7 @@
         setTimeout(function() { if (uField) uField.focus(); }, 100);
     }
 
-    // ============ SIMPAN MODAL BUMBU KG ============
+    // ============ SIMPAN MODAL BUMBU KG (INSTAN + TERDATA) ============
     function simpanModal() {
         var tgl = document.getElementById('modalTgl').value; 
         var nama = document.getElementById('modalNama').value.trim();
@@ -1238,6 +1381,10 @@
         var kgLabel = kg + ' Kg';
         var rowData = [tgl, nama, kgLabel, harga];
         
+        // INSTAN: update lokal (modal + stok bertambah) -> langsung tampil di dashboard
+        pushModalLokal(rowData);
+        ubahStokLokal(nama, kg);
+        
         document.getElementById('modalNama').value = ''; 
         document.getElementById('modalKg').value = ''; 
         document.getElementById('modalKgPilihan').value = ''; 
@@ -1245,15 +1392,15 @@
         document.getElementById('modalHarga').value = '';
         updateModalKgPreview();
         showToast('✓ Modal dicatat: ' + nama + ' (' + kgLabel + ')');
+        refreshActivePage();
         
-        apiPost('Modal', rowData).then(function() {
-            refreshActivePage();
-        }).catch(function(err) {
-            showToast('GAGAL: ' + err.message, true);
+        // Kirim server di belakang layar
+        apiPost('Modal', rowData).catch(function(err) {
+            showToast('Gagal kirim ke server: ' + err.message, true);
         });
     }
 
-    // ============ SIMPAN MODAL BARANG PCS ============
+    // ============ SIMPAN MODAL BARANG PCS (INSTAN + TERDATA) ============
     function simpanModalPcs() {
         var tgl = document.getElementById('modalPcsTgl').value; 
         var nama = document.getElementById('modalPcsNama').value;
@@ -1266,20 +1413,23 @@
         var jmlLabel = jml + ' ' + satuan;
         var rowData = [tgl, nama, jmlLabel, harga];
         
+        // INSTAN: update lokal (modal + stok bertambah)
+        pushModalLokal(rowData);
+        ubahStokLokal(nama, jml);
+        
         document.getElementById('modalPcsNama').value = ''; 
         document.getElementById('modalPcsJumlah').value = ''; 
         document.getElementById('modalPcsHarga').value = '';
         updateModalPcsPreview();
         showToast('✓ Modal dicatat: ' + nama + ' (' + jmlLabel + ')');
+        refreshActivePage();
         
-        apiPost('Modal', rowData).then(function() {
-            refreshActivePage();
-        }).catch(function(err) {
-            showToast('GAGAL: ' + err.message, true);
+        apiPost('Modal', rowData).catch(function(err) {
+            showToast('Gagal kirim ke server: ' + err.message, true);
         });
     }
 
-    // ============ SIMPAN PENJUALAN KG ============
+    // ============ SIMPAN PENJUALAN KG (INSTAN + TERDATA) ============
     function simpanJual() {
         var tgl = document.getElementById('jualTgl').value; 
         var nama = document.getElementById('jualNama').value;
@@ -1290,39 +1440,32 @@
         if (!tgl || !nama || !kg || !totalBayar) { showToast('Lengkapi semua data penjualan!', true); return; }
         if (kg <= 0 || totalBayar <= 0) { showToast('Jumlah dan total bayar harus lebih dari 0!', true); return; }
         
-        var modalData = dataCache['Modal'] || getLocalCache('Modal');
-        var hargaModalPerKg = 0;
-        if (modalData && Array.isArray(modalData)) {
-            for (var i = modalData.length - 1; i >= 1; i--) { 
-                if (modalData[i] && String(modalData[i][1]).trim() === nama) { 
-                    if (parseFloat(modalData[i][2]) > 0) { 
-                        hargaModalPerKg = modalData[i][3] / parseFloat(modalData[i][2]); 
-                        break; 
-                    } 
-                } 
-            }
-        }
+        var hargaModalPerKg = hitungModalPerSatuan(nama);
         var untung = totalBayar - (hargaModalPerKg * kg);
         var kgLabel = kg + ' Kg';
         var rowData = [tgl, nama, kgLabel, hargaJual, potongan, totalBayar, untung];
+        
+        // INSTAN: terdata langsung di Rekap + Dashboard + stok berkurang
+        pushPenjualanLokal(rowData);
+        ubahStokLokal(nama, -kg);
         
         document.getElementById('jualNama').value = ''; 
         document.getElementById('jualKg').value = ''; 
         document.getElementById('jualKgPilihan').value = ''; 
         document.getElementById('jualKg').style.display = 'none'; 
         document.getElementById('jualHarga').value = ''; 
+        document.getElementById('jualHarga').classList.remove('auto-filled');
         document.getElementById('jualPotong').value = '0'; 
         document.getElementById('jualTotal').value = '';
         showToast('✓ Penjualan dicatat: ' + nama + ' (' + kgLabel + ')');
+        refreshActivePage();
         
-        apiPost('Penjualan', rowData).then(function() {
-            refreshActivePage();
-        }).catch(function(err) {
-            showToast('GAGAL: ' + err.message, true);
+        apiPost('Penjualan', rowData).catch(function(err) {
+            showToast('Gagal kirim ke server: ' + err.message, true);
         });
     }
 
-    // ============ SIMPAN PENJUALAN PCS ============
+    // ============ SIMPAN PENJUALAN PCS (INSTAN + TERDATA) ============
     function simpanJualPcs() {
         var tgl = document.getElementById('pcsTgl').value; 
         var nama = document.getElementById('pcsNama').value;
@@ -1334,34 +1477,27 @@
         if (!tgl || !nama || !jml || !totalBayar) { showToast('Lengkapi semua data penjualan!', true); return; }
         if (jml <= 0 || totalBayar <= 0) { showToast('Jumlah dan total bayar harus lebih dari 0!', true); return; }
         
-        var modalData = dataCache['Modal'] || getLocalCache('Modal');
-        var hargaModalPerPcs = 0;
-        if (modalData && Array.isArray(modalData)) {
-            for (var i = modalData.length - 1; i >= 1; i--) { 
-                if (modalData[i] && String(modalData[i][1]).trim() === nama) { 
-                    if (parseFloat(modalData[i][2]) > 0) { 
-                        hargaModalPerPcs = modalData[i][3] / parseFloat(modalData[i][2]); 
-                        break; 
-                    } 
-                } 
-            }
-        }
+        var hargaModalPerPcs = hitungModalPerSatuan(nama);
         var untung = totalBayar - (hargaModalPerPcs * jml);
         var jmlLabel = jml + ' ' + satuan;
         var rowData = [tgl, nama, jmlLabel, hargaJual, potongan, totalBayar, untung];
         
+        // INSTAN: terdata langsung di Rekap + Dashboard + stok berkurang
+        pushPenjualanLokal(rowData);
+        ubahStokLokal(nama, -jml);
+        
         document.getElementById('pcsNama').value = ''; 
         document.getElementById('pcsJumlah').value = ''; 
         document.getElementById('pcsHarga').value = ''; 
+        document.getElementById('pcsHarga').classList.remove('auto-filled');
         document.getElementById('pcsPotong').value = '0'; 
         document.getElementById('pcsTotal').value = '';
         updatePcsPreview();
         showToast('✓ Penjualan dicatat: ' + nama + ' (' + jmlLabel + ')');
+        refreshActivePage();
         
-        apiPost('Penjualan', rowData).then(function() {
-            refreshActivePage();
-        }).catch(function(err) {
-            showToast('GAGAL: ' + err.message, true);
+        apiPost('Penjualan', rowData).catch(function(err) {
+            showToast('Gagal kirim ke server: ' + err.message, true);
         });
     }
 
@@ -1395,6 +1531,7 @@
         document.getElementById('jualKgPilihan').value = '';
         document.getElementById('jualKg').style.display = 'none';
         document.getElementById('jualHarga').value = '';
+        document.getElementById('jualHarga').classList.remove('auto-filled');
         document.getElementById('jualPotong').value = '0';
         document.getElementById('jualTotal').value = '';
         renderBill();
@@ -1425,6 +1562,7 @@
         document.getElementById('pcsNama').value = '';
         document.getElementById('pcsJumlah').value = '';
         document.getElementById('pcsHarga').value = '';
+        document.getElementById('pcsHarga').classList.remove('auto-filled');
         document.getElementById('pcsPotong').value = '0';
         document.getElementById('pcsTotal').value = '';
         updatePcsPreview();
@@ -1483,52 +1621,46 @@
         document.getElementById('billKembali').value = formatRp(kembali);
     }
 
-    async function simpanDanCetakBill() {
+    // ===== SIMPAN & CETAK BILL: INSTAN, LANGSUNG TERDATA DI SEMUA TEMPAT =====
+    function simpanDanCetakBill() {
         if (billCart.length === 0) { showToast('Bill masih kosong! Masukkan item dulu.', true); return; }
         var tunai = parseNominal(document.getElementById('billTunai'));
         var totalBill = billTotalNilai();
         if (tunai <= 0) { showToast('Isi dulu Uang Bayar (Tunai)!', true); return; }
         if (tunai < totalBill) { showToast('Uang tunai kurang dari total!', true); return; }
 
-        var modalData = dataCache['Modal'] || getLocalCache('Modal');
         var snapshot = billCart.slice();
-        var gagal = 0;
+        var allRows = [];
 
+        // 1. Update SEMUA data lokal SEKETIKA (Rekap, Dashboard, Stok)
         for (var i = 0; i < billCart.length; i++) {
             var it = billCart[i];
-            var hargaModalPer = 0;
-            if (modalData && Array.isArray(modalData)) {
-                for (var m = modalData.length - 1; m >= 1; m--) {
-                    if (modalData[m] && String(modalData[m][1]).trim() === it.nama) {
-                        if (parseFloat(modalData[m][2]) > 0) {
-                            hargaModalPer = modalData[m][3] / parseFloat(modalData[m][2]);
-                            break;
-                        }
-                    }
-                }
-            }
+            var hargaModalPer = hitungModalPerSatuan(it.nama);
             var untung = it.subtotal - (hargaModalPer * it.qtyNum);
             var rowData = [it.tgl, it.nama, it.jumlahLabel, it.hargaSatuan, it.potongan, it.subtotal, untung];
-            try {
-                await apiPost('Penjualan', rowData);
-            } catch (err) {
-                gagal++;
-            }
+            allRows.push(rowData);
+            pushPenjualanLokal(rowData);
+            ubahStokLokal(it.nama, -it.qtyNum);
         }
 
         var kembali = tunai - totalBill;
         billCart = [];
         document.getElementById('billTunai').value = '';
         renderBill();
+        showToast('✓ Tersimpan! Mencetak bill...');
 
-        if (gagal > 0) {
-            showToast('Sebagian gagal simpan (' + gagal + ' item). Cek koneksi!', true);
-        } else {
-            showToast('✓ Bill tersimpan! Menyiapkan cetak...');
-        }
-
+        // 2. Refresh dashboard/rekap LANGSUNG dari cache lokal (0 detik)
         refreshActivePage();
+
+        // 3. CETAK LANGSUNG - tidak menunggu server
         cetakStruk(snapshot, totalBill, tunai, kembali);
+
+        // 4. Kirim ke Google Sheet di belakang layar (paralel)
+        allRows.forEach(function(r) {
+            apiPost('Penjualan', r).catch(function(err) {
+                showToast('Item gagal terkirim ke server: ' + r[1] + '. Cek internet!', true);
+            });
+        });
     }
 
     // ====== NOMOR BILL OTOMATIS ======
@@ -1542,7 +1674,7 @@
         return s;
     }
 
-    // ====== STRUK: TANGGAL & JAM HANYA 1X (DI ATAS), SEMUA RAPI ======
+    // ====== STRUK CANTIK ======
     function cetakStruk(items, total, tunai, kembali) {
         var now = new Date();
         var dd = String(now.getDate()).padStart(2, '0');
@@ -1558,13 +1690,13 @@
         for (var i = 0; i < items.length; i++) {
             var it = items[i];
             rows += '<tr>' +
-                '<td class="l"><b>' + it.nama.toUpperCase() + '</b></td>' +
-                '<td class="c">' + it.jumlahLabel + '</td>' +
-                '<td class="r">' + fmtNum(it.hargaSatuan) + '</td>' +
-                '<td class="r">' + fmtNum(it.subtotal) + '</td>' +
+                '<td class="i1"><b>' + it.nama.toUpperCase() + '</b></td>' +
+                '<td class="i2">' + it.jumlahLabel + '</td>' +
+                '<td class="i3">' + fmtNum(it.hargaSatuan) + '</td>' +
+                '<td class="i4">' + fmtNum(it.subtotal) + '</td>' +
                 '</tr>';
             if (it.potongan > 0) {
-                rows += '<tr><td class="l disc">- Diskon</td><td class="c disc"></td><td class="r disc"></td><td class="r disc">' + fmtNum(it.potongan) + '</td></tr>';
+                rows += '<tr><td class="i1 disc">- Diskon</td><td class="i2 disc"></td><td class="i3 disc"></td><td class="i4 disc">' + fmtNum(it.potongan) + '</td></tr>';
             }
         }
 
@@ -1586,7 +1718,7 @@
             '.meta td.mk { width:38%; }' +
             '.meta td.mv { width:62%; text-align:right; }' +
             'table.items { width:100%; border-collapse:collapse; font-size:11px; table-layout:fixed; }' +
-            'table.items th { border-top:1.5px solid #000; border-bottom:1.5px solid #000; padding:4px 0; font-size:10px; text-align:center; }' +
+            'table.items th { border-top:1.5px solid #000; border-bottom:1.5px solid #000; padding:4px 0; font-size:10px; }' +
             'table.items th.ci1 { width:34%; text-align:left; }' +
             'table.items th.ci2 { width:18%; text-align:center; }' +
             'table.items th.ci3 { width:24%; text-align:right; }' +
@@ -1596,7 +1728,6 @@
             'table.items td.i2 { width:18%; text-align:center; }' +
             'table.items td.i3 { width:24%; text-align:right; }' +
             'table.items td.i4 { width:24%; text-align:right; }' +
-            '.l { text-align:left; } .c { text-align:center; } .r { text-align:right; }' +
             '.disc { font-size:10px; font-style:italic; }' +
             'table.pay { width:100%; border-collapse:collapse; font-size:12.5px; margin-top:4px; table-layout:fixed; }' +
             'table.pay td { padding:2.5px 0; }' +
