@@ -322,13 +322,13 @@
                 </div>
             </div>
 
-            <!-- CATAT PENJUALAN (AUTO SWITCH MODE) -->
+            <!-- CATAT PENJUALAN (AUTO SWITCH MODE + TOMBOL BISA DIKLIK) -->
             <div id="page-catatJual" class="page-content hidden">
                 <h2 class="text-4xl font-extrabold mb-8 text-white mt-12 sm:mt-0"><i class="fas fa-cash-register text-emerald-400 mr-3"></i> Catat Penjualan</h2>
                 
                 <div class="grid grid-cols-2 gap-4 mb-8">
-                    <button type="button" id="btnModeKg" class="p-4 rounded-xl text-lg font-bold border-2 border-emerald-500 text-emerald-400 transition">Mode: Bumbu (Kg/Ons)</button>
-                    <button type="button" id="btnModePcs" class="p-4 rounded-xl text-lg font-bold border-2 border-gray-700 text-gray-500 transition">Mode: Barang (Pcs/Btl)</button>
+                    <button type="button" id="btnModeKg" onclick="toggleJualMode('kg')" class="p-4 rounded-xl text-lg font-bold border-2 border-emerald-500 text-emerald-400 transition cursor-pointer">Mode: Bumbu (Kg/Ons)</button>
+                    <button type="button" id="btnModePcs" onclick="toggleJualMode('pcs')" class="p-4 rounded-xl text-lg font-bold border-2 border-gray-700 text-gray-500 transition cursor-pointer">Mode: Barang (Pcs/Btl)</button>
                 </div>
 
                 <div id="formKg" class="bg-[#0f1629] p-6 sm:p-10 rounded-3xl container-full border border-emerald-500/20 card-glow-emerald mb-8">
@@ -875,7 +875,7 @@
         if (!document.getElementById('page-daftarHarga').classList.contains('hidden')) loadDaftarHarga(true);
     }
 
-    // ============ API BACA (cepat, cache 30 detik) ============
+    // ============ API BACA ============
     function apiGet(sheet) {
         return new Promise(function(resolve, reject) {
             var now = Date.now();
@@ -915,7 +915,7 @@
         });
     }
 
-    // ============ API TULIS (timeout 60 detik + deteksi error server) ============
+    // ============ API TULIS (timeout 60 detik + tampilkan error asli server) ============
     function apiPost(sheet, data, actionType) {
         actionType = actionType || 'write';
         clearCache(sheet); 
@@ -928,7 +928,6 @@
                 done = true; 
                 delete window[cbName]; 
                 if (script.parentNode) script.parentNode.removeChild(script); 
-                // PENTING: jika server balas {status:"error"}, tampilkan pesan aslinya
                 if (resp && typeof resp === 'object' && resp.status === 'error') {
                     reject(new Error(resp.message || 'Error dari server'));
                 } else {
@@ -1160,7 +1159,7 @@
             });
     }
 
-    // ============ LOAD DAFTAR HARGA (INSTAN + UPDATE BELAKANG LAYAR) ============
+    // ============ LOAD DAFTAR HARGA (INSTAN + UPDATE DI BELAKANG) ============
     async function loadDaftarHarga(force) {
         var tbodyKg = document.getElementById('tabelDaftarHargaKg'); 
         var tbodyPcs = document.getElementById('tabelDaftarHargaPcs'); 
@@ -1272,6 +1271,7 @@
         tbodyPcs.innerHTML = htmlPcs;
     }
 
+    // EDIT: INSTAN (murni browser, tanpa server)
     function editHarga(btn) {
         var tr = btn.closest('tr'); 
         if (!tr) return;
