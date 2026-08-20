@@ -64,6 +64,7 @@
             box-shadow: 0 6px 25px rgba(0,0,0,0.6);
             pointer-events: none; max-width: 92vw; text-align: center;
             border: 2px solid rgba(255,255,255,0.15);
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
         }
         #toastNotif.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
@@ -114,6 +115,7 @@
         /* ===== SIDEBAR ===== */
         .sidebar-item.active { background: linear-gradient(135deg, #1e1b4b, #312e81); border-left: 5px solid #00f0ff; color: #00f0ff; font-weight: 800; box-shadow: 0 0 12px #00f0ff33; }
         .sidebar-item:not(.active):hover { background: #1a1a2e; color: #c4b5fd; }
+        .sidebar-item { white-space: nowrap; }
 
         /* ===== FORM ELEMENTS ===== */
         select, input[type="text"], input[type="number"], input[type="date"], input[type="password"] {
@@ -125,8 +127,11 @@
         select option { background: #1a1a2e !important; color: #f1f5f9 !important; padding: 8px; }
         input[readonly] { background: #111827 !important; color: #10b981 !important; font-weight: 800; cursor: not-allowed; border-color: #334155 !important; }
         
-        .table-input { padding: 10px !important; font-size: 16px !important; width: 110px !important; border-radius: 8px !important; box-sizing: border-box !important; text-align: center; transition: none !important; }
+        .table-input { padding: 10px !important; font-size: 16px !important; width: 110px !important; border-radius: 8px !important; box-sizing: border-box !important; text-align: center; transition: none !important; white-space: nowrap; }
         .table-input.editing { border-color: #f59e0b !important; color: #fbbf24 !important; background: #1a1a2e !important; cursor: text !important; }
+
+        /* ===== TOMBOL MODE (TULISAN SATU BARIS, TIDAK PATAH) ===== */
+        .mode-btn { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
         /* ===== PREVIEW SATUAN ===== */
         .preview-box { padding: 14px 18px; border-radius: 14px; background: #111827; border: 2px dashed #334155; text-align: center; }
@@ -134,18 +139,20 @@
         .preview-box .value { color: #22d3ee; font-size: 22px; font-weight: 800; }
 
         /* ===== SCROLLBAR ===== */
-        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar { width: 8px; height: 10px; }
         ::-webkit-scrollbar-track { background: #0a0e1a; }
         ::-webkit-scrollbar-thumb { background: #334155; border-radius: 10px; }
         ::-webkit-scrollbar-thumb:hover { background: #00f0ff; }
 
         /* ===== DARK TABLE ===== */
+        /* PERBAIKAN UTAMA: white-space: nowrap supaya tulisan memanjang ke samping
+           satu baris, tidak pecah ke bawah. Tabel di-scroll ke kiri-kanan. */
         .dark-table { width: 100%; border-collapse: collapse; table-layout: auto; }
         .dark-table thead tr { background: #1e1b4b; }
-        .dark-table th { padding: 16px 20px; text-align: center; color: #00f0ff; font-weight: 700; border-bottom: 2px solid #00f0ff44; font-size: 16px; white-space: normal; word-wrap: break-word; }
+        .dark-table th { padding: 16px 20px; text-align: center; color: #00f0ff; font-weight: 700; border-bottom: 2px solid #00f0ff44; font-size: 16px; white-space: nowrap; }
         .dark-table tbody tr { border-bottom: 1px solid #1e293b; }
         .dark-table tbody tr:hover { background: #1e1b4b66; }
-        .dark-table td { padding: 12px 16px; color: #e2e8f0; font-size: 16px; vertical-align: middle; white-space: normal; word-wrap: break-word; word-break: break-word; font-weight: 500; text-align: center; }
+        .dark-table td { padding: 12px 16px; color: #e2e8f0; font-size: 16px; vertical-align: middle; white-space: nowrap; font-weight: 500; text-align: center; }
         .dark-table td.left-align { text-align: left; }
 
         /* ===== CONTAINER FULL WIDTH ===== */
@@ -154,7 +161,7 @@
         /* ===== MOBILE SIDEBAR BAWAH ===== */
         #sidebar { transition: transform 0.3s ease; }
         .bottom-nav { display: none; position: fixed; bottom: 0; left: 0; right: 0; background: #0f1629; border-top: 2px solid #00f0ff33; z-index: 60; box-shadow: 0 -4px 25px #00000088; padding: 8px 4px; justify-content: space-around; align-items: center; }
-        .bottom-nav button { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 8px 4px; color: #64748b; font-size: 11px; font-weight: 600; background: transparent; border: none; cursor: pointer; transition: all 0.2s; border-radius: 10px; margin: 0 2px; }
+        .bottom-nav button { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 8px 2px; color: #64748b; font-size: 10px; font-weight: 600; background: transparent; border: none; cursor: pointer; transition: all 0.2s; border-radius: 10px; margin: 0 2px; white-space: nowrap; overflow: hidden; }
         .bottom-nav button i { font-size: 20px; margin-bottom: 4px; }
         .bottom-nav button.active { color: #00f0ff; background: #1e1b4b; box-shadow: 0 0 10px #00f0ff33; }
         
@@ -170,16 +177,17 @@
             #page-dashboard .grid-cols-4 { grid-template-columns: 1fr 1fr !important; gap: 1rem !important; }
             #page-catatModal .grid-cols-2, #page-catatModal .grid-cols-3, #page-catatJual .grid-cols-2, #page-catatJual .grid-cols-3, #page-catatJual .grid-cols-4, #page-laporan .grid-cols-3 { grid-template-columns: 1fr !important; }
             #page-laporan .flex.gap-4 { flex-direction: column; align-items: stretch; }
-            #page-stok table, #page-laporan table, #page-rekap table, #page-daftarHarga table { font-size: 14px; }
-            #page-stok th, #page-stok td, #page-laporan th, #page-laporan td, #page-rekap th, #page-rekap td, #page-daftarHarga th, #page-daftarHarga td { padding: 8px !important; }
+            #page-daftarHarga .overflow-x-auto { overflow-x: auto; }
             .table-input { font-size: 14px !important; padding: 6px !important; width: 80px !important; }
             h2 { font-size: 1.8rem !important; }
             #salesChart { height: 200px !important; }
             #modalChart { height: 200px !important; }
             .bumbu-ganes-text { font-size: 1.5rem !important; }
             .bumbu-ganes-text-login { font-size: 1.8rem !important; }
-            #page-daftarHarga .overflow-x-auto { overflow-x: auto; }
-            .dark-table th, .dark-table td { font-size: 13px !important; }
+            .dark-table th { font-size: 13px !important; }
+            .dark-table td { font-size: 13px !important; }
+            /* Tabel TIDAK menyempit: biarkan lebar asli, digeser scroll kiri-kanan */
+            .table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
         }
         #hamburgerBtn { display: none; }
     </style>
@@ -300,7 +308,7 @@
                 <h2 class="text-4xl font-extrabold mb-2 text-white mt-12 sm:mt-0 neon-text"><i class="fas fa-clipboard-list text-emerald-400 mr-3"></i>Rekap Penjualan Hari Ini</h2>
                 <p class="text-gray-400 mb-8 text-lg">Pencatatan penjualan rempah hari ini saja.</p>
                 <div class="container-full">
-                    <div class="bg-[#0f1629] p-8 rounded-3xl border border-emerald-500/20 card-glow-emerald overflow-x-auto">
+                    <div class="bg-[#0f1629] p-8 rounded-3xl border border-emerald-500/20 card-glow-emerald table-scroll">
                         <h3 class="text-xl font-extrabold mb-4 text-emerald-300"><i class="fas fa-cash-register mr-2"></i>Penjualan Hari Ini</h3>
                         <table class="dark-table"><thead><tr><th>Tanggal</th><th>Bumbu / Barang</th><th>Jumlah</th><th>Total Bayar</th><th>Untung</th></tr></thead><tbody id="rekapJual"></tbody></table>
                     </div>
@@ -312,8 +320,8 @@
                 <h2 class="text-4xl font-extrabold mb-8 text-white mt-12 sm:mt-0"><i class="fas fa-truck-loading text-cyan-400 mr-3"></i> Catat Belanja Modal</h2>
                 
                 <div class="grid grid-cols-2 gap-4 mb-8">
-                    <button type="button" id="btnModalModeKg" onclick="toggleModalMode('kg')" class="p-4 rounded-xl text-lg font-bold border-2 border-cyan-500 text-cyan-400 transition cursor-pointer">Belanja Bumbu (Kg/Ons)</button>
-                    <button type="button" id="btnModalModePcs" onclick="toggleModalMode('pcs')" class="p-4 rounded-xl text-lg font-bold border-2 border-gray-700 text-gray-500 transition cursor-pointer">Belanja Barang (Pcs/Botol)</button>
+                    <button type="button" id="btnModalModeKg" onclick="toggleModalMode('kg')" class="mode-btn p-4 rounded-xl text-base sm:text-lg font-bold border-2 border-cyan-500 text-cyan-400 transition cursor-pointer">Belanja Bumbu (Kg/Ons)</button>
+                    <button type="button" id="btnModalModePcs" onclick="toggleModalMode('pcs')" class="mode-btn p-4 rounded-xl text-base sm:text-lg font-bold border-2 border-gray-700 text-gray-500 transition cursor-pointer">Belanja Barang (Pcs/Botol)</button>
                 </div>
 
                 <!-- FORM MODAL BUMBU (KG/ONS) -->
@@ -353,17 +361,14 @@
                                 <option value="Pak">Pak</option>
                                 <option value="Sachet">Sachet</option>
                             </select>
-                            <p class="text-xs text-gray-500 mt-1">*Pilih satuan beli.</p>
                         </div>
                         <div>
                             <label class="block text-lg font-bold mb-2 text-cyan-400">Jumlah Beli</label>
                             <input type="number" id="modalPcsJumlah" placeholder="Contoh: 2" oninput="updateModalPcsPreview()" class="w-full">
-                            <p class="text-xs text-gray-500 mt-1">*Isi angka saja.</p>
                         </div>
                         <div>
                             <label class="block text-lg font-bold mb-2 text-cyan-400">Harga Modal Total (Rp)</label>
                             <input type="text" inputmode="numeric" id="modalPcsHarga" placeholder="Contoh: 100.000" oninput="formatNominal(this)" class="w-full">
-                            <p class="text-xs text-gray-500 mt-1">*Total harga semua jumlah.</p>
                         </div>
                     </div>
                     <div class="preview-box mb-8">
@@ -378,8 +383,8 @@
                 <h2 class="text-4xl font-extrabold mb-8 text-white mt-12 sm:mt-0"><i class="fas fa-cash-register text-emerald-400 mr-3"></i> Catat Penjualan</h2>
                 
                 <div class="grid grid-cols-2 gap-4 mb-8">
-                    <button type="button" id="btnModeKg" onclick="toggleJualMode('kg')" class="p-4 rounded-xl text-lg font-bold border-2 border-emerald-500 text-emerald-400 transition cursor-pointer">Mode: Bumbu (Kg/Ons)</button>
-                    <button type="button" id="btnModePcs" onclick="toggleJualMode('pcs')" class="p-4 rounded-xl text-lg font-bold border-2 border-gray-700 text-gray-500 transition cursor-pointer">Mode: Barang (Pcs/Botol)</button>
+                    <button type="button" id="btnModeKg" onclick="toggleJualMode('kg')" class="mode-btn p-4 rounded-xl text-base sm:text-lg font-bold border-2 border-emerald-500 text-emerald-400 transition cursor-pointer">Mode: Bumbu (Kg/Ons)</button>
+                    <button type="button" id="btnModePcs" onclick="toggleJualMode('pcs')" class="mode-btn p-4 rounded-xl text-base sm:text-lg font-bold border-2 border-gray-700 text-gray-500 transition cursor-pointer">Mode: Barang (Pcs/Btl)</button>
                 </div>
 
                 <!-- FORM KG (HANYA BUMBU) -->
@@ -397,7 +402,7 @@
                         <div>
                             <label class="block text-lg font-bold mb-2 text-emerald-400">Harga Jual per Kg (Rp)</label>
                             <input type="text" inputmode="numeric" id="jualHarga" placeholder="Contoh: 50.000" oninput="formatNominal(this); hitungJual()" class="w-full">
-                            <p class="text-xs text-gray-500 mt-1">*Harga 1 Kg. Kalau jual 10Kg otomatis: 10 x harga ini.</p>
+                            <p class="text-xs text-gray-500 mt-1">*Harga 1 Kg. Jual 10Kg otomatis: 10 x harga ini.</p>
                         </div>
                         <div>
                             <label class="block text-lg font-bold mb-2 text-rose-400">Potongan / Diskon (Rp)</label>
@@ -409,13 +414,13 @@
                         <div>
                             <label class="block text-lg font-bold mb-2 text-emerald-400">💰 Total Bayar (Otomatis)</label>
                             <input type="text" id="jualTotal" readonly class="w-full">
-                            <p class="text-xs text-gray-400 mt-1">*Uang yang dibayar pembeli = (Harga per Kg × Jumlah Kg) − Diskon. Terisi sendiri, tidak perlu diketik.</p>
+                            <p class="text-xs text-gray-400 mt-1">*= (Harga per Kg × Jumlah Kg) − Diskon. Terisi sendiri.</p>
                         </div>
                     </div>
                     <button onclick="simpanJual()" class="w-full bg-gradient-to-r from-emerald-500 to-teal-600 text-white p-4 rounded-xl text-xl font-bold hover:from-emerald-400 hover:to-teal-500 transition transform hover:scale-105 shadow-lg active:scale-95 cursor-pointer"><i class="fas fa-receipt mr-2"></i> Simpan Penjualan Bumbu</button>
                 </div>
 
-                <!-- FORM PCS (HANYA KECAP/SAOS/GARAM DLL, DENGAN SATUAN) -->
+                <!-- FORM PCS (HANYA KECAP/SAOS/GARAM, DENGAN SATUAN) -->
                 <div id="formPcs" class="hidden bg-[#0f1629] p-6 sm:p-10 rounded-3xl container-full border border-emerald-500/20 card-glow-emerald mb-8">
                     <div class="grid grid-cols-2 gap-6 mb-6">
                         <div><label class="block text-lg font-bold mb-2 text-emerald-400">Tanggal Jual</label><input type="date" id="pcsTgl" class="w-full"></div>
@@ -436,7 +441,6 @@
                         <div>
                             <label class="block text-lg font-bold mb-2 text-emerald-400">Jumlah Beli</label>
                             <input type="number" id="pcsJumlah" placeholder="Contoh: 2" oninput="hitungJualPcs(); updatePcsPreview()" class="w-full">
-                            <p class="text-xs text-gray-500 mt-1">*Jumlah sesuai satuan.</p>
                         </div>
                         <div>
                             <label class="block text-lg font-bold mb-2 text-emerald-400">Harga Jual per Satuan (Rp)</label>
@@ -456,7 +460,7 @@
                         <div>
                             <label class="block text-lg font-bold mb-2 text-emerald-400">💰 Total Bayar (Otomatis)</label>
                             <input type="text" id="pcsTotal" readonly class="w-full">
-                            <p class="text-xs text-gray-400 mt-1">*= (Harga per satuan × Jumlah) − Diskon. Terisi sendiri, tidak perlu diketik.</p>
+                            <p class="text-xs text-gray-400 mt-1">*= (Harga per satuan × Jumlah) − Diskon. Terisi sendiri.</p>
                         </div>
                     </div>
                     <button onclick="simpanJualPcs()" class="w-full bg-gradient-to-r from-emerald-500 to-teal-600 text-white p-4 rounded-xl text-xl font-bold hover:from-emerald-400 hover:to-teal-500 transition transform hover:scale-105 shadow-lg active:scale-95 cursor-pointer"><i class="fas fa-receipt mr-2"></i> Simpan Penjualan Barang</button>
@@ -479,7 +483,7 @@
                 </div>
 
                 <!-- TABEL BARANG PCS/BOTOL DI ATAS -->
-                <div class="bg-[#0f1629] p-6 sm:p-8 rounded-3xl container-full border border-purple-500/20 card-glow-purple overflow-x-auto mb-8">
+                <div class="bg-[#0f1629] p-6 sm:p-8 rounded-3xl container-full border border-purple-500/20 card-glow-purple table-scroll mb-8">
                     <h3 class="text-xl font-extrabold mb-4 text-purple-300"><i class="fas fa-prescription-bottle mr-2"></i>Harga Barang (Pcs/Botol/Bungkus)</h3>
                     <table class="dark-table" style="width:100%; min-width: 800px;">
                         <thead>
@@ -495,7 +499,7 @@
                 </div>
 
                 <!-- TABEL BUMBU KG/ONS DI BAWAH -->
-                <div class="bg-[#0f1629] p-6 sm:p-8 rounded-3xl container-full border border-amber-500/20 card-glow-amber overflow-x-auto">
+                <div class="bg-[#0f1629] p-6 sm:p-8 rounded-3xl container-full border border-amber-500/20 card-glow-amber table-scroll">
                     <h3 class="text-xl font-extrabold mb-4 text-amber-300"><i class="fas fa-pepper-hot mr-2"></i>Harga Bumbu (Kg/Ons)</h3>
                     <table class="dark-table" style="width:100%; min-width: 1800px;">
                         <thead>
@@ -526,7 +530,7 @@
             <!-- STOK -->
             <div id="page-stok" class="page-content hidden">
                 <h2 class="text-4xl font-extrabold mb-8 text-white mt-12 sm:mt-0"><i class="fas fa-boxes-stacked text-amber-400 mr-3"></i> Sisa Stok</h2>
-                <div class="bg-[#0f1629] p-8 rounded-3xl container-full border border-amber-500/20 card-glow-amber overflow-x-auto">
+                <div class="bg-[#0f1629] p-8 rounded-3xl container-full border border-amber-500/20 card-glow-amber table-scroll">
                     <table class="dark-table"><thead><tr><th><i class="fas fa-pepper-hot mr-2"></i>Nama Bumbu / Barang</th><th><i class="fas fa-weight-hanging mr-2"></i>Sisa Stok</th></tr></thead><tbody id="tabelStok"></tbody></table>
                 </div>
             </div>
@@ -534,12 +538,12 @@
             <!-- LAPORAN / KAS KEUNGAN -->
             <div id="page-laporan" class="page-content hidden">
                 <h2 class="text-4xl font-extrabold mb-8 text-white mt-12 sm:mt-0"><i class="fas fa-file-invoice-dollar text-purple-400 mr-3"></i> Kas Keuangan</h2>
-                <div class="flex gap-4 mb-8 items-center">
+                <div class="flex gap-4 mb-8 items-center flex-wrap">
                     <select id="filterBulan" class="p-3 text-lg font-bold" onchange="loadLaporan()"><option value="01">Januari</option><option value="02">Februari</option><option value="03">Maret</option><option value="04">April</option><option value="05">Mei</option><option value="06">Juni</option><option value="07">Juli</option><option value="08">Agustus</option><option value="09">September</option><option value="10">Oktober</option><option value="11">November</option><option value="12">Desember</option></select>
                     <select id="filterTahun" class="p-3 text-lg font-bold" onchange="loadLaporan()"></select>
                 </div>
 
-                <div class="bg-[#0f1629] p-6 rounded-3xl border border-cyan-500/20 overflow-x-auto mb-8 card-glow-cyan">
+                <div class="bg-[#0f1629] p-6 rounded-3xl border border-cyan-500/20 table-scroll mb-8 card-glow-cyan">
                     <h3 class="text-xl font-extrabold mb-4 text-cyan-300"><i class="fas fa-calendar-day mr-2"></i>Rekap Harian (Crosscheck Pendapatan)</h3>
                     <table class="dark-table">
                         <thead><tr><th>Tanggal</th><th>Total Jualan</th><th>Total Untung</th></tr></thead>
@@ -552,7 +556,7 @@
                     <div class="bg-[#0f1629] p-6 rounded-3xl border-l-4 border-rose-500 card-glow-rose"><p class="text-lg text-gray-400 font-bold">Total Modal</p><h3 id="lModal" class="text-3xl font-extrabold mt-2 text-rose-400">Rp 0</h3></div>
                     <div class="bg-[#0f1629] p-6 rounded-3xl border-l-4 border-emerald-500 card-glow-emerald"><p class="text-lg text-gray-400 font-bold">Total Untung</p><h3 id="lUntung" class="text-3xl font-extrabold mt-2 text-emerald-400">Rp 0</h3></div>
                 </div>
-                <div class="bg-[#0f1629] p-6 rounded-3xl border border-purple-500/20 overflow-x-auto">
+                <div class="bg-[#0f1629] p-6 rounded-3xl border border-purple-500/20 table-scroll">
                     <h3 class="text-xl font-extrabold mb-4 text-purple-300"><i class="fas fa-list mr-2"></i>Riwayat Penjualan Bulan Ini</h3>
                     <table class="dark-table"><thead><tr><th>Tanggal</th><th>Item</th><th>Jumlah</th><th>Total Bayar</th><th>Untung</th></tr></thead><tbody id="tabelLaporan"></tbody></table>
                 </div>
@@ -660,22 +664,21 @@
     ];
     var DAFTAR_BUMBU = DAFTAR_BUMBU_DEFAULT.slice();
 
-    // Cek apakah barang termasuk kategori Pcs/Botol (Kecap/Saos/Garam dll)
     function isPcsItem(nama) {
         var lowerNama = nama.toLowerCase();
         return lowerNama.includes('kecap') || lowerNama.includes('saos') || lowerNama.includes('saus') || lowerNama.includes('garam') || lowerNama.includes('botol') || lowerNama.includes('btl') || lowerNama.includes('pcs') || lowerNama.includes('bungkus');
     }
 
-    // ====== FORMAT JUMLAH JELAS (contoh: "2 Botol", "0.5 Kg") ======
+    // ====== FORMAT JUMLAH JELAS ======
     function formatJumlah(val) {
         if (val === null || val === undefined) return '';
         var s = String(val).trim();
         if (s === '') return '';
-        if (/[a-zA-Z]/.test(s)) return s; // sudah ada satuan, tampilkan apa adanya
-        return s + ' Kg'; // data lama berupa angka murni -> anggap Kg
+        if (/[a-zA-Z]/.test(s)) return s;
+        return s + ' Kg';
     }
 
-    // ====== LABEL STOK JELAS (barang pcs -> "2 Pcs", bumbu -> "5 Kg") ======
+    // ====== LABEL STOK JELAS ======
     function stockLabel(nama, val) {
         var n = parseFloat(val);
         if (isNaN(n)) n = 0;
@@ -710,13 +713,9 @@
                 kgList.push(DAFTAR_BUMBU[i]);
             }
         }
-        // Catat Modal Mode Bumbu: hanya bumbu
         fillSelectWithOptions('modalNama', kgList, '-- Pilih Bumbu --');
-        // Catat Modal Mode Barang: hanya kecap/saos/garam dll
         fillSelectWithOptions('modalPcsNama', pcsList, '-- Pilih Barang (Kecap/Saos/Garam) --');
-        // Catat Penjualan Mode Kg: hanya bumbu
         fillSelectWithOptions('jualNama', kgList, '-- Pilih Bumbu --');
-        // Catat Penjualan Mode Pcs: hanya barang
         fillSelectWithOptions('pcsNama', pcsList, '-- Pilih Barang (Kecap/Saos/Garam) --');
     }
 
@@ -833,7 +832,7 @@
         }
     }
 
-    // ===== PREVIEW SATUAN (MODAL KG) =====
+    // ===== PREVIEW SATUAN =====
     function updateModalKgPreview() {
         var el = document.getElementById('modalKgPreview');
         if (!el) return;
@@ -845,7 +844,6 @@
         }
     }
 
-    // ===== PREVIEW SATUAN (MODAL PCS: "2 Botol", "1 Pcs", dst) =====
     function updateModalPcsPreview() {
         var el = document.getElementById('modalPcsPreview');
         if (!el) return;
@@ -858,7 +856,6 @@
         }
     }
 
-    // ===== PREVIEW SATUAN (PENJUALAN PCS) =====
     function updatePcsPreview() {
         var el = document.getElementById('pcsPreview');
         if (!el) return;
@@ -871,7 +868,6 @@
         }
     }
 
-    // Hitung Total Bayar otomatis: (Harga per Kg x Jumlah) - Diskon
     function hitungJual() {
         var kg = parseFloat(document.getElementById('jualKg').value) || 0;
         var harga = parseNominal(document.getElementById('jualHarga'));
@@ -881,7 +877,6 @@
         document.getElementById('jualTotal').value = Number(total).toLocaleString('id-ID');
     }
 
-    // Hitung Total Bayar otomatis mode Pcs: (Harga per Satuan x Jumlah) - Diskon
     function hitungJualPcs() {
         var jml = parseFloat(document.getElementById('pcsJumlah').value) || 0;
         var harga = parseNominal(document.getElementById('pcsHarga'));
@@ -899,7 +894,6 @@
         }
     }
 
-    // ===== TOGGLE MODE CATAT MODAL =====
     function toggleModalMode(mode) {
         if (mode === 'kg') {
             document.getElementById('formModalKg').classList.remove('hidden');
@@ -1181,7 +1175,7 @@
         setTimeout(function() { if (uField) uField.focus(); }, 100);
     }
 
-    // ============ SIMPAN MODAL BUMBU KG (JELAS: "2 Kg") ============
+    // ============ SIMPAN MODAL BUMBU KG ============
     function simpanModal() {
         var tgl = document.getElementById('modalTgl').value; 
         var nama = document.getElementById('modalNama').value.trim();
@@ -1190,7 +1184,7 @@
         if (!tgl || !nama || !kg || !harga) { showToast('Lengkapi semua data modal!', true); return; }
         if (kg <= 0 || harga <= 0) { showToast('Jumlah dan harga harus lebih dari 0!', true); return; }
         
-        var kgLabel = kg + ' Kg'; // contoh: "2 Kg", "0.5 Kg" (angka di depan tetap dibaca sistem stok)
+        var kgLabel = kg + ' Kg';
         var rowData = [tgl, nama, kgLabel, harga];
         
         document.getElementById('modalNama').value = ''; 
@@ -1208,7 +1202,7 @@
         });
     }
 
-    // ============ SIMPAN MODAL BARANG PCS/BOTOL (JELAS: "1 Pcs" / "2 Botol") ============
+    // ============ SIMPAN MODAL BARANG PCS/BOTOL ============
     function simpanModalPcs() {
         var tgl = document.getElementById('modalPcsTgl').value; 
         var nama = document.getElementById('modalPcsNama').value;
@@ -1218,7 +1212,7 @@
         if (!tgl || !nama || !jml || !harga) { showToast('Lengkapi semua data modal barang!', true); return; }
         if (jml <= 0 || harga <= 0) { showToast('Jumlah dan harga harus lebih dari 0!', true); return; }
         
-        var jmlLabel = jml + ' ' + satuan; // contoh: "1 Pcs", "2 Botol", "3 Bungkus"
+        var jmlLabel = jml + ' ' + satuan;
         var rowData = [tgl, nama, jmlLabel, harga];
         
         document.getElementById('modalPcsNama').value = ''; 
@@ -1234,7 +1228,7 @@
         });
     }
 
-    // ============ SIMPAN PENJUALAN KG (INSTAN, JELAS: "2 Kg") ============
+    // ============ SIMPAN PENJUALAN KG ============
     function simpanJual() {
         var tgl = document.getElementById('jualTgl').value; 
         var nama = document.getElementById('jualNama').value;
@@ -1277,7 +1271,7 @@
         });
     }
 
-    // ============ SIMPAN PENJUALAN PCS (INSTAN, JELAS: "2 Botol") ============
+    // ============ SIMPAN PENJUALAN PCS ============
     function simpanJualPcs() {
         var tgl = document.getElementById('pcsTgl').value; 
         var nama = document.getElementById('pcsNama').value;
@@ -1302,7 +1296,7 @@
             }
         }
         var untung = totalBayar - (hargaModalPerPcs * jml);
-        var jmlLabel = jml + ' ' + satuan; // "1 Pcs" / "2 Botol"
+        var jmlLabel = jml + ' ' + satuan;
         var rowData = [tgl, nama, jmlLabel, hargaJual, potongan, totalBayar, untung];
         
         document.getElementById('pcsNama').value = ''; 
@@ -1320,7 +1314,7 @@
         });
     }
 
-    // ============ TAMBAH BARANG (INSTAN, LANGSUNG MASUK DROPDOWN YANG BENAR) ============
+    // ============ TAMBAH BARANG ============
     function simpanBarang() {
         var input = document.getElementById('namaBarangBaru');
         var nama = input.value.trim();
@@ -1347,7 +1341,7 @@
         });
     }
 
-    // ============ HAPUS BARANG (INSTAN) ============
+    // ============ HAPUS BARANG ============
     function hapusHarga(index) {
         var nama = DAFTAR_BUMBU[index];
         if (!nama) return;
@@ -1375,7 +1369,7 @@
             });
     }
 
-    // ============ LOAD DAFTAR HARGA (INSTAN + UPDATE DI BELAKANG) ============
+    // ============ LOAD DAFTAR HARGA ============
     async function loadDaftarHarga(force) {
         var tbodyKg = document.getElementById('tabelDaftarHargaKg'); 
         var tbodyPcs = document.getElementById('tabelDaftarHargaPcs'); 
@@ -1487,7 +1481,6 @@
         tbodyPcs.innerHTML = htmlPcs;
     }
 
-    // EDIT: INSTAN (murni browser)
     function editHarga(btn) {
         var tr = btn.closest('tr'); 
         if (!tr) return;
@@ -1540,7 +1533,6 @@
         dataCache.lastUpdate['Harga'] = Date.now();
     }
 
-    // ============ SIMPAN HARGA KG (INSTAN) ============
     function simpanSatuHarga(index, btn) {
         var nama = DAFTAR_BUMBU[index];
         if (!nama) return;
@@ -1570,7 +1562,6 @@
         });
     }
 
-    // ============ SIMPAN HARGA PCS (INSTAN) ============
     function simpanHargaPcs(index, btn) {
         var nama = DAFTAR_BUMBU[index];
         if (!nama) return;
@@ -1687,38 +1678,15 @@
                 data: { 
                     labels: namaBulan, 
                     datasets: [ 
-                        { 
-                            label: 'Penjualan', 
-                            data: penjualanPerBulan, 
-                            backgroundColor: 'rgba(0,240,255,0.5)', 
-                            borderColor: '#00f0ff', 
-                            borderWidth: 2, 
-                            borderRadius: 8, 
-                            barPercentage: 0.6, 
-                            categoryPercentage: 0.7 
-                        }, 
-                        { 
-                            label: 'Untung', 
-                            data: untungPerBulan, 
-                            backgroundColor: 'rgba(16,185,129,0.5)', 
-                            borderColor: '#10b981', 
-                            borderWidth: 2, 
-                            borderRadius: 8, 
-                            barPercentage: 0.6, 
-                            categoryPercentage: 0.7 
-                        } 
+                        { label: 'Penjualan', data: penjualanPerBulan, backgroundColor: 'rgba(0,240,255,0.5)', borderColor: '#00f0ff', borderWidth: 2, borderRadius: 8, barPercentage: 0.6, categoryPercentage: 0.7 }, 
+                        { label: 'Untung', data: untungPerBulan, backgroundColor: 'rgba(16,185,129,0.5)', borderColor: '#10b981', borderWidth: 2, borderRadius: 8, barPercentage: 0.6, categoryPercentage: 0.7 } 
                     ] 
                 },
                 options: { 
-                    responsive: true, 
-                    maintainAspectRatio: false, 
-                    animation: { duration: 400 }, 
+                    responsive: true, maintainAspectRatio: false, animation: { duration: 400 }, 
                     plugins: { 
                         legend: { labels: { color: '#94a3b8', font: { size: 14, weight: 'bold' } } }, 
-                        tooltip: { 
-                            callbacks: { label: function(ctx) { return ctx.dataset.label + ': ' + formatRp(ctx.raw); } }, 
-                            backgroundColor: '#0f1629', titleColor: '#00f0ff', bodyColor: '#f1f5f9', borderColor: '#334155', borderWidth: 1 
-                        } 
+                        tooltip: { callbacks: { label: function(ctx) { return ctx.dataset.label + ': ' + formatRp(ctx.raw); } }, backgroundColor: '#0f1629', titleColor: '#00f0ff', bodyColor: '#f1f5f9', borderColor: '#334155', borderWidth: 1 } 
                     }, 
                     scales: { 
                         x: { ticks: { color: '#94a3b8', font: { size: 14, weight: 'bold' } }, grid: { display: false } }, 
@@ -1744,27 +1712,13 @@
                 type: 'bar', 
                 data: { 
                     labels: namaBulan, 
-                    datasets: [{ 
-                        label: 'Modal', 
-                        data: modalPerBulan, 
-                        backgroundColor: 'rgba(244,63,94,0.5)', 
-                        borderColor: '#f43f5e', 
-                        borderWidth: 2, 
-                        borderRadius: 8, 
-                        barPercentage: 0.6, 
-                        categoryPercentage: 0.7 
-                    }] 
+                    datasets: [{ label: 'Modal', data: modalPerBulan, backgroundColor: 'rgba(244,63,94,0.5)', borderColor: '#f43f5e', borderWidth: 2, borderRadius: 8, barPercentage: 0.6, categoryPercentage: 0.7 }] 
                 },
                 options: { 
-                    responsive: true, 
-                    maintainAspectRatio: false, 
-                    animation: { duration: 400 }, 
+                    responsive: true, maintainAspectRatio: false, animation: { duration: 400 }, 
                     plugins: { 
                         legend: { labels: { color: '#94a3b8', font: { size: 14, weight: 'bold' } } }, 
-                        tooltip: { 
-                            callbacks: { label: function(ctx) { return ctx.dataset.label + ': ' + formatRp(ctx.raw); } }, 
-                            backgroundColor: '#0f1629', titleColor: '#f43f5e', bodyColor: '#f1f5f9', borderColor: '#334155', borderWidth: 1 
-                        } 
+                        tooltip: { callbacks: { label: function(ctx) { return ctx.dataset.label + ': ' + formatRp(ctx.raw); } }, backgroundColor: '#0f1629', titleColor: '#f43f5e', bodyColor: '#f1f5f9', borderColor: '#334155', borderWidth: 1 } 
                     }, 
                     scales: { 
                         x: { ticks: { color: '#94a3b8', font: { size: 14, weight: 'bold' } }, grid: { display: false } }, 
@@ -1792,7 +1746,7 @@
                     var untung = Number(jualData[i][6]);
                     totalJual += totalBayar; 
                     totalUntung += untung;
-                    html += '<tr><td>' + jualData[i][0] + '</td><td>' + jualData[i][1] + '</td><td>' + formatJumlah(jualData[i][2]) + '</td><td>' + formatRp(totalBayar) + '</td><td style="color:#10b981;font-weight:bold;">' + formatRp(untung) + '</td></tr>';
+                    html += '<tr><td>' + jualData[i][0] + '</td><td class="left-align">' + jualData[i][1] + '</td><td>' + formatJumlah(jualData[i][2]) + '</td><td>' + formatRp(totalBayar) + '</td><td style="color:#10b981;font-weight:bold;">' + formatRp(untung) + '</td></tr>';
                 }
             }
             if (!adaData) { 
@@ -1846,7 +1800,7 @@
                     }
                     dailyMap[tglJual].jual += jualTotal; 
                     dailyMap[tglJual].untung += untungTotal;
-                    html += '<tr><td>' + tglJual + '</td><td>' + jualData[i][1] + '</td><td>' + formatJumlah(jualData[i][2]) + '</td><td>' + formatRp(jualTotal) + '</td><td style="color:#10b981;">' + formatRp(untungTotal) + '</td></tr>';
+                    html += '<tr><td>' + tglJual + '</td><td class="left-align">' + jualData[i][1] + '</td><td>' + formatJumlah(jualData[i][2]) + '</td><td>' + formatRp(jualTotal) + '</td><td style="color:#10b981;">' + formatRp(untungTotal) + '</td></tr>';
                 }
             }
             for (var i = 1; i < modalData.length; i++) { 
