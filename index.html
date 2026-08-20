@@ -128,6 +128,11 @@
         .table-input { padding: 10px !important; font-size: 16px !important; width: 110px !important; border-radius: 8px !important; box-sizing: border-box !important; text-align: center; transition: none !important; }
         .table-input.editing { border-color: #f59e0b !important; color: #fbbf24 !important; background: #1a1a2e !important; cursor: text !important; }
 
+        /* ===== PREVIEW SATUAN ===== */
+        .preview-box { padding: 14px 18px; border-radius: 14px; background: #111827; border: 2px dashed #334155; text-align: center; }
+        .preview-box .label { color: #94a3b8; font-size: 14px; }
+        .preview-box .value { color: #22d3ee; font-size: 22px; font-weight: 800; }
+
         /* ===== SCROLLBAR ===== */
         ::-webkit-scrollbar { width: 8px; height: 8px; }
         ::-webkit-scrollbar-track { background: #0a0e1a; }
@@ -163,7 +168,7 @@
             .bottom-nav { display: flex; }
             #page-dashboard .grid-cols-3 { grid-template-columns: 1fr !important; gap: 1rem !important; }
             #page-dashboard .grid-cols-4 { grid-template-columns: 1fr 1fr !important; gap: 1rem !important; }
-            #page-catatModal .grid-cols-2, #page-catatJual .grid-cols-2, #page-catatJual .grid-cols-3, #page-laporan .grid-cols-3 { grid-template-columns: 1fr !important; }
+            #page-catatModal .grid-cols-2, #page-catatModal .grid-cols-3, #page-catatJual .grid-cols-2, #page-catatJual .grid-cols-3, #page-catatJual .grid-cols-4, #page-laporan .grid-cols-3 { grid-template-columns: 1fr !important; }
             #page-laporan .flex.gap-4 { flex-direction: column; align-items: stretch; }
             #page-stok table, #page-laporan table, #page-rekap table, #page-daftarHarga table { font-size: 14px; }
             #page-stok th, #page-stok td, #page-laporan th, #page-laporan td, #page-rekap th, #page-rekap td, #page-daftarHarga th, #page-daftarHarga td { padding: 8px !important; }
@@ -297,28 +302,74 @@
                 <div class="container-full">
                     <div class="bg-[#0f1629] p-8 rounded-3xl border border-emerald-500/20 card-glow-emerald overflow-x-auto">
                         <h3 class="text-xl font-extrabold mb-4 text-emerald-300"><i class="fas fa-cash-register mr-2"></i>Penjualan Hari Ini</h3>
-                        <table class="dark-table"><thead><tr><th>Tanggal</th><th>Bumbu</th><th>Jual (Kg)</th><th>Total Bayar</th><th>Untung</th></tr></thead><tbody id="rekapJual"></tbody></table>
+                        <table class="dark-table"><thead><tr><th>Tanggal</th><th>Bumbu / Barang</th><th>Jumlah</th><th>Total Bayar</th><th>Untung</th></tr></thead><tbody id="rekapJual"></tbody></table>
                     </div>
                 </div>
             </div>
 
-            <!-- CATAT MODAL -->
+            <!-- CATAT MODAL (2 MODE: BUMBU KG & BARANG PCS/BOTOL) -->
             <div id="page-catatModal" class="page-content hidden">
                 <h2 class="text-4xl font-extrabold mb-8 text-white mt-12 sm:mt-0"><i class="fas fa-truck-loading text-cyan-400 mr-3"></i> Catat Belanja Modal</h2>
-                <div class="bg-[#0f1629] p-6 sm:p-10 rounded-3xl container-full border border-cyan-500/20 card-glow-cyan">
+                
+                <div class="grid grid-cols-2 gap-4 mb-8">
+                    <button type="button" id="btnModalModeKg" onclick="toggleModalMode('kg')" class="p-4 rounded-xl text-lg font-bold border-2 border-cyan-500 text-cyan-400 transition cursor-pointer">Belanja Bumbu (Kg/Ons)</button>
+                    <button type="button" id="btnModalModePcs" onclick="toggleModalMode('pcs')" class="p-4 rounded-xl text-lg font-bold border-2 border-gray-700 text-gray-500 transition cursor-pointer">Belanja Barang (Pcs/Botol)</button>
+                </div>
+
+                <!-- FORM MODAL BUMBU (KG/ONS) -->
+                <div id="formModalKg" class="bg-[#0f1629] p-6 sm:p-10 rounded-3xl container-full border border-cyan-500/20 card-glow-cyan mb-8">
                     <div class="grid grid-cols-2 gap-6 mb-6">
                         <div><label class="block text-lg font-bold mb-2 text-cyan-400">Tanggal Belanja</label><input type="date" id="modalTgl" class="w-full"></div>
-                        <div><label class="block text-lg font-bold mb-2 text-cyan-400">Nama Bumbu / Barang</label><select id="modalNama" class="w-full"><option value="">-- Pilih Bumbu / Barang --</option></select></div>
+                        <div><label class="block text-lg font-bold mb-2 text-cyan-400">Nama Bumbu</label><select id="modalNama" class="w-full"><option value="">-- Pilih Bumbu --</option></select></div>
                     </div>
-                    <div class="grid grid-cols-2 gap-6 mb-8">
+                    <div class="grid grid-cols-2 gap-6 mb-6">
                         <div>
-                            <label class="block text-lg font-bold mb-2 text-cyan-400">Jumlah Beli</label>
-                            <select id="modalKgPilihan" class="w-full mb-2" onchange="setJumlah(this, 'modalKg');"></select>
-                            <input type="number" id="modalKg" step="any" placeholder="0.5 / 1 / 1.5" class="w-full" style="display:none;">
+                            <label class="block text-lg font-bold mb-2 text-cyan-400">Jumlah Beli (Kg/Ons)</label>
+                            <select id="modalKgPilihan" class="w-full mb-2" onchange="setJumlah(this, 'modalKg'); updateModalKgPreview();"></select>
+                            <input type="number" id="modalKg" step="any" placeholder="0.5 / 1 / 1.5" class="w-full" style="display:none;" oninput="updateModalKgPreview()">
                         </div>
                         <div><label class="block text-lg font-bold mb-2 text-cyan-400">Harga Modal Total (Rp)</label><input type="text" inputmode="numeric" id="modalHarga" placeholder="500.000" oninput="formatNominal(this)" class="w-full"></div>
                     </div>
-                    <button onclick="simpanModal()" class="w-full bg-gradient-to-r from-cyan-500 to-blue-600 text-white p-4 rounded-xl text-xl font-bold hover:from-cyan-400 hover:to-blue-500 transition transform hover:scale-105 shadow-lg active:scale-95 cursor-pointer"><i class="fas fa-save mr-2"></i> Simpan Modal</button>
+                    <div class="preview-box mb-8">
+                        <span class="label">📋 Tercatat sebagai: </span><span class="value" id="modalKgPreview">- Kg</span>
+                    </div>
+                    <button onclick="simpanModal()" class="w-full bg-gradient-to-r from-cyan-500 to-blue-600 text-white p-4 rounded-xl text-xl font-bold hover:from-cyan-400 hover:to-blue-500 transition transform hover:scale-105 shadow-lg active:scale-95 cursor-pointer"><i class="fas fa-save mr-2"></i> Simpan Modal Bumbu</button>
+                </div>
+
+                <!-- FORM MODAL BARANG (PCS/BOTOL) -->
+                <div id="formModalPcs" class="hidden bg-[#0f1629] p-6 sm:p-10 rounded-3xl container-full border border-cyan-500/20 card-glow-cyan mb-8">
+                    <div class="grid grid-cols-2 gap-6 mb-6">
+                        <div><label class="block text-lg font-bold mb-2 text-cyan-400">Tanggal Belanja</label><input type="date" id="modalPcsTgl" class="w-full"></div>
+                        <div><label class="block text-lg font-bold mb-2 text-cyan-400">Nama Barang (Kecap/Saos/Garam)</label><select id="modalPcsNama" class="w-full"><option value="">-- Pilih Barang --</option></select></div>
+                    </div>
+                    <div class="grid grid-cols-3 gap-6 mb-6">
+                        <div>
+                            <label class="block text-lg font-bold mb-2 text-cyan-400">Satuan</label>
+                            <select id="modalPcsSatuan" class="w-full" onchange="updateModalPcsPreview()">
+                                <option value="Pcs">Pcs</option>
+                                <option value="Botol">Botol</option>
+                                <option value="Bungkus">Bungkus</option>
+                                <option value="Dus">Dus</option>
+                                <option value="Pak">Pak</option>
+                                <option value="Sachet">Sachet</option>
+                            </select>
+                            <p class="text-xs text-gray-500 mt-1">*Pilih satuan beli.</p>
+                        </div>
+                        <div>
+                            <label class="block text-lg font-bold mb-2 text-cyan-400">Jumlah Beli</label>
+                            <input type="number" id="modalPcsJumlah" placeholder="Contoh: 2" oninput="updateModalPcsPreview()" class="w-full">
+                            <p class="text-xs text-gray-500 mt-1">*Isi angka saja.</p>
+                        </div>
+                        <div>
+                            <label class="block text-lg font-bold mb-2 text-cyan-400">Harga Modal Total (Rp)</label>
+                            <input type="text" inputmode="numeric" id="modalPcsHarga" placeholder="Contoh: 100.000" oninput="formatNominal(this)" class="w-full">
+                            <p class="text-xs text-gray-500 mt-1">*Total harga semua jumlah.</p>
+                        </div>
+                    </div>
+                    <div class="preview-box mb-8">
+                        <span class="label">📋 Tercatat sebagai: </span><span class="value" id="modalPcsPreview">- Pcs</span>
+                    </div>
+                    <button onclick="simpanModalPcs()" class="w-full bg-gradient-to-r from-cyan-500 to-blue-600 text-white p-4 rounded-xl text-xl font-bold hover:from-cyan-400 hover:to-blue-500 transition transform hover:scale-105 shadow-lg active:scale-95 cursor-pointer"><i class="fas fa-save mr-2"></i> Simpan Modal Barang</button>
                 </div>
             </div>
 
@@ -358,40 +409,54 @@
                         <div>
                             <label class="block text-lg font-bold mb-2 text-emerald-400">💰 Total Bayar (Otomatis)</label>
                             <input type="text" id="jualTotal" readonly class="w-full">
-                            <p class="text-xs text-gray-400 mt-1">*Uang yang dibayar pembeli. Terisi sendiri = (Harga per Kg × Jumlah Kg) − Diskon. Tidak perlu diketik.</p>
+                            <p class="text-xs text-gray-400 mt-1">*Uang yang dibayar pembeli = (Harga per Kg × Jumlah Kg) − Diskon. Terisi sendiri, tidak perlu diketik.</p>
                         </div>
                     </div>
                     <button onclick="simpanJual()" class="w-full bg-gradient-to-r from-emerald-500 to-teal-600 text-white p-4 rounded-xl text-xl font-bold hover:from-emerald-400 hover:to-teal-500 transition transform hover:scale-105 shadow-lg active:scale-95 cursor-pointer"><i class="fas fa-receipt mr-2"></i> Simpan Penjualan Bumbu</button>
                 </div>
 
-                <!-- FORM PCS (HANYA KECAP/SAOS/GARAM DLL) -->
+                <!-- FORM PCS (HANYA KECAP/SAOS/GARAM DLL, DENGAN SATUAN) -->
                 <div id="formPcs" class="hidden bg-[#0f1629] p-6 sm:p-10 rounded-3xl container-full border border-emerald-500/20 card-glow-emerald mb-8">
                     <div class="grid grid-cols-2 gap-6 mb-6">
                         <div><label class="block text-lg font-bold mb-2 text-emerald-400">Tanggal Jual</label><input type="date" id="pcsTgl" class="w-full"></div>
                         <div><label class="block text-lg font-bold mb-2 text-emerald-400">Nama Barang (Kecap/Saos/Garam)</label><select id="pcsNama" class="w-full"><option value="">-- Pilih Barang --</option></select></div>
                     </div>
-                    <div class="grid grid-cols-3 gap-6 mb-6">
+                    <div class="grid grid-cols-4 gap-6 mb-6">
                         <div>
-                            <label class="block text-lg font-bold mb-2 text-emerald-400">Jumlah Beli (Pcs/Btl)</label>
-                            <input type="number" id="pcsJumlah" placeholder="Contoh: 2" oninput="hitungJualPcs()" class="w-full">
-                            <p class="text-xs text-gray-500 mt-1">*Jumlah botol/bungkus.</p>
+                            <label class="block text-lg font-bold mb-2 text-emerald-400">Satuan</label>
+                            <select id="pcsSatuan" class="w-full" onchange="updatePcsPreview()">
+                                <option value="Pcs">Pcs</option>
+                                <option value="Botol">Botol</option>
+                                <option value="Bungkus">Bungkus</option>
+                                <option value="Dus">Dus</option>
+                                <option value="Pak">Pak</option>
+                                <option value="Sachet">Sachet</option>
+                            </select>
                         </div>
                         <div>
-                            <label class="block text-lg font-bold mb-2 text-emerald-400">Harga Jual per Pcs (Rp)</label>
+                            <label class="block text-lg font-bold mb-2 text-emerald-400">Jumlah Beli</label>
+                            <input type="number" id="pcsJumlah" placeholder="Contoh: 2" oninput="hitungJualPcs(); updatePcsPreview()" class="w-full">
+                            <p class="text-xs text-gray-500 mt-1">*Jumlah sesuai satuan.</p>
+                        </div>
+                        <div>
+                            <label class="block text-lg font-bold mb-2 text-emerald-400">Harga Jual per Satuan (Rp)</label>
                             <input type="text" inputmode="numeric" id="pcsHarga" placeholder="Contoh: 20.000" oninput="formatNominal(this); hitungJualPcs()" class="w-full">
-                            <p class="text-xs text-gray-500 mt-1">*Harga 1 botol/bungkus.</p>
+                            <p class="text-xs text-gray-500 mt-1">*Harga 1 Pcs/Botol.</p>
                         </div>
                         <div>
                             <label class="block text-lg font-bold mb-2 text-rose-400">Potongan / Diskon (Rp)</label>
                             <input type="text" inputmode="numeric" id="pcsPotong" value="0" placeholder="Contoh: 1.000" oninput="formatNominal(this); hitungJualPcs()" class="w-full" style="border-color:#f43f5e44 !important;">
-                            <p class="text-xs text-gray-500 mt-1">*Kosongkan / 0 kalau tidak ada diskon.</p>
+                            <p class="text-xs text-gray-500 mt-1">*Kosongkan / 0 kalau tidak ada.</p>
                         </div>
+                    </div>
+                    <div class="preview-box mb-6">
+                        <span class="label">📋 Tercatat sebagai: </span><span class="value" id="pcsPreview" style="color:#10b981;">- Pcs</span>
                     </div>
                     <div class="grid grid-cols-2 gap-6 mb-8">
                         <div>
                             <label class="block text-lg font-bold mb-2 text-emerald-400">💰 Total Bayar (Otomatis)</label>
                             <input type="text" id="pcsTotal" readonly class="w-full">
-                            <p class="text-xs text-gray-400 mt-1">*Uang yang dibayar pembeli. Terisi sendiri = (Harga per Pcs × Jumlah) − Diskon. Tidak perlu diketik.</p>
+                            <p class="text-xs text-gray-400 mt-1">*= (Harga per satuan × Jumlah) − Diskon. Terisi sendiri, tidak perlu diketik.</p>
                         </div>
                     </div>
                     <button onclick="simpanJualPcs()" class="w-full bg-gradient-to-r from-emerald-500 to-teal-600 text-white p-4 rounded-xl text-xl font-bold hover:from-emerald-400 hover:to-teal-500 transition transform hover:scale-105 shadow-lg active:scale-95 cursor-pointer"><i class="fas fa-receipt mr-2"></i> Simpan Penjualan Barang</button>
@@ -401,7 +466,7 @@
             <!-- DAFTAR HARGA JUAL (GABUNG TAMBAH BARANG) -->
             <div id="page-daftarHarga" class="page-content hidden">
                 <h2 class="text-4xl font-extrabold mb-2 text-white mt-12 sm:mt-0"><i class="fas fa-tags text-amber-400 mr-3"></i> Daftar Harga & Perhitungan</h2>
-                <p class="text-gray-400 mb-8 text-lg">Klik "Edit" untuk mengubah harga, lalu "Simpan". Klik "Hapus" untuk menghapus barang. Barang baru langsung masuk ke dropdown Catat Penjualan.</p>
+                <p class="text-gray-400 mb-8 text-lg">Klik "Edit" untuk mengubah harga, lalu "Simpan". Klik "Hapus" untuk menghapus barang. Barang baru langsung masuk ke dropdown Catat Modal & Catat Penjualan.</p>
                 
                 <!-- FORM TAMBAH BARANG -->
                 <div class="bg-[#0f1629] p-6 rounded-3xl container-full border border-emerald-500/20 card-glow-emerald mb-8">
@@ -410,7 +475,7 @@
                         <input type="text" id="namaBarangBaru" placeholder="Ketik nama barang (Contoh: Kecap ABC 600ml)" class="w-full md:flex-1">
                         <button onclick="simpanBarang()" class="bg-emerald-600 hover:bg-emerald-500 text-white p-4 rounded-xl text-lg font-bold cursor-pointer whitespace-nowrap">Tambah Barang</button>
                     </div>
-                    <p class="text-xs text-gray-500 mt-3">*Nama yang ada kata "Kecap/Saos/Garam/Botol/Bungkus" otomatis masuk kategori Pcs/Botol.</p>
+                    <p class="text-xs text-gray-500 mt-3">*Nama yang ada kata "Kecap/Saos/Garam/Botol/Bungkus" otomatis masuk kategori Pcs/Botol. Selain itu masuk kategori Bumbu (Kg).</p>
                 </div>
 
                 <!-- TABEL BARANG PCS/BOTOL DI ATAS -->
@@ -420,7 +485,7 @@
                         <thead>
                             <tr>
                                 <th>Nama Barang</th>
-                                <th>Modal/Pcs (Auto)</th>
+                                <th>Modal/Satuan (Auto)</th>
                                 <th>Harga per Pcs/Btl</th>
                                 <th>Aksi</th>
                             </tr>
@@ -460,9 +525,9 @@
 
             <!-- STOK -->
             <div id="page-stok" class="page-content hidden">
-                <h2 class="text-4xl font-extrabold mb-8 text-white mt-12 sm:mt-0"><i class="fas fa-boxes-stacked text-amber-400 mr-3"></i> Sisa Stok Bumbu</h2>
+                <h2 class="text-4xl font-extrabold mb-8 text-white mt-12 sm:mt-0"><i class="fas fa-boxes-stacked text-amber-400 mr-3"></i> Sisa Stok</h2>
                 <div class="bg-[#0f1629] p-8 rounded-3xl container-full border border-amber-500/20 card-glow-amber overflow-x-auto">
-                    <table class="dark-table"><thead><tr><th><i class="fas fa-pepper-hot mr-2"></i>Nama Bumbu</th><th><i class="fas fa-weight-hanging mr-2"></i>Sisa Stok (Kg)</th></tr></thead><tbody id="tabelStok"></tbody></table>
+                    <table class="dark-table"><thead><tr><th><i class="fas fa-pepper-hot mr-2"></i>Nama Bumbu / Barang</th><th><i class="fas fa-weight-hanging mr-2"></i>Sisa Stok</th></tr></thead><tbody id="tabelStok"></tbody></table>
                 </div>
             </div>
 
@@ -489,7 +554,7 @@
                 </div>
                 <div class="bg-[#0f1629] p-6 rounded-3xl border border-purple-500/20 overflow-x-auto">
                     <h3 class="text-xl font-extrabold mb-4 text-purple-300"><i class="fas fa-list mr-2"></i>Riwayat Penjualan Bulan Ini</h3>
-                    <table class="dark-table"><thead><tr><th>Tanggal</th><th>Item</th><th>Kg</th><th>Total Bayar</th><th>Untung</th></tr></thead><tbody id="tabelLaporan"></tbody></table>
+                    <table class="dark-table"><thead><tr><th>Tanggal</th><th>Item</th><th>Jumlah</th><th>Total Bayar</th><th>Untung</th></tr></thead><tbody id="tabelLaporan"></tbody></table>
                 </div>
             </div>
         </div>
@@ -601,6 +666,22 @@
         return lowerNama.includes('kecap') || lowerNama.includes('saos') || lowerNama.includes('saus') || lowerNama.includes('garam') || lowerNama.includes('botol') || lowerNama.includes('btl') || lowerNama.includes('pcs') || lowerNama.includes('bungkus');
     }
 
+    // ====== FORMAT JUMLAH JELAS (contoh: "2 Botol", "0.5 Kg") ======
+    function formatJumlah(val) {
+        if (val === null || val === undefined) return '';
+        var s = String(val).trim();
+        if (s === '') return '';
+        if (/[a-zA-Z]/.test(s)) return s; // sudah ada satuan, tampilkan apa adanya
+        return s + ' Kg'; // data lama berupa angka murni -> anggap Kg
+    }
+
+    // ====== LABEL STOK JELAS (barang pcs -> "2 Pcs", bumbu -> "5 Kg") ======
+    function stockLabel(nama, val) {
+        var n = parseFloat(val);
+        if (isNaN(n)) n = 0;
+        return n + (isPcsItem(nama) ? ' Pcs' : ' Kg');
+    }
+
     // ====== ISI DROPDOWN (DIPISAH: KG vs PCS) ======
     function fillSelectWithOptions(id, list, label) {
         var sel = document.getElementById(id);
@@ -629,11 +710,13 @@
                 kgList.push(DAFTAR_BUMBU[i]);
             }
         }
-        // Catat Modal: semua barang (karena belanja bisa bumbu & barang)
-        fillSelectWithOptions('modalNama', DAFTAR_BUMBU, '-- Pilih Bumbu / Barang --');
-        // Catat Penjualan Mode Kg: HANYA bumbu
+        // Catat Modal Mode Bumbu: hanya bumbu
+        fillSelectWithOptions('modalNama', kgList, '-- Pilih Bumbu --');
+        // Catat Modal Mode Barang: hanya kecap/saos/garam dll
+        fillSelectWithOptions('modalPcsNama', pcsList, '-- Pilih Barang (Kecap/Saos/Garam) --');
+        // Catat Penjualan Mode Kg: hanya bumbu
         fillSelectWithOptions('jualNama', kgList, '-- Pilih Bumbu --');
-        // Catat Penjualan Mode Pcs: HANYA barang Kecap/Saos/Garam dll
+        // Catat Penjualan Mode Pcs: hanya barang
         fillSelectWithOptions('pcsNama', pcsList, '-- Pilih Barang (Kecap/Saos/Garam) --');
     }
 
@@ -667,7 +750,6 @@
     function populateBerat() {
         var html = '<option value="">-- Pilih Jumlah --</option>';
         var berat = [
-            {t: "Pcs / Botol / Bungkus", v: 1}, 
             {t: "¼ Ons", v: 0.025}, 
             {t: "½ Ons", v: 0.05}, 
             {t: "1 Ons", v: 0.1},
@@ -751,6 +833,44 @@
         }
     }
 
+    // ===== PREVIEW SATUAN (MODAL KG) =====
+    function updateModalKgPreview() {
+        var el = document.getElementById('modalKgPreview');
+        if (!el) return;
+        var kgVal = document.getElementById('modalKg').value;
+        if (kgVal && parseFloat(kgVal) > 0) {
+            el.textContent = parseFloat(kgVal) + ' Kg';
+        } else {
+            el.textContent = '- Kg';
+        }
+    }
+
+    // ===== PREVIEW SATUAN (MODAL PCS: "2 Botol", "1 Pcs", dst) =====
+    function updateModalPcsPreview() {
+        var el = document.getElementById('modalPcsPreview');
+        if (!el) return;
+        var satuan = document.getElementById('modalPcsSatuan').value || 'Pcs';
+        var jml = document.getElementById('modalPcsJumlah').value;
+        if (jml && parseFloat(jml) > 0) {
+            el.textContent = parseFloat(jml) + ' ' + satuan;
+        } else {
+            el.textContent = '- ' + satuan;
+        }
+    }
+
+    // ===== PREVIEW SATUAN (PENJUALAN PCS) =====
+    function updatePcsPreview() {
+        var el = document.getElementById('pcsPreview');
+        if (!el) return;
+        var satuan = document.getElementById('pcsSatuan').value || 'Pcs';
+        var jml = document.getElementById('pcsJumlah').value;
+        if (jml && parseFloat(jml) > 0) {
+            el.textContent = parseFloat(jml) + ' ' + satuan;
+        } else {
+            el.textContent = '- ' + satuan;
+        }
+    }
+
     // Hitung Total Bayar otomatis: (Harga per Kg x Jumlah) - Diskon
     function hitungJual() {
         var kg = parseFloat(document.getElementById('jualKg').value) || 0;
@@ -761,7 +881,7 @@
         document.getElementById('jualTotal').value = Number(total).toLocaleString('id-ID');
     }
 
-    // Hitung Total Bayar otomatis mode Pcs: (Harga per Pcs x Jumlah) - Diskon
+    // Hitung Total Bayar otomatis mode Pcs: (Harga per Satuan x Jumlah) - Diskon
     function hitungJualPcs() {
         var jml = parseFloat(document.getElementById('pcsJumlah').value) || 0;
         var harga = parseNominal(document.getElementById('pcsHarga'));
@@ -774,9 +894,27 @@
     function autoSwitchJualMode(nama) {
         if (isPcsItem(nama)) {
             toggleJualMode('pcs');
-            if (document.getElementById('pcsNama')) document.getElementById('pcsNama').value = nama;
         } else {
             toggleJualMode('kg');
+        }
+    }
+
+    // ===== TOGGLE MODE CATAT MODAL =====
+    function toggleModalMode(mode) {
+        if (mode === 'kg') {
+            document.getElementById('formModalKg').classList.remove('hidden');
+            document.getElementById('formModalPcs').classList.add('hidden');
+            document.getElementById('btnModalModeKg').classList.remove('border-gray-700', 'text-gray-500');
+            document.getElementById('btnModalModeKg').classList.add('border-cyan-500', 'text-cyan-400');
+            document.getElementById('btnModalModePcs').classList.remove('border-cyan-500', 'text-cyan-400');
+            document.getElementById('btnModalModePcs').classList.add('border-gray-700', 'text-gray-500');
+        } else {
+            document.getElementById('formModalKg').classList.add('hidden');
+            document.getElementById('formModalPcs').classList.remove('hidden');
+            document.getElementById('btnModalModePcs').classList.remove('border-gray-700', 'text-gray-500');
+            document.getElementById('btnModalModePcs').classList.add('border-cyan-500', 'text-cyan-400');
+            document.getElementById('btnModalModeKg').classList.remove('border-cyan-500', 'text-cyan-400');
+            document.getElementById('btnModalModeKg').classList.add('border-gray-700', 'text-gray-500');
         }
     }
 
@@ -828,10 +966,15 @@
         await populateDropdowns();
         var mTgl = document.getElementById('modalTgl'); 
         if (mTgl) mTgl.value = getToday();
+        var mPcsTgl = document.getElementById('modalPcsTgl'); 
+        if (mPcsTgl) mPcsTgl.value = getToday();
         var jTgl = document.getElementById('jualTgl'); 
         if (jTgl) jTgl.value = getToday();
         var pcsTgl = document.getElementById('pcsTgl'); 
         if (pcsTgl) pcsTgl.value = getToday();
+        updateModalPcsPreview();
+        updatePcsPreview();
+        updateModalKgPreview();
         var yr = new Date().getFullYear(); 
         var yrSelect = document.getElementById('filterTahun');
         if (yrSelect) {
@@ -900,6 +1043,7 @@
         if (page === 'laporan') loadLaporan();
         if (page === 'daftarHarga') loadDaftarHarga();
         if (page === 'catatJual') toggleJualMode('kg');
+        if (page === 'catatModal') toggleModalMode('kg');
         document.getElementById('appBackground').scrollTop = 0;
     }
 
@@ -951,7 +1095,7 @@
         });
     }
 
-    // ============ API TULIS (timeout 60 detik + tampilkan error asli server) ============
+    // ============ API TULIS ============
     function apiPost(sheet, data, actionType) {
         actionType = actionType || 'write';
         clearCache(sheet); 
@@ -1037,7 +1181,7 @@
         setTimeout(function() { if (uField) uField.focus(); }, 100);
     }
 
-    // ============ SIMPAN MODAL (INSTAN) ============
+    // ============ SIMPAN MODAL BUMBU KG (JELAS: "2 Kg") ============
     function simpanModal() {
         var tgl = document.getElementById('modalTgl').value; 
         var nama = document.getElementById('modalNama').value.trim();
@@ -1046,14 +1190,16 @@
         if (!tgl || !nama || !kg || !harga) { showToast('Lengkapi semua data modal!', true); return; }
         if (kg <= 0 || harga <= 0) { showToast('Jumlah dan harga harus lebih dari 0!', true); return; }
         
-        var rowData = [tgl, nama, kg, harga];
+        var kgLabel = kg + ' Kg'; // contoh: "2 Kg", "0.5 Kg" (angka di depan tetap dibaca sistem stok)
+        var rowData = [tgl, nama, kgLabel, harga];
         
         document.getElementById('modalNama').value = ''; 
         document.getElementById('modalKg').value = ''; 
         document.getElementById('modalKgPilihan').value = ''; 
         document.getElementById('modalKg').style.display = 'none'; 
         document.getElementById('modalHarga').value = '';
-        showToast('✓ Modal dicatat: ' + nama);
+        updateModalKgPreview();
+        showToast('✓ Modal dicatat: ' + nama + ' (' + kgLabel + ')');
         
         apiPost('Modal', rowData).then(function() {
             refreshActivePage();
@@ -1062,7 +1208,33 @@
         });
     }
 
-    // ============ SIMPAN PENJUALAN KG (INSTAN) ============
+    // ============ SIMPAN MODAL BARANG PCS/BOTOL (JELAS: "1 Pcs" / "2 Botol") ============
+    function simpanModalPcs() {
+        var tgl = document.getElementById('modalPcsTgl').value; 
+        var nama = document.getElementById('modalPcsNama').value;
+        var satuan = document.getElementById('modalPcsSatuan').value;
+        var jml = parseFloat(document.getElementById('modalPcsJumlah').value); 
+        var harga = parseNominal(document.getElementById('modalPcsHarga'));
+        if (!tgl || !nama || !jml || !harga) { showToast('Lengkapi semua data modal barang!', true); return; }
+        if (jml <= 0 || harga <= 0) { showToast('Jumlah dan harga harus lebih dari 0!', true); return; }
+        
+        var jmlLabel = jml + ' ' + satuan; // contoh: "1 Pcs", "2 Botol", "3 Bungkus"
+        var rowData = [tgl, nama, jmlLabel, harga];
+        
+        document.getElementById('modalPcsNama').value = ''; 
+        document.getElementById('modalPcsJumlah').value = ''; 
+        document.getElementById('modalPcsHarga').value = '';
+        updateModalPcsPreview();
+        showToast('✓ Modal dicatat: ' + nama + ' (' + jmlLabel + ')');
+        
+        apiPost('Modal', rowData).then(function() {
+            refreshActivePage();
+        }).catch(function(err) {
+            showToast('GAGAL: ' + err.message, true);
+        });
+    }
+
+    // ============ SIMPAN PENJUALAN KG (INSTAN, JELAS: "2 Kg") ============
     function simpanJual() {
         var tgl = document.getElementById('jualTgl').value; 
         var nama = document.getElementById('jualNama').value;
@@ -1079,14 +1251,15 @@
             for (var i = modalData.length - 1; i >= 1; i--) { 
                 if (modalData[i] && String(modalData[i][1]).trim() === nama) { 
                     if (parseFloat(modalData[i][2]) > 0) { 
-                        hargaModalPerKg = modalData[i][3] / modalData[i][2]; 
+                        hargaModalPerKg = modalData[i][3] / parseFloat(modalData[i][2]); 
                         break; 
                     } 
                 } 
             }
         }
         var untung = totalBayar - (hargaModalPerKg * kg);
-        var rowData = [tgl, nama, kg, hargaJual, potongan, totalBayar, untung];
+        var kgLabel = kg + ' Kg';
+        var rowData = [tgl, nama, kgLabel, hargaJual, potongan, totalBayar, untung];
         
         document.getElementById('jualNama').value = ''; 
         document.getElementById('jualKg').value = ''; 
@@ -1095,7 +1268,7 @@
         document.getElementById('jualHarga').value = ''; 
         document.getElementById('jualPotong').value = '0'; 
         document.getElementById('jualTotal').value = '';
-        showToast('✓ Penjualan dicatat: ' + nama);
+        showToast('✓ Penjualan dicatat: ' + nama + ' (' + kgLabel + ')');
         
         apiPost('Penjualan', rowData).then(function() {
             refreshActivePage();
@@ -1104,10 +1277,11 @@
         });
     }
 
-    // ============ SIMPAN PENJUALAN PCS (INSTAN) ============
+    // ============ SIMPAN PENJUALAN PCS (INSTAN, JELAS: "2 Botol") ============
     function simpanJualPcs() {
         var tgl = document.getElementById('pcsTgl').value; 
         var nama = document.getElementById('pcsNama').value;
+        var satuan = document.getElementById('pcsSatuan').value;
         var jml = parseFloat(document.getElementById('pcsJumlah').value); 
         var hargaJual = parseNominal(document.getElementById('pcsHarga'));
         var potongan = parseNominal(document.getElementById('pcsPotong')) || 0; 
@@ -1121,21 +1295,23 @@
             for (var i = modalData.length - 1; i >= 1; i--) { 
                 if (modalData[i] && String(modalData[i][1]).trim() === nama) { 
                     if (parseFloat(modalData[i][2]) > 0) { 
-                        hargaModalPerPcs = modalData[i][3] / modalData[i][2]; 
+                        hargaModalPerPcs = modalData[i][3] / parseFloat(modalData[i][2]); 
                         break; 
                     } 
                 } 
             }
         }
         var untung = totalBayar - (hargaModalPerPcs * jml);
-        var rowData = [tgl, nama, jml, hargaJual, potongan, totalBayar, untung];
+        var jmlLabel = jml + ' ' + satuan; // "1 Pcs" / "2 Botol"
+        var rowData = [tgl, nama, jmlLabel, hargaJual, potongan, totalBayar, untung];
         
         document.getElementById('pcsNama').value = ''; 
         document.getElementById('pcsJumlah').value = ''; 
         document.getElementById('pcsHarga').value = ''; 
         document.getElementById('pcsPotong').value = '0'; 
         document.getElementById('pcsTotal').value = '';
-        showToast('✓ Penjualan dicatat: ' + nama);
+        updatePcsPreview();
+        showToast('✓ Penjualan dicatat: ' + nama + ' (' + jmlLabel + ')');
         
         apiPost('Penjualan', rowData).then(function() {
             refreshActivePage();
@@ -1155,7 +1331,7 @@
         pendingBumbuAdds.push(nama);
         DAFTAR_BUMBU.push(nama);
         DAFTAR_BUMBU.sort();
-        rebuildSelects(); // LANGSUNG masuk dropdown (pcs kalau kecap/saos/garam, kg kalau bumbu)
+        rebuildSelects();
         loadDaftarHarga(true);
         if (isPcsItem(nama)) {
             showToast('✓ Ditambahkan ke Pcs/Botol: ' + nama);
@@ -1478,12 +1654,12 @@
                     if (!stokData[i]) continue; 
                     var kgVal = parseFloat(stokData[i][1]);
                     if (!isNaN(kgVal) && kgVal <= 2) { 
-                        lowStockList.push(stokData[i][0] + " (Sisa: " + stokData[i][1] + " Kg)"); 
+                        lowStockList.push(stokData[i][0] + " (Sisa: " + stockLabel(stokData[i][0], stokData[i][1]) + ")"); 
                     }
                 }
             }
             if (lowStockList.length > 0) { 
-                alertContent.innerHTML = "⚠️ Sisa stok dibawah 2Kg:<br> - " + lowStockList.join("<br> - "); 
+                alertContent.innerHTML = "⚠️ Sisa stok menipis:<br> - " + lowStockList.join("<br> - "); 
                 alertBox.classList.remove('hidden'); 
             } else { 
                 alertBox.classList.add('hidden'); 
@@ -1616,7 +1792,7 @@
                     var untung = Number(jualData[i][6]);
                     totalJual += totalBayar; 
                     totalUntung += untung;
-                    html += '<tr><td>' + jualData[i][0] + '</td><td>' + jualData[i][1] + '</td><td>' + jualData[i][2] + ' Kg</td><td>' + formatRp(totalBayar) + '</td><td style="color:#10b981;font-weight:bold;">' + formatRp(untung) + '</td></tr>';
+                    html += '<tr><td>' + jualData[i][0] + '</td><td>' + jualData[i][1] + '</td><td>' + formatJumlah(jualData[i][2]) + '</td><td>' + formatRp(totalBayar) + '</td><td style="color:#10b981;font-weight:bold;">' + formatRp(untung) + '</td></tr>';
                 }
             }
             if (!adaData) { 
@@ -1640,7 +1816,7 @@
                 var kgVal = parseFloat(stokData[i][1]); 
                 var warnaStok = kgVal <= 2 ? 'style="color:#f43f5e;font-weight:bold;"' : ''; 
                 var warning = kgVal <= 2 ? ' ⚠️' : '';
-                html += '<tr><td>' + stokData[i][0] + '</td><td ' + warnaStok + '>' + stokData[i][1] + ' Kg' + warning + '</td></tr>';
+                html += '<tr><td class="left-align">' + stokData[i][0] + '</td><td ' + warnaStok + '>' + stockLabel(stokData[i][0], stokData[i][1]) + warning + '</td></tr>';
             }
             tbody.innerHTML = html;
         } catch (err) { console.error('Error loadStok:', err); }
@@ -1670,7 +1846,7 @@
                     }
                     dailyMap[tglJual].jual += jualTotal; 
                     dailyMap[tglJual].untung += untungTotal;
-                    html += '<tr><td>' + tglJual + '</td><td>' + jualData[i][1] + '</td><td>' + jualData[i][2] + ' Kg</td><td>' + formatRp(jualTotal) + '</td><td style="color:#10b981;">' + formatRp(untungTotal) + '</td></tr>';
+                    html += '<tr><td>' + tglJual + '</td><td>' + jualData[i][1] + '</td><td>' + formatJumlah(jualData[i][2]) + '</td><td>' + formatRp(jualTotal) + '</td><td style="color:#10b981;">' + formatRp(untungTotal) + '</td></tr>';
                 }
             }
             for (var i = 1; i < modalData.length; i++) { 
